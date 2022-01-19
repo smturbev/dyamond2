@@ -47,6 +47,6 @@ def test_data_file_name(var, date=None, native=False):
         if date is None:
             raise Exception("Must include a date as a string in the format of mm-dd in range 01-20 to 03-01 (Jan 20 to March 1)")
         elif date=="all":
-            return coarse_dir + f"SCREAMv0.SCREAM-DY2.ne1024pg2.20201127.eam.{var}.2020-*-00000.nc".format(var=var)
+            return coarse_dir + f"SCREAMv0.SCREAM-DY2.ne1024pg2.20201127.eam.{var}.2020*00000.nc".format(var=var)
         else:
             return coarse_dir + f"SCREAMv0.SCREAM-DY2.ne1024pg2.20201127.eam.{var}.2020-{date}-00000.nc".format(var=var, date=date)
