@@ -9,6 +9,7 @@ especially if file names change
 home_dir = "/home/disk/eos12/hillmanb/scream/dyamond2/"
 native_dir = home_dir + "native/"
 coarse_dir = home_dir + "256x512/"
+ceres_dir = "/home/disk/eos15/smturbev/SAT_DATA/JanFeb2020/"
 
 def test_data_file_name(var, date=None, native=False):
     """returns file name of desired file from test data
@@ -22,7 +23,7 @@ def test_data_file_name(var, date=None, native=False):
     h1 : 15 min : LHFLX, PRECSL (large scale precip m/s), PRECT (tot precip m/s), PS (surf pressure Pa), 
     QREFHT (reference), TAUX and TAUY (windstress), TREFHT, TS, WINDSPD_10M
     h2 : 15 min : FLDS (downwelling lw sfc), FLNS (net lw sfc), FLNT (net lw toa), 
-    FLNTC (clearsky lw toa), FSDS (lw downwelling sfc), FSNS (net sw sfc), 
+    FLNTC (clearsky lw toa), FSDS (sw downwelling sfc), FSNS (net sw sfc), 
     FSNTOA (sw net toa), FSNTOAC (clearsky sw toa)
     h3 : 15 min : OMEGA200, 500, 700, 850; RH200, 500, 700, 850; Z200, 500, 700,850
     h4 : 3 hrly : TMNUMICE, TMNUMLIQ, TMNUMRAI
@@ -50,3 +51,11 @@ def test_data_file_name(var, date=None, native=False):
             return coarse_dir + f"SCREAMv0.SCREAM-DY2.ne1024pg2.20201127.eam.{var}.2020*00000.nc".format(var=var)
         else:
             return coarse_dir + f"SCREAMv0.SCREAM-DY2.ne1024pg2.20201127.eam.{var}.2020-{date}-00000.nc".format(var=var, date=date)
+        
+def return_ceres(time="hourly"):
+    if time=="hourly":
+        return ceres_dir + "CERES_SYN1deg-1H_Terra-Aqua-MODIS_Ed4.1_Subset_20200101-20200331.nc"
+    elif time=="daily":
+        return ceres_dir + "CERES_SYN1deg-Day_Terra-Aqua-MODIS_Ed4.1_Subset_20200101-20200331.nc"
+    else:
+        raise Exception("only have 'hourly' or 'daily' data available for ceres syn 1")
