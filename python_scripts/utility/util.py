@@ -35,7 +35,7 @@ def q_to_wc(q,t,p,qv):
        Returns:
        - wc  : (kg/m3) cloud hydrometeor water content
     """
-    rho = p / (287*(1 + 0.61*qv)*t)
+    rho = p / 287*((1 + 0.61*qv)*t)
     del p, qv, t
     iwc = q * rho
     if type(iwc) is type(xr.DataArray()):
