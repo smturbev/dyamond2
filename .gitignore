@@ -1,2 +1,4 @@
 utility/__pycache__/
 python_scripts/.ipynb_checkpoints/
+sh_scripts/err*
+sh_scripts/out*
