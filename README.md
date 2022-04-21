@@ -1,8 +1,8 @@
-# SCREAM-analysis
+# Dyamond 2 analysis
 
 ## Intro
 
-This is where to find all analysis for SCREAM in the DYAMOND 2 simulation. This includes all DYAMOND models not just SCREAM, but we are using this intercomparison to put SCREAM in context with the other DYAMOND models. Once we have established how SCREAM simulates clouds in DYAMOND, we will use SCREAM to test other hypothesis and work in a Variable-Resolution General-Circulation Model. 
+This is where to find all analysis for DYAMOND 2 simulations. This includes all DYAMOND models including SCREAM - we are using this intercomparison to put SCREAM in context with the other DYAMOND models. Once we have established how SCREAM simulates clouds in DYAMOND, we will use SCREAM to test other hypothesis and work in a Variable-Resolution General-Circulation Model. 
 
 ## Key Points
 
