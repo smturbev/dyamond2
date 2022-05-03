@@ -32,6 +32,8 @@ GE_TWP=GEOS+"TWP/"
 NI_TWP=NICAM+"TWP/"
 SA_TWP=SAM+"TWP/"
 SC_TWP=SCREAM+"TWP/"
+## time mean ##
+TIMMEAN = "/scratch/b/b380883/dyamond2/timmean_GT/"
 
 ### variable files ###
 #### GEOS ####
@@ -93,14 +95,32 @@ def get_var_file(model, var):
         if (var.lower()=="clivi") or (var.lower()=="iwp"):
             return SC_CLIVI
         elif (var.lower()=="rlut") or (var.lower()=="rlt"):
-            return SC_RLUT
+            return SC_RLT
         elif (var.lower()=="rlutcs") or (var.lower()=="rltcs"):
-            return SC_RLUTCS
+            return SC_RLTCS
         elif (var.lower()=="rst"):
             return GE_RST
     else:
         raise Exception("model {} or variable {} input incorrect".format(model, var))
+        return
 
+def get_timmean_file(model, var, gt=True):
+    if gt:
+        if (model.lower()=="geos") or (model.lower()=="sam"):
+            return TIMMEAN+"timmean_GT_{m}_{v}_20200120-20200229.nc".format(m=model, v=var)
+        elif (model.lower()=="nicam"):
+            return TIMMEAN+"timmean_GT_{m}_{v}_20200120-20200228.nc".format(m=model, v=var)
+        elif (model.lower()=="scream"):
+            return TIMMEAN+"timmean_GT_{m}_{v}_20200120-20200301.nc".format(m=model, v=var)
+        else:
+            raise Exception("timemean for "+model+" & "+var+" for GT not accepted.")
+            return
+    else:
+        if (model.lower()=="nicam"):
+            return TIMMEAN+"timmean_ITCZ_{m}_{v}_20200120-20200228.nc".format(m=model, v=var)
+        else:
+            raise Exception("timemean for "+model+" & "+var+" for GT not accepted.")
+            return
 
 def test_data_file_name(var, date=None, native=False):
     """returns file name of desired file from test data
