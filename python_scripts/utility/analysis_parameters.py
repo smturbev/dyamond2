@@ -111,7 +111,7 @@ def get_timmean_file(model, var, gt=True):
         elif (model.lower()=="nicam"):
             return TIMMEAN+"timmean_GT_{m}_{v}_20200120-20200228.nc".format(m=model, v=var)
         elif (model.lower()=="scream"):
-            return TIMMEAN+"timmean_GT_{m}_{v}_20200120-20200301.nc".format(m=model, v=var)
+            return TIMMEAN+"timmean_GT_{m}r_{v}_20200120-20200301.nc".format(m=model, v=var)
         else:
             raise Exception("timemean for "+model+" & "+var+" for GT not accepted.")
             return
