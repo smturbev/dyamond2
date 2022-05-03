@@ -27,7 +27,6 @@ NI_GT=NICAM+"GT/"
 NI_IT=NICAM+"ITCZ/"
 SA_GT=SAM+"GT/"
 SC_GT=SCREAM+"GT/"
-
 ## TWP ##
 GE_TWP=GEOS+"TWP/"
 NI_TWP=NICAM+"TWP/"
@@ -57,7 +56,50 @@ SC_RLT = SC_GT + "GT_regridded_rlt_20200120-20200301.nc"
 SC_RLTCS = SC_GT + "GT_regridded_rltcs_20200120-20200301.nc"
 SC_RST = SC_GT + "GT_regridded_rst_20200120-20200301.nc"
 
-
+def get_var_file(model, var):
+    if model.lower()=="geos":
+        if (var.lower()=="clivi") or (var.lower()=="iwp"):
+            return GE_CLIVI
+        elif (var.lower()=="rlut") or (var.lower()=="rlt"):
+            return GE_RLUT
+        elif (var.lower()=="rlutcs") or (var.lower()=="rltcs"):
+            return GE_RLUTCS
+        elif (var.lower()=="rsut"):
+            return GE_RSUT
+        elif (var.lower()=="rsdt"):
+            return GE_RSDT
+    elif model.lower()=="nicam":
+        if (var.lower()=="clivi") or (var.lower()=="iwp"):
+            return NI_CLIVI
+        elif (var.lower()=="rlut") or (var.lower()=="rlt"):
+            return NI_RLUT
+        elif (var.lower()=="rsut"):
+            return NI_RSUT
+        elif (var.lower()=="rsdt"):
+            return NI_RSDT
+    elif model.lower()=="sam":
+        if (var.lower()=="clivi") or (var.lower()=="iwp"):
+            return SA_CLIVI
+        elif (var.lower()=="rlut") or (var.lower()=="rlt") or (var.lower()=="rltacc"):
+            print("Accumulated OLR")
+            return SA_RLTACC
+        elif (var.lower()=="rsut") or (var.lower()=="rsutacc"):
+            print("Accumulated RSUT")
+            return SA_RSUTACC
+        elif (var.lower()=="rsdt") or (var.lower()=="rsdtacc"):
+            print("Accumulated RSDT")
+            return SA_RSDTACC
+    elif model.lower()=="scream":
+        if (var.lower()=="clivi") or (var.lower()=="iwp"):
+            return SC_CLIVI
+        elif (var.lower()=="rlut") or (var.lower()=="rlt"):
+            return SC_RLUT
+        elif (var.lower()=="rlutcs") or (var.lower()=="rltcs"):
+            return SC_RLUTCS
+        elif (var.lower()=="rst"):
+            return GE_RST
+    else:
+        raise Exception("model {} or variable {} input incorrect".format(model, var))
 
 
 def test_data_file_name(var, date=None, native=False):
