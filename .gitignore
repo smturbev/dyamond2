@@ -1,5 +1,8 @@
 python_scripts/utility/__pycache__/
 python_scripts/__pycache__/
 python_scripts/.ipynb_checkpoints/
+sh_scripts/.ipynb_checkpoints/
+python_scripts/utility/.ipynb_checkpoints/
 sh_scripts/err*
 sh_scripts/out*
+scream_lat_ind.nc

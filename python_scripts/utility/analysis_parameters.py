@@ -14,6 +14,52 @@ native_dir = home_dir + "native/"
 coarse_dir = home_dir + "256x512/"
 ceres_dir = "/home/disk/eos15/smturbev/SAT_DATA/JanFeb2020/"
 
+# processed output #
+SCR2 = "/scratch/b/b380883/dyamond2/"
+GEOS = SCR2 + "GEOS/"
+NICAM = SCR2 + "NICAM/"
+SAM = SCR2 + "SAM/"
+SCREAM = SCR2 + "SCREAM/"
+
+## Global Tropics ##
+GE_GT=GEOS+"GT/"
+NI_GT=NICAM+"GT/"
+NI_IT=NICAM+"ITCZ/"
+SA_GT=SAM+"GT/"
+SC_GT=SCREAM+"GT/"
+
+## TWP ##
+GE_TWP=GEOS+"TWP/"
+NI_TWP=NICAM+"TWP/"
+SA_TWP=SAM+"TWP/"
+SC_TWP=SCREAM+"TWP/"
+
+### variable files ###
+#### GEOS ####
+GE_CLIVI=GE_GT+"clivi_GT_GEOS-6km_20200120-20200229.nc"
+GE_RLUT =GE_GT+"rlut_GEOS-6km_GT_20200120-20200229.nc"
+GE_RLUTCS=GE_GT+"rlutcs_GEOS-6km_GT_20200120-20200229.nc"
+GE_RSDT=GE_GT+"rsdt_GEOS-6km_GT_20200120-20200229.nc"
+GE_RSUT=GE_GT+"rsut_GEOS-6km_GT_20200120-20200229.nc"
+#### NICAM ####
+NI_CLIVI = NI_GT + "clivi_GT_NICAM-3km_20200120-20200228.nc"
+NI_RLUT = NI_GT + "rlut_GT_NICAM-3km_20200120-20200228.nc"
+NI_RSDT = NI_GT + "rsdt_GT_NICAM-3km_20200120-20200228.nc"
+NI_RSUT = NI_GT + "rsut_GT_NICAM-3km_20200120-20200228.nc"
+#### SAM ####
+SA_CLIVI = SA_GT + "clivi_SAM2-4km_20200120-20200229.nc"
+SA_RLUTACC = SA_GT + "GT_SAM_rlutacc_20200120-20200229.nc"
+SA_RSUTACC = SA_GT + ""
+SA_RSDTACC = SA_GT + ""
+#### SCREAMregridded ####
+SC_CLIVI = SC_GT + "GT_regridded_clivi_20200120-20200301.nc"
+SC_RLT = SC_GT + "GT_regridded_rlt_20200120-20200301.nc"
+SC_RLTCS = SC_GT + "GT_regridded_rltcs_20200120-20200301.nc"
+SC_RST = SC_GT + "GT_regridded_rst_20200120-20200301.nc"
+
+
+
+
 def test_data_file_name(var, date=None, native=False):
     """returns file name of desired file from test data
 

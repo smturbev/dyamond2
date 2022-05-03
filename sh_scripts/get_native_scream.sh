@@ -28,11 +28,16 @@ LOC="TWP"
 declare -a VarArray15min=(clivi)
 
 # 15 min vars
-for v in "${VarArray15min[@]}"; do
-    for f in $IN_PATH/$MODEL_PATH/DW-ATM/atmos/15min/$v/r1i1p1f1/2d/gn/*; do
-        fname=$(basename $f)
-        out_file=$OUT_PATH/$LOC"_"$fname
-        echo "15 min variable "$v":"
-        cdo -f nc -sellonlatbox,$LON0,$LON1,$LAT0,$LAT1 -setgrid,$GRID_FILE $f $out_file
-    done
-done
+#for v in "${VarArray15min[@]}"; do
+#    for f in $IN_PATH/$MODEL_PATH/DW-ATM/atmos/15min/$v/r1i1p1f1/2d/gn/*; do
+#        fname=$(basename $f)
+#        out_file=$OUT_PATH/$LOC"_"$fname
+#        echo "15 min variable "$v":"
+#        cdo -f nc -sellonlatbox,$LON0,$LON1,$LAT0,$LAT1 -setgrid,$GRID_FILE $f $out_file
+#    done
+#done
+
+###### test #######
+out=$OUT_PATH/test_scream_native_reducegrid.nc
+lat_mask=/scratch/b/b380883/scream_lat_mask.nc
+cdo reducegrid,$lat_mask $IN_PATH/$MODEL_PATH/DW-ATM/atmos/15min/clivi/r1i1p1f1/2d/gn/clivi_15min_SCREAM-3km_DW-ATM_r1i1p1f1_2d_gn_20200223000000-20200223234500.nc $out
