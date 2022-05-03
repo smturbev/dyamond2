@@ -14,13 +14,14 @@
 # set -evx # verbose messages and crash message
 
 IN_PATH=/scratch/b/b380883/dyamond2
-declare -a MODELS=("SAM") # "GEOS/GT" "NICAM" "SCREAM"
+declare -a MODELS=("SAM" "NICAM" "SCREAM")
 
 for m in "${MODELS[@]}"; do
-    for f in $IN_PATH/$m/*.nc; do
+    for f in $IN_PATH/$m/GT/*.nc; do
         fname=$(basename $f)
-        out_file=$IN_PATH/timmean_$fname
+        out_file=$IN_PATH/hourmean_$fname
         echo $fname
-        cdo -timmean $f $out_file
+#         cdo -timmean $f $out_file # computes the mean over each timestep output=[0,nlat,nlon]
+        cdo -hourmean $f $out_file # computes the mean of each hour for all timesteps [24,nlat,nlon]
     done
 done
