@@ -37,24 +37,29 @@ TIMMEAN = "/scratch/b/b380883/dyamond2/timmean_GT/"
 
 ### variable files ###
 #### GEOS ####
-GE_CLIVI=GE_GT+"clivi_GT_GEOS-6km_20200120-20200229.nc"
-GE_RLUT =GE_GT+"rlut_GEOS-6km_GT_20200120-20200229.nc"
-GE_RLUTCS=GE_GT+"rlutcs_GEOS-6km_GT_20200120-20200229.nc"
-GE_RSDT=GE_GT+"rsdt_GEOS-6km_GT_20200120-20200229.nc"
-GE_RSUT=GE_GT+"rsut_GEOS-6km_GT_20200120-20200229.nc"
+GE_CLIVI=GE_GT+""
+GE_RLUT =GE_GT+"rlut_GT_GEOS-6km_20200120-20200228.nc"
+GE_RLUTCS=GE_GT+""
+GE_RSDT=GE_GT+""
+GE_RSUT=GE_GT+""
 #### NICAM ####
 NI_CLIVI = NI_GT + "clivi_GT_NICAM-3km_20200120-20200228.nc"
 NI_RLUT = NI_GT + "rlut_GT_NICAM-3km_20200120-20200228.nc"
 NI_RSDT = NI_GT + "rsdt_GT_NICAM-3km_20200120-20200228.nc"
 NI_RSUT = NI_GT + "rsut_GT_NICAM-3km_20200120-20200228.nc"
 #### SAM ####
-SA_CLIVI = SA_GT + "clivi_SAM2-4km_20200120-20200229.nc"
-SA_RLUTACC = SA_GT + "GT_SAM_rlutacc_20200120-20200229.nc"
+SA_CLIVI = SA_GT + "GT_SAM_clivi_20200120-20200229.nc"
+SA_RLT = SA_GT + "GT_SAM_rlt_20200120-20200229.nc"
 SA_RSUTACC = SA_GT + ""
 SA_RSDTACC = SA_GT + ""
 #### SCREAMregridded ####
-SC_CLIVI = SC_GT + "GT_regridded_clivi_20200120-20200301.nc"
-SC_RLT = SC_GT + "GT_regridded_rlt_20200120-20200301.nc"
+SCr_CLIVI = SC_GT + "GT_regridded_clivi_20200120-20200301.nc"
+SCr_RLT = SC_GT + "GT_regridded_rlt_20200120-20200301.nc"
+SCr_RLTCS = SC_GT + "GT_regridded_rltcs_20200120-20200301.nc"
+SCr_RST = SC_GT + "GT_regridded_rst_20200120-20200301.nc"
+#### SCREAM native ####
+SC_CLIVI = SC_GT + "GT_SCREAM_clivi_20200120-20200229.nc"
+SC_RLT = SC_GT + "GT_SCREAM_rlt_20200120-20200229.nc"
 SC_RLTCS = SC_GT + "GT_regridded_rltcs_20200120-20200301.nc"
 SC_RST = SC_GT + "GT_regridded_rst_20200120-20200301.nc"
 
@@ -83,8 +88,7 @@ def get_var_file(model, var):
         if (var.lower()=="clivi") or (var.lower()=="iwp"):
             return SA_CLIVI
         elif (var.lower()=="rlut") or (var.lower()=="rlt") or (var.lower()=="rltacc"):
-            print("Accumulated OLR")
-            return SA_RLTACC
+            return SA_RLT
         elif (var.lower()=="rsut") or (var.lower()=="rsutacc"):
             print("Accumulated RSUT")
             return SA_RSUTACC
@@ -110,8 +114,10 @@ def get_timmean_file(model, var, gt=True):
             return TIMMEAN+"timmean_GT_{m}_{v}_20200120-20200229.nc".format(m=model, v=var)
         elif (model.lower()=="nicam"):
             return TIMMEAN+"timmean_GT_{m}_{v}_20200120-20200228.nc".format(m=model, v=var)
-        elif (model.lower()=="scream"):
+        elif (model.lower()=="screamr"):
             return TIMMEAN+"timmean_GT_{m}r_{v}_20200120-20200301.nc".format(m=model, v=var)
+        elif (model.lower()=="scream"):
+            return TIMMEAN+"timmean_GT_{m}_{v}_20200120-20200229.nc".format(m=model, v=var)
         else:
             raise Exception("timemean for "+model+" & "+var+" for GT not accepted.")
             return

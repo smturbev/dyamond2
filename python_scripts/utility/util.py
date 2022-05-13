@@ -61,3 +61,7 @@ def wc_to_wp(wc, p):
     vint.attrs["units"] = "kg/m2"
     vint.attrs["name"] = "integrated water path"
     return vint
+
+def undo_acc(da):
+    """Returns an xarray data array of unaccumulated data"""
+    

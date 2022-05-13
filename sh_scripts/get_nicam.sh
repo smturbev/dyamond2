@@ -23,7 +23,7 @@ LAT0=-30
 LAT1=30
 LOC="GT"
 
-declare -a VarArray15min=(clivi rlut) #rsut rsdt #clivi rlut
+declare -a VarArray15min=(clt) # clivi rlut) #rsut rsdt #clivi rlut
 
 # 15 min vars
 for v in "${VarArray15min[@]}"; do
