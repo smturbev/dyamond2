@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH --job-name=subtwp_geos
 #SBATCH --partition=prepost
-#SBATCH --ntasks=8
+#SBATCH --ntasks=1
 #SBATCH --mem=20GB
 #SBATCH --time=09:00:00
 #SBATCH --mail-type=FAIL
@@ -9,8 +9,8 @@
 #SBATCH --mail-type=END
 #SBATCH --mail-user=smturbev@uw.edu
 #SBATCH --account=bb1153
-#SBATCH --output=out_g%j.eo
-#SBATCH --error=err_g%j.eo
+#SBATCH --output=out_gu%j.eo
+#SBATCH --error=err_gu%j.eo
 
 set -evx # verbose messages and crash message
 
@@ -20,10 +20,11 @@ LAT0=-30
 LAT1=30
 LOC="GT"
 
-IN_PATH=/work/dicad/cmip6-dev/data4freva/model/global/dyamond/DYAMOND_WINTER/NASA/GEOS-3km/DW-ATM/atmos
+# IN_PATH=/work/dicad/cmip6-dev/data4freva/model/global/dyamond/DYAMOND_WINTER/NASA/GEOS-3km/DW-ATM/atmos
+IN_PATH=/work/dicad/cmip6-dev/data4freva/model/global/dyamond/DYAMOND_WINTER/MetOffice/UM-5km/DW-ATM/atmos
 OUT_PATH=/scratch/b/b380883/dyamond2/GEOS/$LOC
 
-declare -a VarArray15min=(clt) # rlut clivi)
+declare -a VarArray15min=(clt rlut clivi)
 
 # 15 min vars
 for v in "${VarArray15min[@]}"; do
