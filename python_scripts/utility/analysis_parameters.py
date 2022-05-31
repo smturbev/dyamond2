@@ -8,104 +8,45 @@ especially if file names change
 import numpy as np
 import xarray as xr
 
-
-home_dir = "/home/disk/eos12/hillmanb/scream/dyamond2/"
-native_dir = home_dir + "native/"
-coarse_dir = home_dir + "256x512/"
-ceres_dir = "/home/disk/eos15/smturbev/SAT_DATA/JanFeb2020/"
+# data #
+CERES_SYN1_1H = "/work/bb1153/b380883/TWP/CERES_SYN1deg-1H_Terra-Aqua-MODIS_Ed4.1_Subset_20200101-20200331.nc"
 
 # processed output #
-SCR2 = "/scratch/b/b380883/dyamond2/"
-GEOS = SCR2 + "GEOS/"
-NICAM = SCR2 + "NICAM/"
-SAM = SCR2 + "SAM/"
-SCREAM = SCR2 + "SCREAM/"
+SCR2 = "/work/bb1153/b380883/"
 
-## Global Tropics ##
-GE_GT=GEOS+"GT/"
-NI_GT=NICAM+"GT/"
-NI_IT=NICAM+"ITCZ/"
-SA_GT=SAM+"GT/"
-SC_GT=SCREAM+"GT/"
-## TWP ##
-GE_TWP=GEOS+"TWP/"
-NI_TWP=NICAM+"TWP/"
-SA_TWP=SAM+"TWP/"
-SC_TWP=SCREAM+"TWP/"
+## Regions ##
+GT=SCR2+"GT/"
+TWP = SCR2+"TWP/"
+
 ## time mean ##
-TIMMEAN = "/scratch/b/b380883/dyamond2/timmean_GT/"
+TIMMEAN = ""
 
-### variable files ###
-#### GEOS ####
-GE_CLIVI=GE_GT+""
-GE_RLUT =GE_GT+"rlut_GT_GEOS-6km_20200120-20200228.nc"
-GE_RLUTCS=GE_GT+""
-GE_RSDT=GE_GT+""
-GE_RSUT=GE_GT+""
-#### NICAM ####
-NI_CLIVI = NI_GT + "clivi_GT_NICAM-3km_20200120-20200228.nc"
-NI_RLUT = NI_GT + "rlut_GT_NICAM-3km_20200120-20200228.nc"
-NI_RSDT = NI_GT + "rsdt_GT_NICAM-3km_20200120-20200228.nc"
-NI_RSUT = NI_GT + "rsut_GT_NICAM-3km_20200120-20200228.nc"
-#### SAM ####
-SA_CLIVI = SA_GT + "GT_SAM_clivi_20200120-20200229.nc"
-SA_RLT = SA_GT + "GT_SAM_rlt_20200120-20200229.nc"
-SA_RSUTACC = SA_GT + ""
-SA_RSDTACC = SA_GT + ""
-#### SCREAMregridded ####
-SCr_CLIVI = SC_GT + "GT_regridded_clivi_20200120-20200301.nc"
-SCr_RLT = SC_GT + "GT_regridded_rlt_20200120-20200301.nc"
-SCr_RLTCS = SC_GT + "GT_regridded_rltcs_20200120-20200301.nc"
-SCr_RST = SC_GT + "GT_regridded_rst_20200120-20200301.nc"
-#### SCREAM native ####
-SC_CLIVI = SC_GT + "GT_SCREAM_clivi_20200120-20200229.nc"
-SC_RLT = SC_GT + "GT_SCREAM_rlt_20200120-20200229.nc"
-SC_RLTCS = SC_GT + "GT_regridded_rltcs_20200120-20200301.nc"
-SC_RST = SC_GT + "GT_regridded_rst_20200120-20200301.nc"
-
-def get_var_file(model, var):
-    if model.lower()=="geos":
-        if (var.lower()=="clivi") or (var.lower()=="iwp"):
-            return GE_CLIVI
-        elif (var.lower()=="rlut") or (var.lower()=="rlt"):
-            return GE_RLUT
-        elif (var.lower()=="rlutcs") or (var.lower()=="rltcs"):
-            return GE_RLUTCS
-        elif (var.lower()=="rsut"):
-            return GE_RSUT
-        elif (var.lower()=="rsdt"):
-            return GE_RSDT
-    elif model.lower()=="nicam":
-        if (var.lower()=="clivi") or (var.lower()=="iwp"):
-            return NI_CLIVI
-        elif (var.lower()=="rlut") or (var.lower()=="rlt"):
-            return NI_RLUT
-        elif (var.lower()=="rsut"):
-            return NI_RSUT
-        elif (var.lower()=="rsdt"):
-            return NI_RSDT
-    elif model.lower()=="sam":
-        if (var.lower()=="clivi") or (var.lower()=="iwp"):
-            return SA_CLIVI
-        elif (var.lower()=="rlut") or (var.lower()=="rlt") or (var.lower()=="rltacc"):
-            return SA_RLT
-        elif (var.lower()=="rsut") or (var.lower()=="rsutacc"):
-            print("Accumulated RSUT")
-            return SA_RSUTACC
-        elif (var.lower()=="rsdt") or (var.lower()=="rsdtacc"):
-            print("Accumulated RSDT")
-            return SA_RSDTACC
-    elif model.lower()=="scream":
-        if (var.lower()=="clivi") or (var.lower()=="iwp"):
-            return SC_CLIVI
-        elif (var.lower()=="rlut") or (var.lower()=="rlt"):
-            return SC_RLT
-        elif (var.lower()=="rlutcs") or (var.lower()=="rltcs"):
-            return SC_RLTCS
-        elif (var.lower()=="rst"):
-            return GE_RST
+def get_twp_file(model, var):
+    if model.lower()=="data" or model.lower()=="ceres":
+        if var.lower()=="olr" or var.lower()=="rlut" or var.lower()=="rad" or var.lower()=="sw":
+            return CERES_SYN1_1H
     else:
-        raise Exception("model {} or variable {} input incorrect".format(model, var))
+        if model.lower()=="nicam" or model.lower()=="um":
+            return TWP+"TWP_"+model.upper()+"_"+var.lower()+"_20200130-20200228.nc"
+        elif model.lower()=="geos":
+            return TWP+"TWP_"+model.upper()+"_"+var.lower()+"_20200130-20200303.nc"
+        elif model.lower()=="scream" or model.lower()=="sam" or model.lower()=="icon":
+            return TWP+"TWP_"+model.upper()+"_"+var.lower()+"_20200130-20200301.nc"
+        else:
+            raise Exception("model not valid")   
+        return
+
+def get_gt_file(model, var):
+    if model.lower()=="data" or model.lower()=="ceres":
+        if var.lower()=="olr" or var.lower()=="rlut" or var.lower()=="rad" or var.lower()=="sw":
+            return 
+    else:
+        if model.lower()=="nicam" or model.lower()=="um":
+            return GT+"GT_"+model.upper()+"_"+var.lower()+"_20200130-20200228.nc"
+        elif model.lower()=="scream" or model.lower()=="sam" or model.lower()=="icon" or model.lower()=="geos":
+            return GT+"GT_"+model.upper()+"_"+var.lower()+"_20200130-20200301.nc"
+        else:
+            raise Exception("model not valid")   
         return
 
 def get_timmean_file(model, var, gt=True):

@@ -24,7 +24,7 @@ LON1=360
 LAT0=-30
 LAT1=10
 
-declare -a VarArray15min=(clivi) # rltacc) #pracc clivi)
+declare -a VarArray15min=(rstacc) # rltacc) #pracc clivi)
 export GRIB_DEFINITION_PATH=/sw/rhel6-x64/eccodes/definitions
 
 # 15 min vars

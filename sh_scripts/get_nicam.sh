@@ -15,7 +15,7 @@ set -evx # verbose messages and crash message
 
 IN_PATH=/work/dicad/cmip6-dev/data4freva/model/global/dyamond/DYAMOND_WINTER
 MODEL_PATH=AORI/NICAM-3km
-OUT_PATH=/scratch/b/b380883/dyamond2/NICAM
+OUT_PATH=/scratch/b/b380883/dyamond2
 
 LON0=0
 LON1=360
@@ -29,7 +29,7 @@ declare -a VarArray15min=(clt) # clivi rlut) #rsut rsdt #clivi rlut
 for v in "${VarArray15min[@]}"; do
     for f in $IN_PATH/$MODEL_PATH/DW-ATM/atmos/15min/$v/r1i1p1f1/2d/gn/*; do
         fname=$(basename $f)
-        out_file=$OUT_PATH/$v/$fname
+        out_file=$OUT_PATH/$fname
         echo "15 min variable "$v":"
         cdo -f nc4 -sellonlatbox,$LON0,$LON1,$LAT0,$LAT1 $f $out_file  
     done

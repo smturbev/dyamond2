@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=subtwp_geos
+#SBATCH --job-name=sub_um2
 #SBATCH --partition=prepost
 #SBATCH --ntasks=1
 #SBATCH --mem=20GB
@@ -24,7 +24,7 @@ LOC="GT"
 IN_PATH=/work/dicad/cmip6-dev/data4freva/model/global/dyamond/DYAMOND_WINTER/MetOffice/UM-5km/DW-ATM/atmos
 OUT_PATH=/scratch/b/b380883/dyamond2/GEOS/$LOC
 
-declare -a VarArray15min=(clt rlut clivi)
+declare -a VarArray15min=(clivi)
 
 # 15 min vars
 for v in "${VarArray15min[@]}"; do
