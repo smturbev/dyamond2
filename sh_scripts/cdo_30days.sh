@@ -1,14 +1,15 @@
 #!/bin/bash
 #SBATCH --job-name=seldate
-#SBATCH --partition=prepost
-#SBATCH --mem=20GB
-#SBATCH --ntasks=1
-#SBATCH --time=09:00:00
-#SBATCH --mail-type=FAIL
-#SBATCH --mail-user=smturbev@uw.edu
+#SBATCH --partition=shared
 #SBATCH --account=bb1153
-#SBATCH --output=out_seltime%j.eo
-#SBATCH --error=err_seltime%j.eo
+#SBATCH --nodes=1
+#SBATCH --ntasks-per-node=128
+#SBATCH --time=00:30:00
+#SBATCH --error=err_timmean_%j.eo
+#SBATCH --output=out_timmean_%j.eo
+#SBATCH --mail-type=FAIL
+#SBATCH --mail-type=END
+#SBATCH --mail-user=smturbev@uw.edu
 
 set -evx # verbose messages and crash message
 scr2=/work/bb1153/b380883/GT
