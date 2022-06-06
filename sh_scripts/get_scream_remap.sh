@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH --job-name=remap_scream
-#SBATCH --partition=shared
+#SBATCH --partition=compute
 #SBATCH --time=04:00:00
 #SBATCH --mem=20GB
 #SBATCH --mail-type=FAIL
@@ -25,12 +25,12 @@ LON1=153
 LAT0=-5
 LAT1=5
 
-IN_PATH=/work/dicad/from_Mistral/dicad/cmip6-dev/data4freva/model/global/dyamond/DYAMOND_WINTER/
+IN_PATH=/work/dicad/from_Mistral/dicad/cmip6-dev/data4freva/model/global/dyamond/DYAMOND_WINTER
 MODEL_PATH=LLNL/SCREAM-3km
-OUT_PATH=/scratch/b/b380883/
+OUT_PATH=/scratch/b/b380883
 GRID_FILE=/work/dicad/from_Mistral/dicad/cmip6-dev/data4freva/model/global/dyamond/DYAMOND_WINTER/$MODEL_PATH/grid.nc
 echo $GRID_FILE
-LOC="regridded30km_TWP"
+LOC="regridded0.25deg_TWP"
 
 declare -a VarArray15min=(rlt rst) # done: clivi rlt rst
 
@@ -40,7 +40,7 @@ for v in "${VarArray15min[@]}"; do
         fname=$(basename $f)
         out_file=$OUT_PATH/$LOC"_"$fname
         echo "15 min variable "$v":"
-        cdo -f nc4 -P 8 -s -w -sellonlatbox,$LON0,$LON1,$LAT0,$LAT1 -remapdis,global_0.3 -setgrid,$GRID_FILE -selgrid,1 $f $out_file
+        cdo -f nc4 -P 8 -s -w -sellonlatbox,$LON0,$LON1,$LAT0,$LAT1 -remapdis,global_0.25 -setgrid,$GRID_FILE -selgrid,1 $f $out_file
     done
 done
 

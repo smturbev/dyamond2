@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH --job-name=cat
-#SBATCH --partition=shared
+#SBATCH --partition=compute
 #SBATCH --mem=20GB
 #SBATCH --time=04:00:00
 #SBATCH --mail-type=FAIL

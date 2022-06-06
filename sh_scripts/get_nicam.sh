@@ -1,10 +1,8 @@
 #!/bin/bash
-#SBATCH --job-name=subtwp_nicam
-#SBATCH --partition=prepost
-#SBATCH --ntasks=1
-#SBATCH --time=09:00:00
+#SBATCH --job-name=sub_nicam
+#SBATCH --partition=compute
+#SBATCH --time=04:00:00
 #SBATCH --mail-type=FAIL
-#SBATCH --mail-type=BEGIN
 #SBATCH --mail-type=END
 #SBATCH --mail-user=smturbev@uw.edu
 #SBATCH --account=bb1153
@@ -13,9 +11,9 @@
 
 set -evx # verbose messages and crash message
 
-IN_PATH=/work/dicad/cmip6-dev/data4freva/model/global/dyamond/DYAMOND_WINTER
+IN_PATH=/work/dicad/from_Mistral/dicad/cmip6-dev/data4freva/model/global/dyamond/DYAMOND_WINTER
 MODEL_PATH=AORI/NICAM-3km
-OUT_PATH=/scratch/b/b380883/dyamond2
+OUT_PATH=/scratch/b/b380883/
 
 LON0=0
 LON1=360
