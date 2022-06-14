@@ -196,3 +196,11 @@ def dennisplot(stat, olr, alb, var=None, xbins=None, ybins=None,
     else:
         ret = ax, csn
     return ret
+
+def convert_to_mmhr(model, pr):
+    if model.lower()[:6]=="scream":
+        pr = 3600000*pr
+    elif model.lower()=="nicam" or model.lower()=="um":
+        pr = 3600*pr
+    return pr # sam 
+
