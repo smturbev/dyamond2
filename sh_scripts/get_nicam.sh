@@ -21,11 +21,11 @@ LAT0=-30
 LAT1=30
 LOC="GT"
 
-declare -a VarArray15min=(clt) # clivi rlut) #rsut rsdt #clivi rlut
+declare -a VarArray15min=(pr) # clivi rlut clt #rsut rsdt #clivi rlut
 
 # 15 min vars
 for v in "${VarArray15min[@]}"; do
-    for f in $IN_PATH/$MODEL_PATH/DW-ATM/atmos/15min/$v/r1i1p1f1/2d/gn/*; do
+    for f in $IN_PATH/$MODEL_PATH/DW-ATM/atmos/15min/$v/r1i1p1f1/2d/gn/*2020013*; do
         fname=$(basename $f)
         out_file=$OUT_PATH/$fname
         echo "15 min variable "$v":"

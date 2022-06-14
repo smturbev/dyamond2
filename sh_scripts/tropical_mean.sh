@@ -12,11 +12,11 @@ module load cdo
 set -evx # verbose messages and crash message
 
 IN_PATH=/work/bb1153/b380883/GT
-OUT_PATH=/scratch/b/b380883
-declare -a MODELS=("SAM" "NICAM" ) # "GEOS" "SCREAM"
+OUT_PATH=/work/bb1153/b380883/GT/timmean
+declare -a MODELS=("NICAM") # "GEOS" "SCREAM"
 
 for m in "${MODELS[@]}"; do
-    for f in $IN_PATH/*clt*.nc; do
+    for f in $IN_PATH/GT_${m}_clt*.nc; do
         fname=$(basename $f)
         out_file=$OUT_PATH/timmean_$fname
         echo $fname
