@@ -41,8 +41,10 @@ def get_file(model, var, region="twp"):
                 return TWP+"TWP_"+model.upper()+"_"+var.lower()+"_20200130-20200303.nc"
             elif model.lower()=="sam" or model.lower()=="icon" or model.lower()[:6]=="scream":
                 return TWP+"TWP_"+model.upper()+"_"+var.lower()+"_20200130-20200301.nc"
+            elif model[-3:]=="deg":
+                return TWP+"TWP_"+model+"_"+var.lower()+"_20200130-20200301.nc"
             else:
-                raise Exception("model not valid")   
+                raise Exception("model not valid, remapped models are case sensitive")   
             return
     elif region.lower()=="gt" or region.lower()=="tropics":
         if model.lower()=="data" or model.lower()=="ceres":
@@ -84,3 +86,26 @@ def get_timmean_file(model, var, gt=True):
     else:
         raise Exception("timemean for "+var+" not accepted.")
         return
+    return
+    
+def get_fldmean_file(model, var="pr", gt=True):
+    if var=="pr":
+        if gt:
+            if (model.lower()=="geos") or (model.lower()=="nicam") or model.lower()=="scream" or model.lower()=="icon" or (model.lower()=="screamr"):
+                return GT+"fldmean/fldmean_GT_{m}_{v}_20200130-20200301.nc".format(m=model, v=var)
+            elif model.lower()=="um":
+                return GT+"fldmean/fldmean_GT_{m}_{v}_20200130-20200301.nc".format(m=model, v=var)
+            elif (model.lower()=="sam"):
+                return GT+"fldmean/fldmean_GT_{m}_{v}_20200130-20200301.nc".format(m=model, v=var)
+            else:
+                raise Exception("fldmean for "+model+" & "+var+" for GT not accepted.")
+                return
+            return
+        else:
+            raise Exception("fldmean for "+model+" & "+var+" for GT not accepted.")
+            return
+        return
+    else:
+        raise Exception("fldmean for "+var+" not accepted.")
+        return
+    return

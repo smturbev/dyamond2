@@ -202,5 +202,7 @@ def convert_to_mmhr(model, pr):
         pr = 3600000*pr
     elif model.lower()=="nicam" or model.lower()=="um":
         pr = 3600*pr
-    return pr # sam 
+    elif model.lower()=="sam":
+        pr = pr.where(pr>0.05)
+    return pr
 

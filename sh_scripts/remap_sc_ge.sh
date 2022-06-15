@@ -30,12 +30,12 @@ OUT_PATH=/scratch/b/b380883
 
 # MODEL_PATH=LLNL/SCREAM-3km
 MODEL_PATH=NASA/GEOS-3km
-GRID_FILE=/work/dicad/from_Mistral/dicad/cmip6-dev/data4freva/model/global/dyamond/DYAMOND_WINTER/$MODEL_PATH/grid.nc
+GRID_FILE=/work/dicad/from_Mistral/dicad/cmip6-dev/data4freva/model/global/dyamond/DYAMOND_WINTER/LLNL/SCREAM-3km/grid.nc
 
 echo $GRID_FILE
 LOC="r0.25deg_TWP"
 
-declare -a VarArray15min=(rsut) # done scream: clivi rlt rst; done geos: rlut rst rsut
+declare -a VarArray15min=(clivi clwvi) # done scream: clivi rlt rst; done geos: rlut rst rsut
 
 # 15 min vars
 for v in "${VarArray15min[@]}"; do
@@ -48,3 +48,5 @@ for v in "${VarArray15min[@]}"; do
     done
 done
 
+# cdo -f nc4 -P 8 -s -w -sellonlatbox,$LON0,$LON1,$LAT0,$LAT1 -remapdis,global_0.25 /work/bb1153/b380883/SCREAM_global_SOLIN_20200120-20200301.nc /scratch/b/b380883/TWP_SCREAMr0.25deg_rsdt_20200120-20200301.nc
+# cdo -seldate,2020-01-30T00:00:00,2020-03-01T23:59:00 /scratch/b/b380883/TWP_SCREAMr0.25deg_rsdt_20200120-20200301.nc /work/bb1153/b380883/TWP/TWP_SCREAMr0.25deg_rsdt_20200130-20200301.nc
