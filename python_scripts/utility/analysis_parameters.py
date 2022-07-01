@@ -5,6 +5,7 @@ author: sami turbeville @smturbev
 file names saved as variables and easier to call in methods
 especially if file names change
 """
+
 import numpy as np
 import xarray as xr
 import json
@@ -28,24 +29,34 @@ TWP = SCR2+"TWP/"
 
 ## time mean ##
 TIMMEAN_GT = GT+"timmean/"
+UM_PFULL_MEAN = TWP+"mean/fldmean_TWP_3D_UM_pfull_20200130-20200228.nc"
+UM_PHALF_MEAN = TWP+"mean/fldmean_TWP_3D_UM_phalf_20200130-20200228.nc"
+UM_PFULL = TWP+"TWP_3D_pfull_3hr_UM_20200130-20200228.nc"
+UM_PHALF = TWP+"TWP_3D_phalf_3hr_UM_20200130-20200228.nc"
 
-def get_file(model, var, region="twp"):
+
+def get_file(model, var="rlut", region="twp"):
     if region.lower()=="twp":
         if model.lower()=="data" or model.lower()=="ceres":
             if var.lower()=="olr" or var.lower()=="rlut" or var.lower()=="rad" or var.lower()=="sw":
                 return CERES_SYN1_1H
         else:
-            if model.lower()=="nicam" or model.lower()=="um":
+            if model.lower()=="nicam" or model.lower()=="um" or model.lower()=="scream":
                 return TWP+"TWP_"+model.upper()+"_"+var.lower()+"_20200130-20200228.nc"
             elif model.lower()=="geos":
                 return TWP+"TWP_"+model.upper()+"_"+var.lower()+"_20200130-20200303.nc"
             elif model.lower()=="sam" or model.lower()=="icon" or model.lower()[:6]=="scream":
                 return TWP+"TWP_"+model.upper()+"_"+var.lower()+"_20200130-20200301.nc"
             elif model[-3:]=="deg":
-                return TWP+"TWP_"+model+"_"+var.lower()+"_20200130-20200301.nc"
+                if var[:2]=="cl":
+                    return TWP+"TWP_"+model+"_"+var.lower()+"_20200130-20200303.nc"
+                else:
+                    return TWP+"TWP_"+model+"_"+var.lower()+"_20200130-20200301.nc"
             else:
                 raise Exception("model not valid, remapped models are case sensitive")   
             return
+    elif region.lower()=="twp_3d":
+        return TWP+region.upper()+"_"+model.upper()+"_"+var+"_20200130-20200228.nc"
     elif region.lower()=="gt" or region.lower()=="tropics":
         if model.lower()=="data" or model.lower()=="ceres":
             if var.lower()=="olr" or var.lower()=="rlut" or var.lower()=="rad" or var.lower()=="sw":
@@ -67,7 +78,7 @@ def get_file(model, var, region="twp"):
 def get_timmean_file(model, var, gt=True):
     if var=="clt":
         if gt:
-            if (model.lower()=="geos") or (model.lower()=="nicam") or model.lower()=="scream" or model.lower()=="icon" or (model.lower()=="screamr"):
+            if (model.lower()=="geos") or (model.lower()=="nicam") or model.lower()=="scream" or model.lower()=="icon" or (model.lower()=="screamr") or (model.lower()[-3:]=="deg"):
                 return TIMMEAN_GT+"timmean_GT_{m}_{v}_20200130-20200301.nc".format(m=model, v=var)
             elif model.lower()=="um":
                 return TIMMEAN_GT+"timmean_GT_{m}_{v}_20200130-20200228.nc".format(m=model, v=var)
@@ -88,9 +99,9 @@ def get_timmean_file(model, var, gt=True):
         return
     return
     
-def get_fldmean_file(model, var="pr", gt=True):
-    if var=="pr":
-        if gt:
+def get_fldmean_file(model, region, var="pr"):
+    if region.lower()=="gt" or region.lower()=="tropics":
+        if var=="pr":
             if (model.lower()=="geos") or (model.lower()=="nicam") or model.lower()=="scream" or model.lower()=="icon" or (model.lower()=="screamr"):
                 return GT+"fldmean/fldmean_GT_{m}_{v}_20200130-20200301.nc".format(m=model, v=var)
             elif model.lower()=="um":
@@ -105,7 +116,10 @@ def get_fldmean_file(model, var="pr", gt=True):
             raise Exception("fldmean for "+model+" & "+var+" for GT not accepted.")
             return
         return
-    else:
-        raise Exception("fldmean for "+var+" not accepted.")
-        return
+    elif region.lower()=="twp":
+        return TWP+"mean/fldmean_TWP_3D_"+model.upper()+"_"+var.lower()+"_20200130-20200228.nc"
     return
+
+def get_fldmedian_file(model, region, var="pr"):
+    return TWP+"mean/fldmedian_TWP_3D_"+model.upper()+"_"+var.lower()+"_20200130-20200228.nc"
+
