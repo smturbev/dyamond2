@@ -4,6 +4,7 @@
 #SBATCH --account=bb1153
 #SBATCH --time=04:30:00
 #SBATCH --error=err_timmean_%j.eo
+#SBATCH --output=out_timmean_%j.eo
 #SBATCH --mail-type=FAIL
 #SBATCH --mail-type=END
 #SBATCH --mail-user=smturbev@uw.edu
@@ -13,7 +14,7 @@ set -evx # verbose messages and crash message
 
 IN_PATH=/work/bb1153/b380883/GT
 OUT_PATH=/work/bb1153/b380883/GT/timmean
-declare -a MODELS=("NICAM") # "GEOS" "SCREAM"
+declare -a MODELS=("GEOSr0.25deg" "SCREAMr0.25deg") # "SCREAMr0.25deg" done: "NICAM" "UM" "SAM"
 
 for m in "${MODELS[@]}"; do
     for f in $IN_PATH/GT_${m}_clt*.nc; do
@@ -25,3 +26,6 @@ for m in "${MODELS[@]}"; do
     done
 done
 
+# cdo -timmean $IN_PATH/GT_NICAM_clt_20200130-20200301.nc $OUT_PATH/timmean_GT_NICAM_clt_20200130-20200301.nc
+
+echo "done"
