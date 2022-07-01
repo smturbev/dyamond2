@@ -1,21 +1,26 @@
 #!/bin/bash
 #SBATCH --job-name=seldate
-#SBATCH --partition=shared
+#SBATCH --partition=compute
 #SBATCH --account=bb1153
-#SBATCH --nodes=1
-#SBATCH --ntasks-per-node=128
 #SBATCH --time=00:30:00
-#SBATCH --error=err_timmean_%j.eo
-#SBATCH --output=out_timmean_%j.eo
+#SBATCH --error=err_30days.eo
+#SBATCH --output=out_30days.eo
 #SBATCH --mail-type=FAIL
 #SBATCH --mail-type=END
 #SBATCH --mail-user=smturbev@uw.edu
 
 set -evx # verbose messages and crash message
-scr2=/work/bb1153/b380883/GT
+wrk=/work/bb1153/b380883/TWP
 
-declare -a fileArray=(GT_SCREAM_clivi_20200120-20200229.nc
-GT_SCREAM_rlt_20200120-20200229.nc)
+declare -a fileArray=(TWP_3D_UM_hus_20200130-20200228.nc
+TWP_3D_UM_ta_20200130-20200228.nc
+TWP_3D_UM_Tv_20200130-20200228.nc
+TWP_3D_NICAM_ta_20200130-20200228.nc
+TWP_3D_NICAM_hus_20200130-20200228.nc
+TWP_3D_SCREAM_hus_20200130-20200228.nc
+TWP_3D_SCREAM_ta_20200130-20200228.nc
+TWP_3D_UM_hus_20200130-20200228.nc
+)
 
 # (SAM/TWP/TWP_clivi_SAM_20200120-20200229.nc
 # SAM/TWP/TWP_rltacc_SAM_20200120-20200229.nc
@@ -40,10 +45,12 @@ GT_SCREAM_rlt_20200120-20200229.nc)
 # GEOS/GT/GT_GEOS_clivi_20200120-20200229.nc)
 
 for file in "${fileArray[@]}"; do
-    in_file=$scr2/$file
-    out_file=${file%_*}"_20200130-20200301.nc"
+    in_file=$wrk/$file
+    out_file=$wrk/${file%_*}"_30days.nc"
+    echo $in_file
     echo $out_file
-    cdo -seldate,2020-01-30T00:00:00,2020-03-01T23:59:00 $in_file $scr2/$out_file
+    # cdo -seldate,2020-01-30T00:00:00,2020-03-01T23:59:00 $in_file $wrk/$out_file
+    cdo -seltimestep,1/240 $in_file $out_file
 done
 
 echo "done"
