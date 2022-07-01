@@ -7,3 +7,6 @@ sh_scripts/err*
 sh_scripts/out*
 scream_lat_ind.nc
 plots/.ipynb_checkpoints/
+plots/TWP/.ipynb_checkpoints/
+plots/GT/.ipynb_checkpoints/
+plots/TWP/GEOS-albolriwplwp/
