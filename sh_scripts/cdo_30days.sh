@@ -12,15 +12,48 @@
 set -evx # verbose messages and crash message
 wrk=/work/bb1153/b380883/TWP
 
-declare -a fileArray=(TWP_3D_UM_hus_20200130-20200228.nc
-TWP_3D_UM_ta_20200130-20200228.nc
-TWP_3D_UM_Tv_20200130-20200228.nc
-TWP_3D_NICAM_ta_20200130-20200228.nc
-TWP_3D_NICAM_hus_20200130-20200228.nc
-TWP_3D_SCREAM_hus_20200130-20200228.nc
-TWP_3D_SCREAM_ta_20200130-20200228.nc
-TWP_3D_UM_hus_20200130-20200228.nc
+declare -a fileArray=(TWP_SCREAMr0.25deg_clivi_20200130-20200303.nc
+TWP_SCREAMr0.25deg_clt_20200130-20200301.nc
+TWP_SCREAMr0.25deg_clwvi_20200130-20200303.nc
+TWP_SCREAMr0.25deg_rlt_20200130-20200301.nc
+TWP_SCREAMr0.25deg_rst_20200130-20200301.nc
+TWP_GEOSr0.25deg_clivi_20200130-20200303.nc
+TWP_GEOSr0.25deg_clt_20200130-20200303.nc
+TWP_GEOSr0.25deg_clwvi_20200130-20200303.nc
+TWP_GEOSr0.25deg_rlut_20200130-20200301.nc
+TWP_GEOSr0.25deg_rst_20200130-20200301.nc
+TWP_GEOSr0.25deg_rsut_20200130-20200301.nc
 )
+
+
+
+# TWP_SCREAM_rst_20200130-20200301.nc
+# TWP_ICON_clivi_20200130-20200301.nc
+# TWP_ICON_rltacc_20200130-20200301.nc
+# TWP_ICON_rstacc_20200130-20200301.nc
+# TWP_ICON_clt_20200130-20200301.nc
+# TWP_GEOS_clivi_20200130-20200303.nc
+# TWP_GEOS_clt_20200130-20200303.nc
+# TWP_GEOS_rlut_20200130-20200303.nc
+# TWP_GEOS_rsdt_20200130-20200303.nc
+# TWP_GEOS_rsut_20200130-20200303.nc
+# )
+
+# 
+# TWP_SCREAM_rlt_20200130-20200228.nc
+# TWP_SCREAM_rlt_20200130-20200301.nc
+# TWP_SAM_clivi_20200130-20200301.nc
+# TWP_SAM_rlt_20200130-20200301.nc
+# TWP_SAM_rst_20200130-20200301.nc
+# TWP_3D_UM_hus_20200130-20200228.nc
+# TWP_3D_UM_ta_20200130-20200228.nc
+# TWP_3D_UM_Tv_20200130-20200228.nc
+# TWP_3D_NICAM_ta_20200130-20200228.nc
+# TWP_3D_NICAM_hus_20200130-20200228.nc
+# TWP_3D_SCREAM_hus_20200130-20200228.nc
+# TWP_3D_SCREAM_ta_20200130-20200228.nc
+# TWP_3D_UM_hus_20200130-20200228.nc
+
 
 # (SAM/TWP/TWP_clivi_SAM_20200120-20200229.nc
 # SAM/TWP/TWP_rltacc_SAM_20200120-20200229.nc
@@ -46,11 +79,12 @@ TWP_3D_UM_hus_20200130-20200228.nc
 
 for file in "${fileArray[@]}"; do
     in_file=$wrk/$file
-    out_file=$wrk/${file%_*}"_30days.nc"
+    out_file=$wrk/${file%_*}"_20200130-20200228.nc"
     echo $in_file
     echo $out_file
-    # cdo -seldate,2020-01-30T00:00:00,2020-03-01T23:59:00 $in_file $wrk/$out_file
-    cdo -seltimestep,1/240 $in_file $out_file
+    cdo -seldate,2020-01-30T00:00:00,2020-02-28T23:59:00 $in_file $out_file
+    rm $in_file
+    # cdo -seltimestep,1/3253 $in_file $out_file
 done
 
 echo "done"
