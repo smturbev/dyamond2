@@ -1,8 +1,7 @@
 #!/bin/bash
 #SBATCH --job-name=icon_gt
-#SBATCH --partition=prepost
-#SBATCH --mem=100GB
-#SBATCH --ntasks=1
+#SBATCH --partition=compute
+#SBATCH --mem=20GB
 #SBATCH --time=08:00:00
 #SBATCH --mail-type=FAIL
 #SBATCH --mail-type=BEGIN
@@ -24,14 +23,17 @@ LON1=360
 LAT0=-30
 LAT1=10
 
-declare -a VarArray15min=(rstacc) # rltacc) #pracc clivi)
+declare -a VarArray15min=(rsutacc) # rltacc) #pracc clivi)
+declare -a DateArray=(219 22)
 export GRIB_DEFINITION_PATH=/sw/rhel6-x64/eccodes/definitions
 
 # 15 min vars
 for v in "${VarArray15min[@]}"; do
-    for f in $IN_PATH/$MODEL_PATH/15min/$v/r1i1p1f1/2d/gn/*; do
-        fname=$(basename $f)
-        out_file=$OUT_PATH/$fname
-        cdo -f nc -sellonlatbox,$LON0,$LON1,$LAT0,$LAT1 -setgrid,$GRID_FILE $f $out_file  
+    for d in "${DateArray[@]}"; do
+        for f in $IN_PATH/$MODEL_PATH/15min/$v/r1i1p1f1/2d/gn/*_20200$d*; do
+            fname=$(basename $f)
+            out_file=$OUT_PATH/$fname
+            cdo -f nc -sellonlatbox,$LON0,$LON1,$LAT0,$LAT1 -setgrid,$GRID_FILE $f $out_file  
+        done
     done
 done
