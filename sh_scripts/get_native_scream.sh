@@ -7,8 +7,8 @@
 #SBATCH --mail-type=END
 #SBATCH --mail-user=smturbev@uw.edu
 #SBATCH --account=bb1153
-#SBATCH --output=out_screamnative.eo
-#SBATCH --error=err_screamnative.eo
+#SBATCH --output=out_s.eo
+#SBATCH --error=err_s.eo
 
 set -evx # verbose messages and crash message
 
@@ -41,7 +41,7 @@ for v in "${VarArray15min[@]}"; do
     done
 done
 
-declare -a VarArray3D=(dem) # dem cli clw lat lon ta hus cld-mod cl (defined as L/IWC > 10e-5) dtau icenvi cldnvi
+# declare -a VarArray3D=(dem) # dem cli clw lat lon ta hus cld-mod cl (defined as L/IWC > 10e-5) dtau icenvi cldnvi
 
 # 3 hr 3D vars
 for v in "${VarArray3D[@]}"; do
@@ -49,7 +49,7 @@ for v in "${VarArray3D[@]}"; do
        fname=$(basename $f)
        out_file=$OUT_PATH/$LOC"_"$fname
        echo "15 min variable "$v":"
-       cdo -f nc -sellonlatbox,$LON0,$LON1,$LAT0,$LAT1 -setgrid,$GRID_FILE $f $out_file
+       # cdo -f nc -sellonlatbox,$LON0,$LON1,$LAT0,$LAT1 -setgrid,$GRID_FILE $f $out_file
    done
 done
 
@@ -60,3 +60,10 @@ done
 
 ### solar insolation from Ben Hillman ###
 # cdo -f nc -sellonlatbox,$LON0,$LON1,$LAT0,$LAT1 -setgrid,$GRID_FILE -seldate,2020-01-30T00:00:00,2020-03-01T23:59:00 /work/bb1153/b380883/gn_SCREAM_20200120-20200301.nc /work/bb1153/b380883/TWP/TWP_SCREAMnative_rsdt_20200130-20200301.nc
+
+for f in /scratch/b/b380883/ne30pg2_ne1024pg2/*.nc; do
+    fname=$(basename $f)
+    out_file=/scratch/b/b380883/ne30pg2_ne1024pg2/$LOC/$LOC"_"$fname
+    echo "15 min variable SOLIN "$fname
+    cdo -f nc -sellonlatbox,$LON0,$LON1,$LAT0,$LAT1 -setgrid,$GRID_FILE $f $out_file
+done
