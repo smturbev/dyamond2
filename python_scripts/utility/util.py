@@ -169,7 +169,7 @@ def dennisplot(stat, olr, alb, var=None, xbins=None, ybins=None,
     ax.set_xlim([80,310])
     ax.set_xlabel('OLR(W m$^{-2}$)', size=fs)
     ax.set_ylabel('Albedo', size=fs)
-    if var!=None:
+    if var is not None:
         ax.set_title('{m} {v} {n}'.format(m=model, v=var_name, n=region), size=fs)
     else:
         ax.set_title('{m} {n}\n'.format(m=model, n=region), size=fs)
