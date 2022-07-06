@@ -2,7 +2,7 @@
 #SBATCH --job-name=seldate
 #SBATCH --partition=compute
 #SBATCH --account=bb1153
-#SBATCH --time=00:30:00
+#SBATCH --time=02:00:00
 #SBATCH --error=err_30days.eo
 #SBATCH --output=out_30days.eo
 #SBATCH --mail-type=FAIL
@@ -10,20 +10,47 @@
 #SBATCH --mail-user=smturbev@uw.edu
 
 set -evx # verbose messages and crash message
-wrk=/work/bb1153/b380883/TWP
+wrk=/work/bb1153/b380883/GT
 
-declare -a fileArray=(TWP_SCREAMr0.25deg_clivi_20200130-20200303.nc
-TWP_SCREAMr0.25deg_clt_20200130-20200301.nc
-TWP_SCREAMr0.25deg_clwvi_20200130-20200303.nc
-TWP_SCREAMr0.25deg_rlt_20200130-20200301.nc
-TWP_SCREAMr0.25deg_rst_20200130-20200301.nc
-TWP_GEOSr0.25deg_clivi_20200130-20200303.nc
-TWP_GEOSr0.25deg_clt_20200130-20200303.nc
-TWP_GEOSr0.25deg_clwvi_20200130-20200303.nc
-TWP_GEOSr0.25deg_rlut_20200130-20200301.nc
-TWP_GEOSr0.25deg_rst_20200130-20200301.nc
-TWP_GEOSr0.25deg_rsut_20200130-20200301.nc
+declare -a fileArray=(
+# GT_GEOS_clt_20200130-20200301.nc
+# GT_GEOSr0.25deg_clt_20200130-20200301.nc
+# GT_GEOS_rsdt_20200130-20200301.nc
+# GT_GEOS_rsut_20200130-20200301.nc
+# GT_ICON_clivi_20200130-20200301.nc
+# GT_ICON_clt_20200130-20200301.nc
+# GT_ICON_rltacc_20200130-20200301.nc
+# GT_NICAM_clivi_20200130-20200301.nc
+# GT_NICAM_clt_20200130-20200301.nc
+GT_NICAM_pr_20200130-20200301.nc
+GT_SAM_clivi_20200120-20200229.nc
+GT_SAM_clt_20200130-20200229.nc
+GT_SAM_pr_20200130-20200301.nc
+GT_SAM_pracc_20200130-20200301.nc
+GT_SAM_rlt_20200130-20200228.nc
+GT_SCREAM_clt_20200130-20200301.nc
+GT_SCREAM_pr_20200130-20200301.nc
+GT_SCREAMr0.25deg_clt_20200130-20200301.nc
+GT_SCREAMr1deg_rlt_20200130-20200301.nc
+GT_SCREAMr1deg_rst_20200130-20200301.nc
+GT_SCREAM_rlt_20200120-20200229.nc
+GT_UM_pr_20200130-20200301.nc
 )
+
+
+
+# (TWP_SCREAMr0.25deg_clivi_20200130-20200303.nc
+# TWP_SCREAMr0.25deg_clt_20200130-20200301.nc
+# TWP_SCREAMr0.25deg_clwvi_20200130-20200303.nc
+# TWP_SCREAMr0.25deg_rlt_20200130-20200301.nc
+# TWP_SCREAMr0.25deg_rst_20200130-20200301.nc
+# TWP_GEOSr0.25deg_clivi_20200130-20200303.nc
+# TWP_GEOSr0.25deg_clt_20200130-20200303.nc
+# TWP_GEOSr0.25deg_clwvi_20200130-20200303.nc
+# TWP_GEOSr0.25deg_rlut_20200130-20200301.nc
+# TWP_GEOSr0.25deg_rst_20200130-20200301.nc
+# TWP_GEOSr0.25deg_rsut_20200130-20200301.nc
+# )
 
 
 
@@ -80,8 +107,7 @@ TWP_GEOSr0.25deg_rsut_20200130-20200301.nc
 for file in "${fileArray[@]}"; do
     in_file=$wrk/$file
     out_file=$wrk/${file%_*}"_20200130-20200228.nc"
-    echo $in_file
-    echo $out_file
+    echo $in_file" "$out_file
     cdo -seldate,2020-01-30T00:00:00,2020-02-28T23:59:00 $in_file $out_file
     rm $in_file
     # cdo -seltimestep,1/3253 $in_file $out_file

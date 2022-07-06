@@ -35,49 +35,32 @@ UM_PFULL = TWP+"TWP_3D_pfull_3hr_UM_20200130-20200228.nc"
 UM_PHALF = TWP+"TWP_3D_phalf_3hr_UM_20200130-20200228.nc"
 
 
-def get_file(model, var="rlut", region="twp"):
-    if region.lower()=="twp":
-        if model.lower()=="data" or model.lower()=="ceres":
-            if var.lower()=="olr" or var.lower()=="rlut" or var.lower()=="rad" or var.lower()=="sw":
+def get_file(model, region="twp", var="rlut"):
+    """ returns file path for given variable, region and model
+    
+        Input:
+            - model  (str) : model name - case sensitive
+            - var    (str) : variable name - case sensitive
+            - region (str) : region (accepts 'TWP' and 'GT' or 'tropics') - not case sensitive
+                             default is TWP region (143-153E,5N-5S)
+                             Tropics or GT is equitorial belt from 30N to 30S
+        Output:
+            - filename(str): returns a string of the file name for given input
+    """
+    if model.lower()=="data" or model.lower()=="ceres":
+        if var.lower()=="olr" or var.lower()=="rlut" or var.lower()=="rad" or var.lower()=="sw":
+            if region.lower()[:3]=="twp":
                 return CERES_SYN1_1H
-        else:
-            if model.lower()=="nicam" or model.lower()=="um" or model.lower()=="scream":
-                return TWP+"TWP_"+model.upper()+"_"+var.lower()+"_20200130-20200228.nc"
-            elif model.lower()=="geos":
-                return TWP+"TWP_"+model.upper()+"_"+var.lower()+"_20200130-20200303.nc"
-            elif model.lower()=="sam" or model.lower()=="icon" or model.lower()[:6]=="scream":
-                return TWP+"TWP_"+model.upper()+"_"+var.lower()+"_20200130-20200301.nc"
-            elif model[-3:]=="deg":
-                if var[:2]=="cl":
-                    return TWP+"TWP_"+model+"_"+var.lower()+"_20200130-20200303.nc"
-                else:
-                    return TWP+"TWP_"+model+"_"+var.lower()+"_20200130-20200301.nc"
+            elif region.lower()=="gt" or region.lower()=="tropics":
+                return
             else:
-                raise Exception("model not valid, remapped models are case sensitive")   
-            return
-    elif region.lower()=="twp_3d":
-        return TWP+region.upper()+"_"+model.upper()+"_"+var+"_20200130-20200228.nc"
-    elif region.lower()=="gt" or region.lower()=="tropics":
-        if model.lower()=="data" or model.lower()=="ceres":
-            if var.lower()=="olr" or var.lower()=="rlut" or var.lower()=="rad" or var.lower()=="sw":
-                return 
-        else:
-            if model.lower()=="nicam" or model.lower()=="um":
-                return GT+"GT_"+model.upper()+"_"+var.lower()+"_20200130-20200228.nc"
-            elif model.lower()=="scream" or model.lower()=="sam" or model.lower()=="icon" or model.lower()=="geos" or model.lower()=="screamr1deg":
-                return GT+"GT_"+model.upper()+"_"+var.lower()+"_20200130-20200301.nc"
-            else:
-                raise Exception("model not valid")   
-            return
-        return
+                raise Exception("region not valid, try TWP or GT")
     else:
-        raise Exception("region not accepted - try TWP or GT or Tropics")
-        return
-    return
+        return TWP+region.upper()+"_"+model+"_"+var+"_20200130-20200228.nc"
 
-def get_timmean_file(model, var, gt=True):
+def get_timmean_file(model, region="twp", var="clt"):
     if var=="clt":
-        if gt:
+        if region.lower()=="gt":
             if (model.lower()=="geos") or (model.lower()=="nicam") or model.lower()=="scream" or model.lower()=="icon" or (model.lower()=="screamr") or (model.lower()[-3:]=="deg"):
                 return TIMMEAN_GT+"timmean_GT_{m}_{v}_20200130-20200301.nc".format(m=model, v=var)
             elif model.lower()=="um":
@@ -99,27 +82,34 @@ def get_timmean_file(model, var, gt=True):
         return
     return
     
-def get_fldmean_file(model, region, var="pr"):
+def get_fldmean_file(model, region="twp", var="pr"):
+    if var=="zg":
+        return TWP+"mean/xytmean_"+region+"_3D_"+model+"_zg_20200130-20200228.nc"
     if region.lower()=="gt" or region.lower()=="tropics":
-        if var=="pr":
-            if (model.lower()=="geos") or (model.lower()=="nicam") or model.lower()=="scream" or model.lower()=="icon" or (model.lower()=="screamr"):
-                return GT+"fldmean/fldmean_GT_{m}_{v}_20200130-20200301.nc".format(m=model, v=var)
-            elif model.lower()=="um":
-                return GT+"fldmean/fldmean_GT_{m}_{v}_20200130-20200301.nc".format(m=model, v=var)
-            elif (model.lower()=="sam"):
-                return GT+"fldmean/fldmean_GT_{m}_{v}_20200130-20200301.nc".format(m=model, v=var)
-            else:
-                raise Exception("fldmean for "+model+" & "+var+" for GT not accepted.")
-                return
-            return
+        if (model.lower()=="geos") or (model.lower()=="nicam") or model.lower()=="scream" or model.lower()=="icon" or (model.lower()=="screamr"):
+            return GT+"fldmean/fldmean_GT_{m}_{v}_20200130-20200301.nc".format(m=model, v=var)
+        elif model.lower()=="um":
+            return GT+"fldmean/fldmean_GT_{m}_{v}_20200130-20200301.nc".format(m=model, v=var)
+        elif (model.lower()=="sam"):
+            return GT+"fldmean/fldmean_GT_{m}_{v}_20200130-20200301.nc".format(m=model, v=var)
         else:
             raise Exception("fldmean for "+model+" & "+var+" for GT not accepted.")
-            return
         return
     elif region.lower()=="twp":
         return TWP+"mean/fldmean_TWP_3D_"+model.upper()+"_"+var.lower()+"_20200130-20200228.nc"
     return
 
-def get_fldmedian_file(model, region, var="pr"):
+def get_fldmedian_file(model, region="twp", var="pr"):
     return TWP+"mean/fldmedian_TWP_3D_"+model.upper()+"_"+var.lower()+"_20200130-20200228.nc"
+
+def open_file(model, region="twp", var="rlut", timmean=False, fldmean=False, fldmedian=False):
+    if timmean:
+        return xr.open_dataset(get_timmean_file(model, region, var))
+    elif fldmean:
+        return xr.open_dataset(get_fldmean_file(model, region, var))
+    elif fldmedian:
+        return xr.open_dataset(get_fldmedian_file(model, region, var))
+    else:
+        return xr.open_dataset(get_file(model, region, var))
+    
 
