@@ -14,10 +14,10 @@ set -evx # verbose messages and crash message
 
 IN_PATH=/work/bb1153/b380883/GT
 OUT_PATH=/work/bb1153/b380883/GT/timmean
-declare -a MODELS=("GEOSr0.25deg" "SCREAMr0.25deg") # "SCREAMr0.25deg" done: "NICAM" "UM" "SAM"
+declare -a MODELS=("SCREAMr1deg" "SAM") # "SCREAMr0.25deg" done: "NICAM" "UM" "SAM"
 
 for m in "${MODELS[@]}"; do
-    for f in $IN_PATH/GT_${m}_clt*.nc; do
+    for f in $IN_PATH/GT_${m}_rlt_20200130-20200228.nc; do
         fname=$(basename $f)
         out_file=$OUT_PATH/timmean_$fname
         echo $fname

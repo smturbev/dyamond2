@@ -15,13 +15,17 @@ IN_PATH=/work/dicad/from_Mistral/dicad/cmip6-dev/data4freva/model/global/dyamond
 MODEL_PATH=AORI/NICAM-3km
 OUT_PATH=/scratch/b/b380883/
 
-LON0=143
-LON1=153
-LAT0=-5
-LAT1=5
-LOC="TWP"
+LON0=0
+LON1=360
+LAT0=-30
+LAT1=30
+# LON0=143
+# LON1=153
+# LAT0=-5
+# LAT1=5
+LOC="GT"
 
-#declare -a VarArray15min=(prw) # pr clivi rlut clt #rsut rsdt #clivi rlut
+declare -a VarArray15min=(rlut) # pr clivi rlut clt #rsut rsdt #clivi rlut
 
 # 15 min vars
 for v in "${VarArray15min[@]}"; do
@@ -29,21 +33,21 @@ for v in "${VarArray15min[@]}"; do
         fname=$(basename $f)
         out_file=$OUT_PATH/${LOC}_$fname
         echo "15 min variable "$v":"
-#        cdo -f nc4 -sellonlatbox,$LON0,$LON1,$LAT0,$LAT1 $f $out_file  
+       cdo -f nc4 -sellonlatbox,$LON0,$LON1,$LAT0,$LAT1 $f $out_file  
     done
 done
 
-declare -a VarArray3D=(ta) # cli clw hus ta grplmxrat snowmxrat rainmxrat
-declare -a DateArray=(207)
+# declare -a VarArray3D=(ta) # cli clw hus ta grplmxrat snowmxrat rainmxrat
+# declare -a DateArray=(207)
 
-# 3D 3 hr vars
-for v in "${VarArray3D[@]}"; do
-    for d in "${DateArray[@]}"; do
-        for f in $IN_PATH/$MODEL_PATH/DW-ATM/atmos/3hr/$v/r1i1p1f1/zl/gn/*_20200$d*; do
-            fname=$(basename $f)
-            out_file=$OUT_PATH/$fname
-            echo "3D 3hr variable "$v":"
-            cdo -f nc4 -sellonlatbox,$LON0,$LON1,$LAT0,$LAT1 $f $out_file  
-        done
-    done
-done
+# # 3D 3 hr vars
+# for v in "${VarArray3D[@]}"; do
+#     for d in "${DateArray[@]}"; do
+#         for f in $IN_PATH/$MODEL_PATH/DW-ATM/atmos/3hr/$v/r1i1p1f1/zl/gn/*_20200$d*; do
+#             fname=$(basename $f)
+#             out_file=$OUT_PATH/$fname
+#             echo "3D 3hr variable "$v":"
+#             cdo -f nc4 -sellonlatbox,$LON0,$LON1,$LAT0,$LAT1 $f $out_file  
+#         done
+#     done
+# done

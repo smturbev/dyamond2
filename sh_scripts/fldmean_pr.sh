@@ -2,7 +2,7 @@
 #SBATCH --job-name=fldmean
 #SBATCH --partition=compute
 #SBATCH --mem=20GB
-#SBATCH --time=06:00:00
+#SBATCH --time=04:00:00
 #SBATCH --mail-type=FAIL
 #SBATCH --mail-user=smturbev@uw.edu
 #SBATCH --account=bb1153
@@ -26,14 +26,29 @@ set -evx # verbose messages and crash message
 # cdo -fldpctl,50 /work/bb1153/b380883/TWP/TWP_3D_UM_clw_20200130-20200228.nc /work/bb1153/b380883/TWP/mean/fldmedian_TWP_3D_UM_clw_20200130-20200228.nc
 # cdo -fldmean /work/bb1153/b380883/TWP/TWP_3D_pfull_3hr_UM_20200130-20200228.nc /work/bb1153/b380883/TWP/mean/fldmean_TWP_3D_UM_pfull_20200130-20200228.nc
 
-cdo -fldmean /work/bb1153/b380883/TWP/TWP_3D_SCREAM_ta_20200130-20200228.nc /work/bb1153/b380883/TWP/mean/fldmean_TWP_3D_SCREAM_ta_20200130-20200228.nc
-cdo -fldmean /work/bb1153/b380883/TWP/TWP_3D_UM_ta_20200130-20200228.nc /work/bb1153/b380883/TWP/mean/fldmean_TWP_3D_UM_ta_20200130-20200228.nc
-cdo -fldmean /work/bb1153/b380883/TWP/TWP_3D_SAM_ta_20200130-20200228.nc /work/bb1153/b380883/TWP/mean/fldmean_TWP_3D_SAM_ta_20200130-20200228.nc
-cdo -fldmean /work/bb1153/b380883/TWP/TWP_3D_NICAM_ta_20200130-20200228.nc /work/bb1153/b380883/TWP/mean/fldmean_TWP_3D_NICAM_ta_20200130-20200228.nc
-cdo -fldmean /work/bb1153/b380883/TWP/TWP_3D_SCREAM_hus_20200130-20200228.nc /work/bb1153/b380883/TWP/mean/fldmean_TWP_3D_SCREAM_hus_20200130-20200228.nc
-cdo -fldmean /work/bb1153/b380883/TWP/TWP_3D_UM_hus_20200130-20200228.nc /work/bb1153/b380883/TWP/mean/fldmean_TWP_3D_UM_hus_20200130-20200228.nc
-# cdo -fldmean /work/bb1153/b380883/TWP/TWP_3D_SAM_hus_20200130-20200228.nc /work/bb1153/b380883/TWP/mean/fldmean_TWP_3D_SAM_hus_20200130-20200228.nc
-cdo -fldmean /work/bb1153/b380883/TWP/TWP_3D_NICAM_hus_20200130-20200228.nc /work/bb1153/b380883/TWP/mean/fldmean_TWP_3D_NICAM_hus_20200130-20200228.nc
+# cdo -fldmean /work/bb1153/b380883/TWP/TWP_3D_SCREAM_ta_20200130-20200228.nc /work/bb1153/b380883/TWP/mean/fldmean_TWP_3D_SCREAM_ta_20200130-20200228.nc
+# cdo -fldmean /work/bb1153/b380883/TWP/TWP_3D_UM_ta_20200130-20200228.nc /work/bb1153/b380883/TWP/mean/fldmean_TWP_3D_UM_ta_20200130-20200228.nc
+# cdo -fldmean /work/bb1153/b380883/TWP/TWP_3D_SAM_ta_20200130-20200228.nc /work/bb1153/b380883/TWP/mean/fldmean_TWP_3D_SAM_ta_20200130-20200228.nc
+# cdo -fldmean /work/bb1153/b380883/TWP/TWP_3D_NICAM_ta_20200130-20200228.nc /work/bb1153/b380883/TWP/mean/fldmean_TWP_3D_NICAM_ta_20200130-20200228.nc
+# cdo -fldmean /work/bb1153/b380883/TWP/TWP_3D_SCREAM_hus_20200130-20200228.nc /work/bb1153/b380883/TWP/mean/fldmean_TWP_3D_SCREAM_hus_20200130-20200228.nc
+# cdo -fldmean /work/bb1153/b380883/TWP/TWP_3D_UM_hus_20200130-20200228.nc /work/bb1153/b380883/TWP/mean/fldmean_TWP_3D_UM_hus_20200130-20200228.nc
+# # cdo -fldmean /work/bb1153/b380883/TWP/TWP_3D_SAM_hus_20200130-20200228.nc /work/bb1153/b380883/TWP/mean/fldmean_TWP_3D_SAM_hus_20200130-20200228.nc
+# cdo -fldmean /work/bb1153/b380883/TWP/TWP_3D_NICAM_hus_20200130-20200228.nc /work/bb1153/b380883/TWP/mean/fldmean_TWP_3D_NICAM_hus_20200130-20200228.nc
+
+# cdo -fldmean /work/bb1153/b380883/TWP/TWP_3D_GEOS_hus_20200130-20200228.nc /work/bb1153/b380883/TWP/mean/fldmean_TWP_3D_GEOS_hus_20200130-20200228.nc
+# cdo -fldmean /work/bb1153/b380883/TWP/TWP_3D_GEOS_cli_20200130-20200228.nc /work/bb1153/b380883/TWP/mean/fldmean_TWP_3D_GEOS_cli_20200130-20200228.nc
+# cdo -fldmean /work/bb1153/b380883/TWP/TWP_3D_GEOS_clw_20200130-20200228.nc /work/bb1153/b380883/TWP/mean/fldmean_TWP_3D_GEOS_clw_20200130-20200228.nc
+# cdo -fldmean /work/bb1153/b380883/TWP/TWP_3D_GEOS_cl_20200130-20200228.nc /work/bb1153/b380883/TWP/mean/fldmean_TWP_3D_GEOS_cl_20200130-20200228.nc
+# cdo -fldmean /work/bb1153/b380883/TWP/TWP_3D_GEOS_ta_20200130-20200228.nc /work/bb1153/b380883/TWP/mean/fldmean_TWP_3D_GEOS_ta_20200130-20200228.nc
+# cdo -fldmean /work/bb1153/b380883/TWP/TWP_3D_GEOS_snowmxrat_20200130-20200228.nc /work/bb1153/b380883/TWP/mean/fldmean_TWP_3D_GEOS_snowmxrat_20200130-20200228.nc
+# cdo -fldmean /work/bb1153/b380883/TWP/TWP_3D_GEOS_rainmxrat_20200130-20200228.nc /work/bb1153/b380883/TWP/mean/fldmean_TWP_3D_GEOS_rainmxrat_20200130-20200228.nc
+# cdo -fldmean /work/bb1153/b380883/TWP/TWP_3D_GEOS_zg_20200130-20200228.nc /work/bb1153/b380883/TWP/mean/fldmean_TWP_3D_GEOS_zg_20200130-20200228.nc
+cdo -fldmean /work/bb1153/b380883/TWP/TWP_3D_SAM_hus_20200130-20200228.nc /work/bb1153/b380883/TWP/mean/fldmean_TWP_3D_SAM_hus_20200130-20200228.nc
+
+# cdo -fldmean /work/bb1153/b380883/TWP/TWP_3D_NICAM_snowmxrat_20200130-20200228.nc /work/bb1153/b380883/TWP/mean/fldmean_TWP_3D_NICAM_snowmxrat_20200130-20200228.nc
+# cdo -fldmean /work/bb1153/b380883/TWP/TWP_3D_NICAM_grplmxrat_20200130-20200228.nc /work/bb1153/b380883/TWP/mean/fldmean_TWP_3D_NICAM_grpolmxrat_20200130-20200228.nc
+
+
 
 # cdo -fldpctl,50 --percentile,numpy /work/bb1153/b380883/TWP/TWP_3D_NICAM_cli_20200130-20200228.nc /work/bb1153/b380883/TWP/mean/fldmedian_TWP_3D_NICAM_cli_20200130-20200228.nc
 
