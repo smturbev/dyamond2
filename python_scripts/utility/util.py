@@ -22,6 +22,34 @@ np.warnings.filterwarnings("ignore")
 #             Calculations             #
 ########################################
 
+def rh_ice(qv, t, p):
+    """ Calculates the relative humidity with respect to ice.
+        Uses equation 7 from Murphy and Koop (2005) to get the
+        saturation pressure wrt ice:
+            e_si = exp(9.550426 - 5723.265/T + 3.53068*ln(T) - 0.00728332*T)
+        where T is temperature. Works best for T>110K. e_si is in Pa.
+        The saturation mixing ratio is:
+            w_si = (0.622 * e_si) / (p - e_si)
+        And RHice is the ratio of mixing ratio of water vapor to saturation vapor pressure.
+            RH_ice = w_i / w_si
+        where w_i is the mixing ratio:
+            w_i = qv / (1-qv)
+        To get RH_ice to a percent, we multiply by 100.
+        
+        Input:
+            - qv (narray) : specific humidity or mixing ratio of water vapor (kg/kg)
+            - t  (narray) : temperature (K)
+            - p  (narray) : pressure (Pa)
+    
+        Output:
+            - rh_ice (narray) : relative humidity wrt ice (%)
+    """
+    e_si = np.exp(9.550426 - 5723.265/T + 3.53068*np.log(T) - 0.00728332*T)
+    w_si = (0.622 * e_si) / (p - e_si)
+    w_i  = qv / (1 - qv)
+    rh_ice = w_i/w_si * 100
+    return rh_ice
+
 def q_to_wc(q,t,p,qv):
     """Returns an xarray of shape and dims q with units of kg/m3.
     
