@@ -25,29 +25,29 @@ LAT1=30
 # LAT1=5
 LOC="GT"
 
-declare -a VarArray15min=(rlut) # pr clivi rlut clt #rsut rsdt #clivi rlut
+declare -a VarArray15min=() # pr clivi rlut clt #rsut rsdt #clivi rlut
 
-# 15 min vars
-for v in "${VarArray15min[@]}"; do
-    for f in $IN_PATH/$MODEL_PATH/DW-ATM/atmos/15min/$v/r1i1p1f1/2d/gn/*; do
-        fname=$(basename $f)
-        out_file=$OUT_PATH/${LOC}_$fname
-        echo "15 min variable "$v":"
-       cdo -f nc4 -sellonlatbox,$LON0,$LON1,$LAT0,$LAT1 $f $out_file  
-    done
-done
-
-# declare -a VarArray3D=(ta) # cli clw hus ta grplmxrat snowmxrat rainmxrat
-# declare -a DateArray=(207)
-
-# # 3D 3 hr vars
-# for v in "${VarArray3D[@]}"; do
-#     for d in "${DateArray[@]}"; do
-#         for f in $IN_PATH/$MODEL_PATH/DW-ATM/atmos/3hr/$v/r1i1p1f1/zl/gn/*_20200$d*; do
-#             fname=$(basename $f)
-#             out_file=$OUT_PATH/$fname
-#             echo "3D 3hr variable "$v":"
-#             cdo -f nc4 -sellonlatbox,$LON0,$LON1,$LAT0,$LAT1 $f $out_file  
-#         done
+# # 15 min vars
+# for v in "${VarArray15min[@]}"; do
+#     for f in $IN_PATH/$MODEL_PATH/DW-ATM/atmos/15min/$v/r1i1p1f1/2d/gn/*; do
+#         fname=$(basename $f)
+#         out_file=$OUT_PATH/${LOC}_$fname
+#         echo "15 min variable "$v":"
+#        cdo -f nc4 -sellonlatbox,$LON0,$LON1,$LAT0,$LAT1 $f $out_file  
 #     done
 # done
+
+declare -a VarArray3D=(grplmxrat snowmxrat) # cli clw hus ta grplmxrat snowmxrat rainmxrat
+declare -a DateArray=(13 20 21 22)
+
+# # 3D 3 hr vars
+for v in "${VarArray3D[@]}"; do
+    for d in "${DateArray[@]}"; do
+        for f in $IN_PATH/$MODEL_PATH/DW-ATM/atmos/3hr/$v/r1i1p1f1/zl/gn/*_20200$d*; do
+            fname=$(basename $f)
+            out_file=$OUT_PATH/$fname
+            echo "3D 3hr variable "$v":"
+            cdo -f nc4 -sellonlatbox,$LON0,$LON1,$LAT0,$LAT1 $f $out_file  
+        done
+    done
+done

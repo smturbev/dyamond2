@@ -17,15 +17,20 @@ def js_r(filename):
         return(json.load(f_in))
 COLORS = js_r(COLOR_JSON)
 
-# data #
-CERES_SYN1_1H = "/work/bb1153/b380883/TWP/CERES_SYN1deg-1H_Terra-Aqua-MODIS_Ed4.1_Subset_20200101-20200331.nc"
-
 # processed output #
-SCR2 = "/work/bb1153/b380883/"
+WRK = "/work/bb1153/b380883/"
 
 ## Regions ##
-GT=SCR2+"GT/"
-TWP = SCR2+"TWP/"
+GT  = WRK+"GT/"
+TWP = WRK+"TWP/"
+
+# data #
+CERES_SYN1_1H = "/work/bb1153/b380883/TWP/CERES_SYN1deg-1H_Terra-Aqua-MODIS_Ed4.1_Subset_20200101-20200331.nc"
+CCCM_JAS = TWP+"CERES_CCCM_JAS_2007-2011.nc"
+CCCM_JFM = TWP+"CERES_CCCM_JFM_2007-2011.nc"
+ERA5_TWP = "/work/bb1153/b380887/10x10/TWP/"
+ERA5_TWP_zg = ERA5_TWP + "ERA5_geopotential_50-200mb_winter_TWP.nc"
+ERA5_TWP_ta = ERA5_TWP + "ERA5_temp_50-200mb_winter_TWP.nc"
 
 ## time mean ##
 TIMMEAN_GT = GT+"timmean/"
@@ -55,31 +60,25 @@ def get_file(model, region="twp", var="rlut"):
                 return
             else:
                 raise Exception("region not valid, try TWP or GT")
+    elif region.lower()[:3]=="twp":
+        return TWP+region+"_"+model+"_"+var+"_20200130-20200228.nc"
+    elif region.lower()[:2]=="gt":
+        return GT+region+"_"+model+"_"+var+"_20200130-20200228.nc"
     else:
-        return TWP+region.upper()+"_"+model+"_"+var+"_20200130-20200228.nc"
+        raise Exception("region {} or model {} or var {} not valid".format(region, model, var))
+    
 
 def get_timmean_file(model, region="twp", var="clt"):
-    if var=="clt":
-        if region.lower()=="gt":
-            if (model.lower()=="geos") or (model.lower()=="nicam") or model.lower()=="scream" or model.lower()=="icon" or (model.lower()=="screamr") or (model.lower()[-3:]=="deg"):
-                return TIMMEAN_GT+"timmean_GT_{m}_{v}_20200130-20200301.nc".format(m=model, v=var)
-            elif model.lower()=="um":
-                return TIMMEAN_GT+"timmean_GT_{m}_{v}_20200130-20200228.nc".format(m=model, v=var)
-            elif (model.lower()=="sam"):
-                return TIMMEAN_GT+"timmean_GT_{m}_{v}_20200130-20200229.nc".format(m=model, v=var)
-            else:
-                raise Exception("timemean for "+model+" & "+var+" for GT not accepted.")
-                return
-        else:
-            if (model.lower()=="nicam"):
-                raise Exception("timemean for "+model+" & "+var+" for TWP not accepted.")
-                return 
-            else:
-                raise Exception("timemean for "+model+" & "+var+" for TWP not accepted.")
-                return
+    if model=="CERES":
+        return WRK+region.upper()+"/"+region+"_"+model+"_"+var+".nc"
+    if region.lower()=="twp":
+        return TWP+"mean/timmean_TWP_"+model+"_"+var+"_20200130-20200228.nc"
+    elif region.lower()=="gt" or region.lower()=="tropics":
+        return GT+"timmean/timmean_GT_"+model+"_"+var+"_20200130-20200228.nc"
+    elif region.lower()=="gt_14-18km":
+        return GT+"timmean/timmean_GT_14-18km_"+model+"_"+var+"_20200130-20200228.nc"
     else:
-        raise Exception("timemean for "+var+" not accepted.")
-        return
+        raise Exception("region {} not valid".format(region))
     return
     
 def get_fldmean_file(model, region="twp", var="pr"):
@@ -114,5 +113,8 @@ def open_file(model, region="twp", var="rlut", timmean=False, fldmean=False, fld
         return xr.open_dataset(get_fldmedian_file(model, region, var))
     else:
         return xr.open_dataset(get_file(model, region, var))
+
+def open_dyamond1(model, region="TWP", var="rlut"):
+    return xr.open_dataset(TWP+"dyamond1/{}_{}_{}_20160810-20160910.nc".format(region, model, var))
     
 

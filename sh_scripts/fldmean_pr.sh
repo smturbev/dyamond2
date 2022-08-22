@@ -43,14 +43,21 @@ set -evx # verbose messages and crash message
 # cdo -fldmean /work/bb1153/b380883/TWP/TWP_3D_GEOS_snowmxrat_20200130-20200228.nc /work/bb1153/b380883/TWP/mean/fldmean_TWP_3D_GEOS_snowmxrat_20200130-20200228.nc
 # cdo -fldmean /work/bb1153/b380883/TWP/TWP_3D_GEOS_rainmxrat_20200130-20200228.nc /work/bb1153/b380883/TWP/mean/fldmean_TWP_3D_GEOS_rainmxrat_20200130-20200228.nc
 # cdo -fldmean /work/bb1153/b380883/TWP/TWP_3D_GEOS_zg_20200130-20200228.nc /work/bb1153/b380883/TWP/mean/fldmean_TWP_3D_GEOS_zg_20200130-20200228.nc
-cdo -fldmean /work/bb1153/b380883/TWP/TWP_3D_SAM_hus_20200130-20200228.nc /work/bb1153/b380883/TWP/mean/fldmean_TWP_3D_SAM_hus_20200130-20200228.nc
+# cdo -fldmean /work/bb1153/b380883/TWP/TWP_3D_SAM_hus_20200130-20200228.nc /work/bb1153/b380883/TWP/mean/fldmean_TWP_3D_SAM_hus_20200130-20200228.nc
+# cdo -fldmean /work/bb1153/b380883/TWP/TWP_3D_SCREAM_cl_20200130-20200228.nc /work/bb1153/b380883/TWP/mean/fldmean_TWP_3D_SCREAM_cl_20200130-20200228.nc
+# cdo -fldmean /work/bb1153/b380883/TWP/TWP_3D_SCREAM_iwc_20200130-20200228.nc /work/bb1153/b380883/TWP/mean/fldmean_TWP_3D_SCREAM_iwc_20200130-20200228.nc
+# cdo -fldmean /work/bb1153/b380883/TWP/TWP_3D_UM_iwc_20200130-20200228.nc /work/bb1153/b380883/TWP/mean/fldmean_TWP_3D_UM_iwc_20200130-20200228.nc
 
 # cdo -fldmean /work/bb1153/b380883/TWP/TWP_3D_NICAM_snowmxrat_20200130-20200228.nc /work/bb1153/b380883/TWP/mean/fldmean_TWP_3D_NICAM_snowmxrat_20200130-20200228.nc
 # cdo -fldmean /work/bb1153/b380883/TWP/TWP_3D_NICAM_grplmxrat_20200130-20200228.nc /work/bb1153/b380883/TWP/mean/fldmean_TWP_3D_NICAM_grpolmxrat_20200130-20200228.nc
 
-
-
 # cdo -fldpctl,50 --percentile,numpy /work/bb1153/b380883/TWP/TWP_3D_NICAM_cli_20200130-20200228.nc /work/bb1153/b380883/TWP/mean/fldmedian_TWP_3D_NICAM_cli_20200130-20200228.nc
+
+cdo -fldmean /work/bb1153/b380883/TWP/TWP_3D_ICON_cli_20200130-20200228.nc /work/bb1153/b380883/TWP/mean/fldmean_TWP_3D_ICON_cli_20200130-20200228.nc
+cdo -fldmean /work/bb1153/b380883/TWP/TWP_3D_ICON_clw_20200130-20200228.nc /work/bb1153/b380883/TWP/mean/fldmean_TWP_3D_ICON_clw_20200130-20200228.nc
+cdo -fldmean /work/bb1153/b380883/TWP/TWP_3D_ICON_hus_20200130-20200228.nc /work/bb1153/b380883/TWP/mean/fldmean_TWP_3D_ICON_hus_20200130-20200228.nc
+cdo -fldmean /work/bb1153/b380883/TWP/TWP_3D_ICON_pa_20200130-20200228.nc /work/bb1153/b380883/TWP/mean/fldmean_TWP_3D_ICON_pa_20200130-20200228.nc
+cdo -fldmean /work/bb1153/b380883/TWP/TWP_3D_ICON_ta_20200130-20200228.nc /work/bb1153/b380883/TWP/mean/fldmean_TWP_3D_ICON_ta_20200130-20200228.nc
 
 
 echo "done"

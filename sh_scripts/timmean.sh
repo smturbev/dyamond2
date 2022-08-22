@@ -14,10 +14,10 @@ set -evx # verbose messages and crash message
 
 IN_PATH=/work/bb1153/b380883/GT
 OUT_PATH=/work/bb1153/b380883/GT/timmean
-declare -a MODELS=("SCREAMr1deg" "SAM") # "SCREAMr0.25deg" done: "NICAM" "UM" "SAM"
+declare -a MODELS=("grplmxrat" "snowmxrat") # done: "NICAM" "UM" "SAM" "SCREAMr0.25deg", "ARPr0.25deg"
 
-for m in "${MODELS[@]}"; do
-    for f in $IN_PATH/GT_${m}_rlt_20200130-20200228.nc; do
+for v in "${MODELS[@]}"; do
+    for f in $IN_PATH/GT_14-18km_NICAM_${v}_20200130-20200228.nc; do
         fname=$(basename $f)
         out_file=$OUT_PATH/timmean_$fname
         echo $fname
@@ -27,5 +27,7 @@ for m in "${MODELS[@]}"; do
 done
 
 # cdo -timmean $IN_PATH/GT_NICAM_clt_20200130-20200301.nc $OUT_PATH/timmean_GT_NICAM_clt_20200130-20200301.nc
-
+# cdo -select,name="adj_atmos_sw_up_all_toa_1hm","adj_atmos_sw_down_all_toa_1hm","adj_atmos_lw_up_all_toa_1hm","adj_atmos_sw_up_clr_toa_1hm","adj_atmos_sw_down_clr_toa_1hm","adj_atmos_lw_up_all_toa_1hm" $IN_PATH/GT_CERES_rad.nc $IN_PATH/GT_CERES_rad_toa_1hm.nc
+# cdo -selseason,JFM $IN_PATH/GT_CERES_rad_toa_1hm.nc $IN_PATH/GT_CERES_rad_toa_1hm_JFM.nc
+# cdo -timmean $IN_PATH/GT_CERES_rad_toa_1hm_JFM.nc $OUT_PATH/timmean_GT_CERES_rad_toa_1hm_JFM.nc
 echo "done"

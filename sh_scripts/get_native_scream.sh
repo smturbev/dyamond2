@@ -7,7 +7,7 @@
 #SBATCH --mail-type=END
 #SBATCH --mail-user=smturbev@uw.edu
 #SBATCH --account=bb1153
-#SBATCH --output=out_s.eo
+#SBATCH --output=out.eo
 #SBATCH --error=err_s.eo
 
 set -evx # verbose messages and crash message
@@ -32,24 +32,24 @@ OUT_PATH=/scratch/b/b380883/
 # declare -a VarArray15min=(qvi) #pr rlt rst clivi)
 
 # 15 min vars
-for v in "${VarArray15min[@]}"; do
-    for f in $IN_PATH/$MODEL_PATH/DW-ATM/atmos/15min/$v/r1i1p1f1/2d/gn/*202002*; do
-        fname=$(basename $f)
-        out_file=$OUT_PATH/$LOC"_"$fname
-        echo "15 min variable "$v":"
-        # cdo -f nc -sellonlatbox,$LON0,$LON1,$LAT0,$LAT1 -setgrid,$GRID_FILE $f $out_file
-    done
-done
+# for v in "${VarArray15min[@]}"; do
+#     for f in $IN_PATH/$MODEL_PATH/DW-ATM/atmos/15min/$v/r1i1p1f1/2d/gn/*202002*; do
+#         fname=$(basename $f)
+#         out_file=$OUT_PATH/$LOC"_"$fname
+#         echo "15 min variable "$v":"
+#         # cdo -f nc -sellonlatbox,$LON0,$LON1,$LAT0,$LAT1 -setgrid,$GRID_FILE $f $out_file
+#     done
+# done
 
-# declare -a VarArray3D=(dem) # dem cli clw lat lon ta hus cld-mod cl (defined as L/IWC > 10e-5) dtau icenvi cldnvi
+declare -a VarArray3D=(cl) # dem cli clw lat lon ta hus cld-mod cl (defined as L/IWC > 10e-5) dtau icenvi cldnvi
 
 # 3 hr 3D vars
 for v in "${VarArray3D[@]}"; do
    for f in $IN_PATH/$MODEL_PATH/DW-ATM/atmos/3hr/$v/r1i1p1f1/ml/gn/*; do
        fname=$(basename $f)
        out_file=$OUT_PATH/$LOC"_"$fname
-       echo "15 min variable "$v":"
-       # cdo -f nc -sellonlatbox,$LON0,$LON1,$LAT0,$LAT1 -setgrid,$GRID_FILE $f $out_file
+       echo "3D variable "$v":"
+       cdo -f nc -sellonlatbox,$LON0,$LON1,$LAT0,$LAT1 -setgrid,$GRID_FILE $f $out_file
    done
 done
 

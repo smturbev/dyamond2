@@ -13,6 +13,7 @@ import sys
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpat
 import matplotlib.transforms as trans
+from mpl_toolkits.axes_grid1 import make_axes_locatable
 from matplotlib import cm, ticker, colors
 sys.path.append("/home/disk/p/smturbev/SCREAM-analysis/python_scripts/")
 import utility.analysis_parameters as ap
@@ -123,7 +124,7 @@ def dennisplot(stat, olr, alb, var=None, xbins=None, ybins=None,
         ybins = np.linspace(0,0.8,33)
     if levels is None:
         if stat=="difference":
-            levels = np.linspace(-1,1,100)
+            levels = np.arange(-0.9,1,0.2)
         else:
             levels = np.arange(-3,-1.2,0.1)
     if stat=="difference":
@@ -202,16 +203,21 @@ def dennisplot(stat, olr, alb, var=None, xbins=None, ybins=None,
     else:
         ax.set_title('{m} {n}\n'.format(m=model, n=region), size=fs)
     ax.tick_params(axis='both',labelsize=fs)
-    ax.text(300,0.75,"{l} Profiles".format(l=len(olr)), fontsize=fs, color="0.3", ha="right")
+    if len(olr)>10:
+        ax.text(300,0.75,"{l} Profiles".format(l=len(olr)), fontsize=fs, color="0.3", ha="right")
 
     # plot the colorbar
     if colorbar_on:
-        cb = plt.colorbar(csn, ax=ax, orientation='vertical')#, ticks=levtick)
-        cb.ax.tick_params(labelsize=fs)
+        # divider = make_axes_locatable(ax)
+        # cax = divider.append_axes("right", size="5%", pad=0.05)
+
+        cb = plt.colorbar(csn, ax=ax, shrink=0.8)
+        cb.ax.tick_params(labelsize=fs-4)
         if stat=="density":
             cb.set_label('log10(pdf)', fontsize=fs)
         elif stat=="difference":
             cb.set_label('pdf % difference', fontsize=fs)
+            cb.set_ticks((levels[1:]+levels[:-1])/2)
         else:
             cb.set_label('log10(%s) (%s)'%(stat, units), fontsize=fs)
     if save:
@@ -233,4 +239,57 @@ def convert_to_mmhr(model, pr):
     elif model.lower()=="sam":
         pr = pr.where(pr>0.05)
     return pr
+
+def schematic(ax=None, arrow=True, fs=24):
+    """Returns an axis with the plot showing the schematic of the
+    cloud populations and idealized lifecycle (if arrow=True).
+    
+    Parameters:
+        ax (plt.axis)   = axis for plotting
+        arrow (boolean) = Draws an arrow from deep convection 
+                to thin cirrus if true
+    """
+    c = ['#1D6295', '#75B6E5', '#27CED7', '#A3CEED', '#65757D', "#264457"]
+
+    if ax is None:
+        fig = plt.figure(figsize=(8,7.7))
+        ax = fig.add_subplot(111, aspect='auto')
+    dc = mpat.Ellipse((110,0.6),85,0.3, alpha=0.9, fc=c[0], ec=c[5])
+    an = mpat.Ellipse((112,0.42),180,0.25,alpha=0.9, fc=c[1], ec=c[5])
+    cu = mpat.Ellipse((240,0.5),90,0.42,alpha=0.9, fc=c[2], ec=c[5])
+    ci = mpat.Ellipse((260,0.2),80,0.3, alpha=0.9, fc=c[3], ec=c[5])
+    cs = mpat.Ellipse((280,0.1),30,0.1, alpha=0.9, fc=c[4], ec=c[5])
+
+    dennisplot("density",np.array([0]),np.array([0]),ax=ax, colorbar_on=False, region="TWP")
+
+    ax.annotate("    Deep\nConvection", xy=(82,0.57),xycoords='data', fontsize=fs-2, color='w')
+    ax.annotate("   \n Anvil\n  Cirrus", xy=(145,0.17),xycoords='data', fontsize=fs, color='w')
+    ax.annotate("Congestus", xy=(208,0.48),xycoords='data', fontsize=fs, color='w')
+    ax.annotate(" Thin\nCirrus", xy=(242,0.16),xycoords='data',fontsize=fs, color='w')
+    ax.annotate(" Clear\n   Sky", xy=(264,0.06),xycoords='data',fontsize=fs-6, color='w')
+
+    # rotate anvil cirrus oval
+    t_start = ax.transData
+    t = trans.Affine2D().rotate_deg(-30)
+    t_end = t_start + t
+    an.set_transform(t_end)
+    # create arrow from dc to cs
+    arc = mpat.FancyArrowPatch((110, 0.56), (280, 0.1), connectionstyle="arc3,rad=.2", 
+                               arrowstyle = '->', alpha=0.9, lw=6, linestyle='solid', color='k')#(0.9,(2,2)))
+    arc.set_arrowstyle('->', head_length=15, head_width=12)
+    # add elements to axis
+    ax.add_patch(an)
+    ax.add_patch(dc)
+    ax.add_patch(cu)
+    ax.add_patch(ci)
+    ax.add_patch(cs)
+    
+    if arrow:
+        ax.add_patch(arc)
+    # axis properties
+    ax.set_ylim([0,0.8])
+    ax.set_yticks(np.arange(0,0.81,0.2))
+    ax.set_title("Schematic of Cloud Types\n", fontsize=fs)
+    ax.set_axisbelow(True)
+    return 
 
