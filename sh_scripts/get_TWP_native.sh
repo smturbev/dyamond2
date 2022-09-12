@@ -1,16 +1,14 @@
 #!/bin/bash
-#SBATCH --job-name=subtwp
-#SBATCH --partition=prepost
-#SBATCH --ntasks=1
-#SBATCH --mem=50GB
-#SBATCH --time=09:00:00
+#SBATCH --job-name=TWP_CM
+#SBATCH --partition=compute
+#SBATCH --time=08:00:00
+#SBATCH --mem=100GB
 #SBATCH --mail-type=FAIL
-#SBATCH --mail-type=BEGIN
 #SBATCH --mail-type=END
 #SBATCH --mail-user=smturbev@uw.edu
 #SBATCH --account=bb1153
-#SBATCH --output=out_twp_%j.eo
-#SBATCH --error=err_twp_%j.eo
+#SBATCH --error=err_twp%j.eo
+#SBATCH --output=out_twp%j.eo
 
 set -evx # verbose messages and crash message
 
@@ -19,82 +17,185 @@ LON1=153
 LAT0=-5
 LAT1=5
 LOC="TWP"
+MODEL="GM"
+dim_2D=true
+dim_3D=false
 
-IN_PATH=/work/dicad/cmip6-dev/data4freva/model/global/dyamond/DYAMOND_WINTER
-OUT_PATH=/scratch/b/b380883/dyamond2/GEOS/$LOC
+IN_PATH=/work/ka1081/DYAMOND_WINTER
+OUT_PATH=/scratch/b/b380883
 
-##### GEOS #####
-## something wrong with GEOS file
-# OUT_PATH=/scratch/b/b380883/dyamond2/GEOS/$LOC
-# MODEL_PATH=NASA/GEOS-3km
-# declare -a VarArray15min=(rlut clivi clt) # rsdt rsut
-# for v in "${VarArray15min[@]}"; do
-#     for f in $IN_PATH/$MODEL_PATH/DW-ATM/atmos/15min/$v/r1i1p1f1/2d/gn/*; do
-#         fname=$(basename $f)
-#         out_file=$OUT_PATH/$LOC"_"$fname
-#         echo "GEOS from native global to TWP:"
-#         cdo -f nc4 -sellonlatbox,$LON0,$LON1,$LAT0,$LAT1 $f $out_file
-#     done
-# done
+IN_GE=NASA/GEOS-3km
+IN_AR=METEOFR/ARPEGE-NH-2km
+IN_UM=MetOffice/UM-5km
+IN_SC=LLNL/SCREAM-3km
+IN_SH=NOAA/SHiELD-3km
+IN_IC=MPIM-DWD-DKRZ/ICON-NWP-2km
+IN_SA=SBU/gSAM-4km
+IN_NI=AORI/NICAM-3km
+IN_IF=ECMWF/IFS-4km
+IN_MP=NCAR/MPAS-3km
+IN_EC=NextGEMS/ECMWF-AWI
+IN_GR=CAMS/GRIST-5km
+IN_GM=CMC/GEM
 
-##### UM #####
-# OUT_PATH=/scratch/b/b380883/dyamond2/UM/$LOC
-# MODEL_PATH=MetOffice/UM-5km 
-# declare -a VarArray15min=(rsdt rsut rlut clivi)
+GRID_IC=/work/ka1081/DYAMOND_WINTER/MPIM-DWD-DKRZ/ICON-NWP-2km/DW-ATM/atmos/fx/gn/grid.nc
+GRID_SC=/work/ka1081/DYAMOND_WINTER/LLNL/SCREAM-3km/grid.nc
+GRID_AR=/work/ka1081/DYAMOND_WINTER/METEOFR/ARPEGE-NH-2km/DW-ATM/atmos/fx/gn/grid.nc
+GRID_SH=/work/ka1081/DYAMOND_WINTER/NOAA/SHiELD-3km/DW-ATM/atmos/fx/gn/grid.nc
+GRID_GM=/work/ka1081/DYAMOND_WINTER/CMC/GEM/DW-ATM/atmos/fx/gn/grid.nc
 
-# for v in "${VarArray15min[@]}"; do
-#     for f in $IN_PATH/$MODEL_PATH/DW-ATM/atmos/15min/$v/r1i1p1f1/2d/gn/*; do
-#         fname=$(basename $f)
-#         out_file=$OUT_PATH/$LOC"_"$fname
-#         echo "UM from native global to TWP:"
-#         cdo -f nc4 -sellonlatbox,$LON0,$LON1,$LAT0,$LAT1 $f $out_file  
-#     done
-# done
+declare -a VarArray15min=(rltacc)
+declare -a DateArray=(13 20 21 22)
+if $dim_2D ; then
+    # 2D vars
+    echo "2D running..."
+    for v in "${VarArray15min[@]}"; do
+        for d in "${DateArray[@]}"; do
+            if [ $MODEL = 'SA'] ; then
+                echo "no grid file needed"
+                for f in $IN_PATH/$IN_SA/DW-ATM/atmos/15min/$v/r1i1p1f1/2d/gn/*_20200$d*; do
+                    fname=$(basename $f)
+                    out_file=$OUT_PATH/${LOC}_$fname
+                    cdo -f nc -sellonlatbox,$LON0,$LON1,$LAT0,$LAT1 $f $out_file
+                done
+            elif [ $MODEL = 'NI' ] ; then
+                echo "no grid file needed"
+                for f in $IN_PATH/$IN_NI/DW-ATM/atmos/15min/$v/r1i1p1f1/2d/gn/*_20200$d*; do
+                    fname=$(basename $f)
+                    out_file=$OUT_PATH/${LOC}_$fname
+                    cdo -f nc -sellonlatbox,$LON0,$LON1,$LAT0,$LAT1 $f $out_file
+                done
+            elif [ $MODEL = 'GE' ] ; then
+                echo "no grid file needed"
+                for f in $IN_PATH/$IN_GE/DW-ATM/atmos/15min/$v/r1i1p1f1/2d/gn/*_20200$d*; do
+                    fname=$(basename $f)
+                    out_file=$OUT_PATH/${LOC}_$fname
+                    cdo -f nc -sellonlatbox,$LON0,$LON1,$LAT0,$LAT1 $f $out_file
+                done
+            elif [ $MODEL = 'UM' ]; then
+                echo "no grid file needed"
+                for f in $IN_PATH/$IN_UM/DW-ATM/atmos/15min/$v/r1i1p1f1/2d/gn/*_20200$d*; do
+                    fname=$(basename $f)
+                    out_file=$OUT_PATH/${LOC}_$fname
+                    cdo -f nc -sellonlatbox,$LON0,$LON1,$LAT0,$LAT1 $f $out_file
+                done
+            elif [ $MODEL = 'IC' ]; then
+                echo "ICON"
+                for f in $IN_PATH/$IN_IC/DW-ATM/atmos/15min/$v/r1i1p1f1/2d/gn/*_20200$d*; do
+                    fname=$(basename $f)
+                    out_file=$OUT_PATH/${LOC}_$fname
+                    cdo -f nc -sellonlatbox,$LON0,$LON1,$LAT0,$LAT1 -setgrid,$GRID_IC $f $out_file
+                done
+            elif [ $MODEL = 'SC' ]; then
+                echo "SCREAM"
+                for f in $IN_PATH/$IN_SC/DW-ATM/atmos/15min/$v/r1i1p1f1/2d/gn/*_20200$d*; do
+                    fname=$(basename $f)
+                    out_file=$OUT_PATH/${LOC}_$fname
+                    cdo -f nc -sellonlatbox,$LON0,$LON1,$LAT0,$LAT1 -setgrid,$GRID_SC $f $out_file
+                done
+            elif [ $MODEL = 'AR' ]; then
+                echo "ARP"
+                for f in $IN_PATH/$IN_AR/DW-ATM/atmos/15min/$v/r1i1p1f1/2d/gn/*_20200$d*; do
+                    fname=$(basename $f)
+                    out_file=$OUT_PATH/${LOC}_$fname
+                    cdo -f nc -sellonlatbox,$LON0,$LON1,$LAT0,$LAT1 -setgrid,$GRID_AR $f $out_file
+                done
+            elif [ $MODEL = 'SH' ]; then
+                echo "SHiELD"
+                for f in $IN_PATH/$IN_SH/DW-ATM/atmos/15min/$v/r1i1p1f1/pl/gn/*_20200$d*; do
+                    fname=$(basename $f)
+                    out_file=$OUT_PATH/${LOC}_$fname
+                    cdo -f nc -sellonlatbox,$LON0,$LON1,$LAT0,$LAT1 -setgridtype,unstructured -setgrid,$GRID_SH $f $out_file
+                done
+            elif [ $MODEL = 'GR' ]; then
+                echo "GRIST"
+                for f in $IN_PATH/$IN_GR/DW-ATM/atmos/15min/$v/r1i1p1f1/2d/gn/*_20200$d*; do
+                    fname=$(basename $f)
+                    out_file=$OUT_PATH/${LOC}_$fname
+                    cdo -f nc -sellonlatbox,$LON0,$LON1,$LAT0,$LAT1 $f $out_file
+                done
+            elif [ $MODEL = 'GM' ]; then
+                echo "CMC/GEM"
+                for f in $IN_PATH/$IN_GM/DW-ATM/atmos/1hr/$v/r1i1p1f1/2d/gn/*_20200$d*; do
+                    fname=$(basename $f)
+                    out_file=$OUT_PATH/${LOC}_$fname
+                    cdo -f nc -sellonlatbox,$LON0,$LON1,$LAT0,$LAT1 -setgrid,$GRID_GM $f $out_file
+                done
+            else
+                echo "model not defined "$MODEL
+            fi
+        done
+    done
+fi
 
-##### SAM2 #####
-## done
-# OUT_PATH=/scratch/b/b380883/dyamond2/SAM/$LOC
-# MODEL_PATH=SBU/SAM2-4km/
-# declare -a VarArray15min=(rltacc rstacc clivi)
+declare -a VarArray3D=(clw)
+declare -a DateArray=(13 20 21 22)
 
-# for v in "${VarArray15min[@]}"; do
-#     for f in $IN_PATH/$MODEL_PATH/DW-ATM/atmos/15min/$v/r1i1p1f1/2d/gn/*; do
-#         fname=$(basename $f)
-#         out_file=$OUT_PATH/$fname
-#         echo "SAM2 15 min variable "$v":"
-#         cdo -f nc4 -sellonlatbox,$LON0,$LON1,$LAT0,$LAT1 $f $out_file  
-#     done
-# done
-
-##### NICAM #####
-# OUT_PATH=/scratch/b/b380883/dyamond2/NICAM/$LOC
-# MODEL_PATH=AORI/NICAM-3km
-# declare -a VarArray15min=(clivi rlut rsut rsdt)
-
-# for v in "${VarArray15min[@]}"; do
-#     for f in $IN_PATH/$MODEL_PATH/DW-ATM/atmos/15min/$v/r1i1p1f1/2d/gn/*; do
-#         fname=$(basename $f)
-#         out_file=$OUT_PATH/$fname
-#         echo "NICAM 15 min variable "$v":"
-#         cdo -f nc4 -sellonlatbox,$LON0,$LON1,$LAT0,$LAT1 $f $out_file  
-#     done
-# done
-
-
-###### ICON #####
-export GRIB_DEFINITION_PATH=/sw/rhel6-x64/eccodes/definitions
-OUT_PATH=/scratch/b/b380883/dyamond2/ICON/$LOC
-MODEL_PATH=MPIM-DWD-DKRZ/ICON-NWP-2km
-GRID_FILE=/work/bk1040/DYAMOND/data/winter_data/DYAMOND_WINTER/MPIM-DWD-DKRZ/ICON-NWP-2km/DW-ATM/atmos/fx/gn/grid.nc
-
-declare -a VarArray15min=(rltacc rstacc clt rsutacc qgvi qsvi) # clivi
-
-for v in "${VarArray15min[@]}"; do
-   for f in $IN_PATH/$MODEL_PATH/DW-ATM/atmos/15min/$v/r1i1p1f1/2d/gn/*; do
-       fname=$(basename $f)
-       out_file=$OUT_PATH/$fname
-       echo "ICON 15 min variable "$v":"
-       cdo -f nc -sellonlatbox,$LON0,$LON1,$LAT0,$LAT1 -setgrid,$GRID_FILE $f $out_file  
-   done
-done
-
+# 3D vars
+if $dim_3D ; then
+    echo "3D running..."
+    for v in "${VarArray3D[@]}"; do
+        for d in "${DateArray[@]}"; do
+            if [ $MODEL = 'SA' ] ; then
+                # cli  clw  hus  ta  ua  va  wa #height=z
+                echo "no grid file needed and 3 hourly"
+                for f in $IN_PATH/$IN_SA/DW-ATM/atmos/3hr/$v/r1i1p1f1/ml/gn/*_20200$d*; do
+                    fname=$(basename $f)
+                    out_file=$OUT_PATH/${LOC}_$fname
+                    cdo -f nc -sellonlatbox,$LON0,$LON1,$LAT0,$LAT1 $f $out_file
+                done
+            elif [ $MODEL = 'UM' ]; then
+                # cli  clw  hus  ta  ua  va  wa #height=lev
+                echo "no grid file needed and 3 hourly"
+                for f in $IN_PATH/$IN_UM/DW-ATM/atmos/3hr/$v/r1i1p1f1/ml/gn/*_20200$d*; do
+                    fname=$(basename $f)
+                    out_file=$OUT_PATH/${LOC}_$fname
+                    cdo -f nc -sellonlatbox,$LON0,$LON1,$LAT0,$LAT1 $f $out_file
+                done
+            elif [ $MODEL = 'NI' ]; then
+                echo "NICAM"
+                #cli  clw  grplmxrat  hus  pfull  rainmxrat  snowmxrat  ta  ua  va  wa
+                for f in $IN_PATH/$IN_NI/DW-ATM/atmos/3hr/$v/r1i1p1f1/zl/gn/*_20200$d*; do
+                    fname=$(basename $f)
+                    out_file=$OUT_PATH/${LOC}_$fname
+                    cdo -f nc -sellonlatbox,$LON0,$LON1,$LAT0,$LAT1 $f $out_file
+                done
+            elif [ $MODEL = 'GE' ]; then
+                echo "GEOS 1 hourly"
+                # cl, clw, hus,  rainmxrat, reffclw, ta, va, wap, cli, grplmxrat, pthick, reffcli, snowmxrat, ua, wa, zg
+                for f in $IN_PATH/$IN_GE/DW-ATM/atmos/1hr/$v/r1i1p1f1/ml/gn/*_20200$d*; do
+                    fname=$(basename $f)
+                    out_file=$OUT_PATH/${LOC}_$fname
+                    cdo -f nc -sellonlatbox,$LON0,$LON1,$LAT0,$LAT1 $f $out_file
+                done
+            elif [ $MODEL = 'IC' ]; then
+                echo "ICON"
+                # cli  clw  hus  pa  ta  ua  va  wa
+                for f in $IN_PATH/$IN_IC/DW-ATM/atmos/3hr/$v/r1i1p1f1/ml/gn/*_20200$d*; do
+                    fname=$(basename $f)
+                    out_file=$OUT_PATH/${LOC}_$fname
+                    cdo -f nc -sellonlatbox,$LON0,$LON1,$LAT0,$LAT1 -setgrid,$GRID_IC $f $out_file
+                done
+            elif [ $MODEL = 'SC' ]; then
+                echo "SCREAM"
+                # area, cl, cli, cl-mod, clw, co2vmr, datesec, dtau, f12vmr, icenvi, lon, ndcur, nsteph, psl, ta, va
+                # ch4vmr, cldnvi, clifrac, clt, clwfrac, date, dem, f11vmr,  hus, lat, n2ovmr, nscur, ps, rainnvi, ua, wap
+                for f in $IN_PATH/$IN_SC/DW-ATM/atmos/3hr/$v/r1i1p1f1/ml/gn/*_20200$d*; do
+                    fname=$(basename $f)
+                    out_file=$OUT_PATH/${LOC}_$fname
+                    cdo -f nc -sellonlatbox,$LON0,$LON1,$LAT0,$LAT1 -setgrid,$GRID_SC $f $out_file
+                done
+            elif [ $MODEL = 'AR' ]; then
+                echo "ARP"
+                # cli  clw  hus  pa  ta  ua  va  wa
+                for f in $IN_PATH/$IN_AR/DW-ATM/atmos/3hr/$v/r1i1p1f1/ml/gn/*_20200$d*; do
+                    fname=$(basename $f)
+                    out_file=$OUT_PATH/${LOC}_$fname
+                    cdo -f nc -sellonlatbox,$LON0,$LON1,$LAT0,$LAT1 -setgrid,$GRID_AR $f $out_file
+                done
+            else 
+                echo "check model "$MODEL
+            fi
+        done
+    done
+fi

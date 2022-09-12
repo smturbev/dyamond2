@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=cdo_mul
+#SBATCH --job-name=cdo_mulIC
 #SBATCH --partition=compute
 #SBATCH --mem=20GB
 #SBATCH --time=08:00:00
@@ -13,11 +13,21 @@
 set -evx # verbose messages and crash message
 scr="/scratch/b/b380883/temp"
 twp="/work/bb1153/b380883/TWP"
-var="iwc"
+var="tv"
 
-# cdo -mul -addc,1 -mulc,0.61 /work/bb1153/b380883/TWP/TWP_3D_SCREAM_hus_20200130-20200228.nc /work/bb1153/b380883/TWP/TWP_3D_SCREAM_ta_20200130-20200228.nc /work/bb1153/b380883/TWP/TWP_3D_SCREAM_Tv_20200130-20200228.nc
 
-# cdo -mul -addc,1 -mulc,0.61 /work/bb1153/b380883/TWP/TWP_3D_UM_hus_20200130-20200228.nc /work/bb1153/b380883/TWP/TWP_3D_UM_ta_20200130-20200228.nc /work/bb1153/b380883/TWP/TWP_3D_UM_Tv_20200130-20200228.nc
+#################
+###    Tv     ###
+#################
+if [ $var = 'tv' ]; then
+    model="ARP"
+    
+    hus=$twp/TWP_3D_${model}_hus_20200130-20200228.nc
+    ta=$twp/TWP_3D_${model}_ta_20200130-20200228.nc
+    tv=$twp/TWP_3D_${model}_Tv_20200130-20200228.nc
+    
+    cdo -mul -addc,1 -mulc,0.61 $hus $ta $tv
+fi
 
 ##################
 ####    IWC   ####
@@ -25,27 +35,28 @@ var="iwc"
 # Calculate IWC (kg/m3) from mixing ratio (kg/kg)
 # rho = p / (287*(1 + 0.61*(qv))*(t)
 # iwc = qi.values * rho
-m="UM"
-p=$twp/TWP_3D_${m}_pfull_20200130-20200228.nc
-t=$twp/TWP_3D_${m}_ta_20200130-20200228.nc
-hus=$twp/TWP_3D_${m}_hus_20200130-20200228.nc
-rho_d=$scr/rhod_${m}.nc
-rho=$scr/rho_${m}.nc
-qf=$twp/TWP_3D_${m}_cli_20200130-20200228.nc
-# qf=$scr/qf_${m}.nc
-# qi=$twp/TWP_3D_${m}_cli_20200130-20200228.nc
-# qs=$twp/TWP_3D_${m}_snowmxrat_20200130-20200228.nc
-# qg=$twp/TWP_3D_${m}_grplmxrat_20200130-20200228.nc
-iwc=$twp/TWP_3D_${m}_iwc_20200130-20200228.nc
-
 if [ $var = 'iwc' ]; then
+
+    m="UM"
+    p=$twp/TWP_3D_${m}_pfull_20200130-20200228.nc
+    t=$twp/TWP_3D_${m}_ta_20200130-20200228.nc
+    hus=$twp/TWP_3D_${m}_hus_20200130-20200228.nc
+    rho_d=$scr/rhod_${m}.nc
+    rho=$scr/rho_${m}.nc
+    qf=$twp/TWP_3D_${m}_cli_20200130-20200228.nc
+    # qf=$scr/qf_${m}.nc
+    # qi=$twp/TWP_3D_${m}_cli_20200130-20200228.nc
+    # qs=$twp/TWP_3D_${m}_snowmxrat_20200130-20200228.nc
+    # qg=$twp/TWP_3D_${m}_grplmxrat_20200130-20200228.nc
+    iwc=$twp/TWP_3D_${m}_iwc_20200130-20200228.nc
+    
     cdo -mul -mulc,287 -addc,1 -mulc,0.61 $hus $t $rho_d
     cdo -div $p $rho_d $rho
     # cdo -add -add $qi $qs $qg $qf
     cdo -setname,iwc -setunit,"kg/m3" -mul $rho $qf $iwc
 fi
 
-rm $rho $qf $rho_d
+# rm $rho $qf $rho_d
 
 ##################
 ####  RHice   ####
@@ -57,11 +68,11 @@ rm $rho $qf $rho_d
 # return rh_ice
 
 if [ $var = 'rhice' ]; then
-    m="NICAM"
+    m="ICON"
 
     ta=$twp/TWP_3D_${m}_ta_20200130-20200228.nc
     qv=$twp/TWP_3D_${m}_hus_20200130-20200228.nc
-    p=$twp/TWP_3D_${m}_pfull_20200130-20200228.nc
+    p=$twp/TWP_3D_${m}_pa_20200130-20200228.nc
 
     out2=$scr/"temp2.nc"
     out3=$scr/"temp3.nc"
@@ -81,7 +92,7 @@ if [ $var = 'rhice' ]; then
     cdo -mulc,0.622 -div $esi $p $wsi
     cdo -addc,1 -mulc,-1 $qv $dom_qv
     cdo -div $qv $dom_qv $wi
-    cdo -mulc,100 -div $wi $wsi $rhice
+    cdo -setname,"rhice" -setunit,"%" -mulc,100 -div $wi $wsi $rhice
 fi
 
 

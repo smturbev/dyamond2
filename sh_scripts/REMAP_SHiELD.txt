@@ -1,0 +1,17 @@
+gridtype  = curvilinear
+gridsize  = 46479360
+xsize     = 1440
+ysize     = 240
+xfirst    = 0.125
+xinc      = 0.25
+yfirst    = -29.875
+yinc      = 0.25
+xname     = lon
+xdimname  = Xdim
+xlongname = "longitude"
+xunits    = "radian"
+yname     = lat
+ydimname  = Ydim
+ylongname = "latitude"
+yunits    = "radian"
+vdimname  = nv

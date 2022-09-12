@@ -14,16 +14,18 @@ set -evx # verbose messages and crash message
 module load nco
 
 LOC="TWP"
-FILE_PATH=/work/bb1153/b380883/GT
-MODEL="ICONr0.25deg" #"SAM"
-# declare -a RadFileArray=(rlt) # done: rlt rst
-v="rsut"
+FILE_PATH=/work/bb1153/b380883/TWP
+MODEL="ICONr0.1deg" #"SAM"
+declare -a RadFileArray=(rsut) # done: rlt rst
+# v="rlt"
 # olr (J/m2 --> W/m2)
-# for v in "${RadFileArray[@]}"; do
-for f in /scratch/b/b380883/r0.25deg_TWP_${v}acc_15min_ICON-NWP*.nc; do
+for v in "${RadFileArray[@]}"; do
+# for v in ${FILE_PATH}/${LOC}_${MODEL}_${v}_20200130-20200228.nc; do
+    f=${FILE_PATH}/${LOC}_${MODEL}_${v}acc_20200130-20200228.nc
     fname=$(basename $f)
-    out_file=/scratch/b/b380883/$LOC"_"$MODEL"_"$fname
-    cdo -setname,$v -setunit,"W/m2" -divc,-900 -deltat $f $out_file
+    # out_file=$FILE_PATH/$LOC"_"$MODEL"_"$fname
+    out_file=${f/acc}
+    cdo -setname,$v -setunit,"W/m2" -divc,900 -deltat $f $out_file
 done
 
 ## ARP 
