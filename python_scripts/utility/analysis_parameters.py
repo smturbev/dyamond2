@@ -23,6 +23,8 @@ WRK = "/work/bb1153/b380883/"
 ## Regions ##
 GT  = WRK+"GT/"
 TWP = WRK+"TWP/"
+DY1 = WRK+"dyamond1/"
+TWP1 = DY1+"TWP/"
 
 # data #
 CERES_SYN1_1H = "/work/bb1153/b380883/TWP/CERES_SYN1deg-1H_Terra-Aqua-MODIS_Ed4.1_Subset_20200101-20200331.nc"
@@ -31,6 +33,7 @@ CCCM_JFM = TWP+"CERES_CCCM_JFM_2007-2011.nc"
 ERA5_TWP = "/work/bb1153/b380887/10x10/TWP/"
 ERA5_TWP_zg = ERA5_TWP + "ERA5_geopotential_50-200mb_winter_TWP.nc"
 ERA5_TWP_ta = ERA5_TWP + "ERA5_temp_50-200mb_winter_TWP.nc"
+CERES_SYN1_DY1 = "/work/bb1153/b380883/dyamond1/TWP/TWP_CERES_20000801-20190910.nc"
 
 ## time mean ##
 TIMMEAN_GT = GT+"timmean/"
@@ -40,7 +43,7 @@ UM_PFULL = TWP+"TWP_3D_pfull_3hr_UM_20200130-20200228.nc"
 UM_PHALF = TWP+"TWP_3D_phalf_3hr_UM_20200130-20200228.nc"
 
 
-def get_file(model, region="twp", var="rlut"):
+def get_file(model, region="TWP", var="rlut"):
     """ returns file path for given variable, region and model
     
         Input:
@@ -66,6 +69,23 @@ def get_file(model, region="twp", var="rlut"):
         return GT+region+"_"+model+"_"+var+"_20200130-20200228.nc"
     else:
         raise Exception("region {} or model {} or var {} not valid".format(region, model, var))
+        return
+    return
+
+def get_dyamond1(model, region="TWP", var="rlt"):
+    """ returns file path for given variable, region and model
+    
+        Input:
+            - model  (str) : model name - case sensitive
+            - var    (str) : variable name - case sensitive
+            - region (str) : region (accepts 'TWP' and 'GT' or 'tropics') - not case sensitive
+                             default is TWP region (143-153E,5N-5S)
+                             Tropics or GT is equitorial belt from 30N to 30S
+        Output:
+         - filename(str): returns a string of the file name for given input
+    """
+    return TWP1+region+"_"+model+"_"+var+"_20160810-20160910.nc"
+
     
 
 def get_timmean_file(model, region="twp", var="clt"):
