@@ -15,12 +15,14 @@ TWP="/work/bb1153/b380883/TWP"
 GT="/work/bb1153/b380883/GT"
 scr="/scratch/b/b380883"
 
-cdo -cat $scr/r0.1deg_TWP_rst_15min_ARPEGE* $TWP/TWP_ARPr0.1deg_rst_20200130-20200228.nc
-cdo -cat $scr/r0.1deg_TWP_rlt_15min_ARPEGE* $TWP/TWP_ARPr0.1deg_rlt_20200130-20200228.nc
-
-# cdo -cat $scr/TWP_clt_15min_SHiELD*.nc $TWP/TWP_SHiELD_clt_20200130-20200228.nc
-# cdo -cat $scr/TWP_clh_15min_SHiELD*.nc $TWP/TWP_SHiELD_clh_20200130-20200228.nc
-
-# cdo -cat $scr/ne30pg2_ne1024pg2/*.nc /work/bb1153/b380883/gn_SCREAM_SOLIN_20200130-20200228.nc
+# cdo -cat $scr/TWP_rltcs_15min_SCREAM*.nc $TWP/TWP_SCREAM_rltcs_20200130-20200228.nc
+# cdo -cat $scr/TWP_rstcs_15min_SCREAM*.nc $TWP/TWP_SCREAM_rstcs_20200130-20200228.nc
+# cdo -cat $scr/TWP_rlutcs_15min_GEOS*.nc $TWP/TWP_GEOS_rlutcs_20200130-20200228.nc
+# cdo -cat $scr/TWP_rsutcs_15min_GEOS*.nc $TWP/TWP_GEOS_rsutcs_20200130-20200228.nc
+cdo -cat $scr/TWP_rltacc_1hr_IFS*.nc $scr/TWP_IFS_rltacc_20200120-20200228.nc
+cdo -cat $scr/TWP_rltcsacc_1hr_IFS*.nc $scr/TWP_IFS_rltcsacc_20200120-20200228.nc
+cdo -cat $scr/TWP_rstacc_1hr_IFS*.nc $scr/TWP_IFS_rstacc_20200120-20200228.nc
+cdo -cat $scr/TWP_rstcsacc_1hr_IFS*.nc $scr/TWP_IFS_rstcsacc_20200120-20200228.nc
+cdo -cat $scr/TWP_rsdtacc_1hr_IFS*.nc $scr/TWP_IFS_rsdtacc_20200120-20200228.nc
 
 echo "done"

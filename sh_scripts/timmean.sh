@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=timmean
+#SBATCH --job-name=timmeanrlt
 #SBATCH --partition=compute
 #SBATCH --account=bb1153
 #SBATCH --time=04:30:00
@@ -14,10 +14,10 @@ set -evx # verbose messages and crash message
 
 IN_PATH=/work/bb1153/b380883/GT
 OUT_PATH=/work/bb1153/b380883/GT/timmean
-declare -a MODELS=("SHiELDr0.25deg") # done: "NICAM" "UM" "SAM" "SCREAMr0.25deg", "ARPr0.25deg"
+declare -a MODELS=("SCREAMr1deg" "ICONr1deg" "SAMr1deg") # rlut: ("SHiELDr1deg" "GEOSr1deg") rlt: ("ARPr1deg" "SCREAMr1deg" "ICONr1deg" "SAMr1deg")
 
 for v in "${MODELS[@]}"; do
-    for f in $IN_PATH/GT_${v}_rlut_20200130-20200228.nc; do
+    for f in $IN_PATH/GT_${v}_rlt_20200130-20200228.nc; do
         fname=$(basename $f)
         out_file=$OUT_PATH/timmean_$fname
         echo $fname

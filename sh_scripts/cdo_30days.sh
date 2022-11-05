@@ -12,8 +12,7 @@
 set -evx # verbose messages and crash message
 wrk=/work/bb1153/b380883/TWP
 
-declare -a fileArray=(TWP_ICONr0.25deg_rst_20200130-20200228.nc
-TWP_ICONr0.25deg_rlt_20200130-20200228.nc
+declare -a fileArray=(TWP_ICONr0.1deg_rlt_20200130-20200228.nc
 )
 
 
@@ -91,6 +90,7 @@ for file in "${fileArray[@]}"; do
     # cdo -seldate,2020-01-30T00:00:00,2020-02-28T23:59:00 $in_file $out_file
     cdo -seltimestep,1/2820 $in_file $out_file
     rm $in_file
+    mv $out_file $in_file
 done
 
 

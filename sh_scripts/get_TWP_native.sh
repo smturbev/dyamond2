@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=TWP_CM
+#SBATCH --job-name=TWP_IF
 #SBATCH --partition=compute
 #SBATCH --time=08:00:00
 #SBATCH --mem=100GB
@@ -17,7 +17,7 @@ LON1=153
 LAT0=-5
 LAT1=5
 LOC="TWP"
-MODEL="GM"
+MODEL="IF"
 dim_2D=true
 dim_3D=false
 
@@ -43,9 +43,10 @@ GRID_SC=/work/ka1081/DYAMOND_WINTER/LLNL/SCREAM-3km/grid.nc
 GRID_AR=/work/ka1081/DYAMOND_WINTER/METEOFR/ARPEGE-NH-2km/DW-ATM/atmos/fx/gn/grid.nc
 GRID_SH=/work/ka1081/DYAMOND_WINTER/NOAA/SHiELD-3km/DW-ATM/atmos/fx/gn/grid.nc
 GRID_GM=/work/ka1081/DYAMOND_WINTER/CMC/GEM/DW-ATM/atmos/fx/gn/grid.nc
+GRID_IF=/work/ka1081/DYAMOND_WINTER/ECMWF/IFS-4km/DW-CPL/atmos/fx/grid/r1i1p1f1/2d/gn/grid_fx_IFS-4km_DW-CPL_r1i1p1f1_2d_gn_fx.nc
 
 declare -a VarArray15min=(rltacc)
-declare -a DateArray=(13 20 21 22)
+declare -a DateArray=(12)
 if $dim_2D ; then
     # 2D vars
     echo "2D running..."
@@ -121,6 +122,13 @@ if $dim_2D ; then
                     out_file=$OUT_PATH/${LOC}_$fname
                     cdo -f nc -sellonlatbox,$LON0,$LON1,$LAT0,$LAT1 -setgrid,$GRID_GM $f $out_file
                 done
+            elif [ $MODEL = 'IF' ]; then
+                echo "IFS"
+                for f in $IN_PATH/$IN_IF/DW-CPL/atmos/1hr/$v/r1i1p1f1/2d/gn/*_20200$d*; do
+                    fname=$(basename $f)
+                    out_file=$OUT_PATH/${LOC}_$fname
+                    cdo -f nc -sellonlatbox,$LON0,$LON1,$LAT0,$LAT1 -setgrid,$GRID_IF $f $out_file
+                done
             else
                 echo "model not defined "$MODEL
             fi
@@ -128,7 +136,7 @@ if $dim_2D ; then
     done
 fi
 
-declare -a VarArray3D=(clw)
+declare -a VarArray3D=(cli)
 declare -a DateArray=(13 20 21 22)
 
 # 3D vars

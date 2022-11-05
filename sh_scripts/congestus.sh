@@ -26,7 +26,7 @@ clf_subcf=/scratch/b/b380883/TWP_3D_GEOS_clfcf_alb0.6_olr200_20200130-20200228.n
 # calculate albedo (one time)
 # cdo -div $swu $swd $alb
 # calculate clf mean and cld frac
-# cdo -ifthen -gec,0.6 $alb $clf $clf_sub
+cdo -ifthen -gec,0.6 $alb $clf $clf_sub
 cdo -ifthen -gec,200 $olr $clf_sub $clf_sub2
 cdo -fldmean $clf_sub2 $clf_submean
 cdo -fldmean -gec,1e-5 $clf_sub2 $clf_subcf
@@ -38,7 +38,7 @@ clw_submean=/scratch/b/b380883/TWP_3D_GEOS_clwmean_alb0.6_olr200_20200130-202002
 clw_subcf=/scratch/b/b380883/TWP_3D_GEOS_clwcf_alb0.6_olr200_20200130-20200228.nc
 
 # calc flw mean and cld frac
-# cdo -ifthen -gec,0.6 $alb $clw $clw_sub
+cdo -ifthen -gec,0.6 $alb $clw $clw_sub
 cdo -ifthen -gec,200 $olr $clw_sub $clw_sub2
 cdo -fldmean $clw_sub2 $clw_submean
 cdo -fldmean -gec,1e-5 $clw_sub2 $clw_subcf
