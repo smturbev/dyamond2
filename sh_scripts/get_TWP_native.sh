@@ -45,7 +45,7 @@ GRID_SH=/work/ka1081/DYAMOND_WINTER/NOAA/SHiELD-3km/DW-ATM/atmos/fx/gn/grid.nc
 GRID_GM=/work/ka1081/DYAMOND_WINTER/CMC/GEM/DW-ATM/atmos/fx/gn/grid.nc
 GRID_IF=/work/ka1081/DYAMOND_WINTER/ECMWF/IFS-4km/DW-CPL/atmos/fx/grid/r1i1p1f1/2d/gn/grid_fx_IFS-4km_DW-CPL_r1i1p1f1_2d_gn_fx.nc
 
-declare -a VarArray15min=(rltacc)
+declare -a VarArray15min=(rstacc rsdtacc rstcsacc rltcsacc)
 declare -a DateArray=(12)
 if $dim_2D ; then
     # 2D vars
