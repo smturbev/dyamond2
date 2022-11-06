@@ -11,20 +11,20 @@
 #SBATCH --error=err_dt.eo
 
 set -evx # verbose messages and crash message
-module load nco
+# module load nco
 
 LOC="TWP"
 FILE_PATH=/work/bb1153/b380883/TWP
 MODEL="IFS" #"SAM"
-declare -a RadFileArray=(rlt) # done: rlt rst
+declare -a RadFileArray=(rst rltcs rstcs rsdt) # done: rlt rst
 
 # # olr (J/m2 --> W/m2)
 for v in "${RadFileArray[@]}"; do
     f=${FILE_PATH}/${LOC}_${MODEL}_${v}acc_20200120-20200228.nc
     fname=$(basename $f)
-    # out_file=$FILE_PATH/$LOC"_"$MODEL"_"$fname
-    out_file=${f/acc}
-    cdo -setname,$v -setunit,"W/m2" -divc,3600 -deltat $f $out_file
+    out_file=${FILE_PATH}/${LOC}_${MODEL}_${v}acc_20200130-20200228.nc
+    # out_file=${f/acc}
+    cdo -setname,$v -setunit,"W/m2" -seldate,2020-01-30T00:00:00,2020-02-28T23:59:00 -divc,900 -deltat $f $out_file
 done
 
 # #DYAMOND1

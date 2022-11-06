@@ -19,7 +19,7 @@ scr="/scratch/b/b380883"
 # cdo -cat $scr/TWP_rstcs_15min_SCREAM*.nc $TWP/TWP_SCREAM_rstcs_20200130-20200228.nc
 # cdo -cat $scr/TWP_rlutcs_15min_GEOS*.nc $TWP/TWP_GEOS_rlutcs_20200130-20200228.nc
 # cdo -cat $scr/TWP_rsutcs_15min_GEOS*.nc $TWP/TWP_GEOS_rsutcs_20200130-20200228.nc
-cdo -cat $scr/TWP_rltacc_1hr_IFS*.nc $scr/TWP_IFS_rltacc_20200120-20200228.nc
+# cdo -cat $scr/TWP_rltacc_1hr_IFS*.nc $scr/TWP_IFS_rltacc_20200120-20200228.nc
 cdo -cat $scr/TWP_rltcsacc_1hr_IFS*.nc $scr/TWP_IFS_rltcsacc_20200120-20200228.nc
 cdo -cat $scr/TWP_rstacc_1hr_IFS*.nc $scr/TWP_IFS_rstacc_20200120-20200228.nc
 cdo -cat $scr/TWP_rstcsacc_1hr_IFS*.nc $scr/TWP_IFS_rstcsacc_20200120-20200228.nc
