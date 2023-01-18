@@ -28,12 +28,15 @@ TWP1 = DY1+"TWP/"
 
 # data #
 CERES_SYN1_1H = "/work/bb1153/b380883/TWP/CERES_SYN1deg-1H_Terra-Aqua-MODIS_Ed4.1_Subset_20200101-20200331.nc"
+CERES_SYN1_ANN_MEAN_DY1 = "/work/bb1153/b380883/dyamond1/TWP/CERES_SYN1_3H_mean_JAS_2001-2019.nc"
+CERES_SYN1_ANN_MEAN_DY2 = "/work/bb1153/b380883/TWP/CERES_SYN1_3H_mean_JFM_2002-2019.nc"
 CCCM_JAS = TWP+"CERES_CCCM_JAS_2007-2011.nc"
 CCCM_JFM = TWP+"CERES_CCCM_JFM_2007-2011.nc"
 ERA5_TWP = "/work/bb1153/b380887/10x10/TWP/"
 ERA5_TWP_zg = ERA5_TWP + "ERA5_geopotential_50-200mb_winter_TWP.nc"
 ERA5_TWP_ta = ERA5_TWP + "ERA5_temp_50-200mb_winter_TWP.nc"
 CERES_SYN1_DY1 = "/work/bb1153/b380883/dyamond1/TWP/TWP_CERES_20000801-20190910.nc"
+CERES_YM_DY1 = "/work/bb1153/b380883/dyamond1/TWP/TWP_CERES_yearmean_20000801-20190910.nc"
 
 ## time mean ##
 TIMMEAN_GT = GT+"timmean/"
@@ -41,6 +44,13 @@ UM_PFULL_MEAN = TWP+"mean/fldmean_TWP_3D_UM_pfull_20200130-20200228.nc"
 UM_PHALF_MEAN = TWP+"mean/fldmean_TWP_3D_UM_phalf_20200130-20200228.nc"
 UM_PFULL = TWP+"TWP_3D_pfull_3hr_UM_20200130-20200228.nc"
 UM_PHALF = TWP+"TWP_3D_phalf_3hr_UM_20200130-20200228.nc"
+
+## stats ##
+STATS=WRK+"stats/"
+TWP_MEANOLR_DY1=STATS+"TWP/dyamond1/TWP_meanOLR_DY1_models.nc"
+TWP_MEANOLR_DY2=STATS+"TWP/dyamond2/TWP_meanOLR_DY2_models.nc"
+TWP_MEANSWU_DY1=STATS+"TWP/dyamond1/TWP_meanSWU_DY1_models.nc"
+TWP_MEANSWU_DY2=STATS+"TWP/dyamond2/TWP_meanSWU_DY2_models.nc"
 
 
 def get_file(model, region="TWP", var="rlut"):
