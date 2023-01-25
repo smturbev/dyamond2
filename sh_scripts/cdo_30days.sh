@@ -12,7 +12,7 @@
 set -evx # verbose messages and crash message
 wrk=/work/bb1153/b380883/TWP
 
-declare -a fileArray=(TWP_ICONr0.1deg_rlt_20200130-20200228.nc
+declare -a fileArray=(TWP_ICONr0.1deg_rsut_20200130-20200228.nc
 )
 
 
@@ -87,8 +87,9 @@ for file in "${fileArray[@]}"; do
     out_file=$wrk/${file%.*}"new.nc"
     echo $in_file" "$out_file
     # cdo -seldate,2016-08-10T00:00:00,2016-09-10T23:59:00 $in_file $out_file
-    # cdo -seldate,2020-01-30T00:00:00,2020-02-28T23:59:00 $in_file $out_file
-    cdo -seltimestep,1/2820 $in_file $out_file
+    cdo -seldate,2020-01-30T00:00:00,2020-02-28T23:59:00 $in_file $out_file
+    # for ICON... 2020-02-28T16:30:00
+    # cdo -seltimestep,1/2820 $in_file $out_file
     rm $in_file
     mv $out_file $in_file
 done
