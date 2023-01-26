@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=TWP_SA
+#SBATCH --job-name=TWP_UM3D
 #SBATCH --partition=compute
 #SBATCH --time=08:00:00
 #SBATCH --mem=100GB
@@ -17,9 +17,9 @@ LON1=153
 LAT0=-5
 LAT1=5
 LOC="TWP"
-MODEL="SA"
-dim_2D=true
-dim_3D=false
+MODEL="UM"
+dim_2D=false
+dim_3D=true
 
 IN_PATH=/work/ka1081/DYAMOND_WINTER
 OUT_PATH=/scratch/b/b380883

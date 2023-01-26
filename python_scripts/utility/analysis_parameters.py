@@ -113,10 +113,7 @@ def get_timmean_file(model, region="twp", var="clt"):
     
 def get_fldmean_file(model, region="twp", var="pr"):
     if var=="zg":
-        if model.lower()=="um" or model.lower()=="scream":
-            return TWP+"mean/xytmean_"+region+"_3D_"+model+"_zg_20200130-20200228.nc"
-        else:
-            return TWP+"mean/fldmean_"+region+"_3D_"+model+"_zg_20200130-20200228.nc"
+        return TWP+"mean/fldmean_"+region+"_3D_"+model+"_zg_20200130-20200228.nc"
     if region.lower()=="gt" or region.lower()=="tropics":
         if (model.lower()=="geos") or (model.lower()=="nicam") or model.lower()=="scream" or model.lower()=="icon" or (model.lower()=="screamr"):
             return GT+"fldmean/fldmean_GT_{m}_{v}_20200130-20200301.nc".format(m=model, v=var)
@@ -131,6 +128,9 @@ def get_fldmean_file(model, region="twp", var="pr"):
         return TWP+"mean/fldmean_TWP_3D_"+model.upper()+"_"+var.lower()+"_20200130-20200228.nc"
     return
 
+def get_xytmean_file(model, region="TWP", var="zg"):
+    return TWP+"mean/xytmean_"+region+"_3D_"+model+"_zg_20200130-20200228.nc"
+    
 def get_fldmedian_file(model, region="twp", var="pr"):
     return TWP+"mean/fldmedian_TWP_3D_"+model.upper()+"_"+var.lower()+"_20200130-20200228.nc"
 
