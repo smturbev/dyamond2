@@ -17,7 +17,7 @@ LOC="TWP"
 FILE_PATH=/work/bb1153/b380883/
 SCR=/scratch/b/b380883/
 MODEL="ICONr0.1deg" #"SAM"
-declare -a RadFileArray=(rsut) # e.g., rlt, rst
+declare -a RadFileArray=(pr) # e.g., rlt, rst
 
 # olr (J/m2 --> W/m2)
 for v in "${RadFileArray[@]}"; do
@@ -25,7 +25,8 @@ for v in "${RadFileArray[@]}"; do
     fname=$(basename $f)
     out_file=${FILE_PATH}/${LOC}/${LOC}_${MODEL}_${v}_20200130-20200228.nc
     # out_file=${f/acc}
-    cdo -setname,$v -setunit,"W/m2" -divc,900 -deltat $f $out_file
+    # cdo -setname,$v -setunit,"W/m2" -divc,900 -deltat $f $out_file
+    cdo -setname,$v -setunit,"kg m-2 s-1" -divc,900 -deltat $f $out_file
 done
 
 # #DYAMOND1

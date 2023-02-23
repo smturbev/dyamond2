@@ -11,13 +11,17 @@
 
 set -evx # verbose messages and crash message
 
-TWP="/work/bb1153/b380883/TWP"
-GT="/work/bb1153/b380883/GT"
+twp="/work/bb1153/b380883/TWP"
+gt="/work/bb1153/b380883/GT"
 scr="/scratch/b/b380883"
 
-# cdo -cat $scr/r0.1deg_TWP_rsutacc_15min_ICON*.nc /work/bb1153/b380883/TWP_ICONr0.1deg_rsutacc_20200130-20200228.nc
-# cdo -cat $scr/r0.1deg_TWP_rsdt_15min_GEOS*.nc /work/bb1153/b380883/TWP_GEOSr0.1deg_rsdt_20200130-20200228.nc
-# cdo -cat $scr/TWP_cli_3hr_UM-5km*.nc /work/bb1153/b380883/TWP_3D_UM_cli_20200130-20200228.nc
+#cdo -cat $scr/r1deg_GT_pracc_15min_ICON*.nc $gt/GT_ICONr1deg_pracc_20200120-20200228.nc
+#cdo -cat $scr/r1deg_GT_pracc_15min_gSAM*.nc $gt/GT_SAMr1deg_pracc_20200120-20200228.nc
+#cdo -cat $scr/r1deg_GT_pr_15min_SCREAM*.nc $gt/GT_SCREAMr1deg_pr_20200120-20200228.nc
+#cdo -cat $scr/r1deg_GT_pr_15min_GEOS*.nc $gt/GT_GEOSr1deg_pr_20200120-20200228.nc
+#cdo -cat $scr/r1deg_GT_prc_15min_GEOS*.nc $gt/GT_GEOSr1deg_prc_20200120-20200228.nc
+# cdo -cat $scr/r1deg_GT_pr_15min_SHiELD*.nc $gt/GT_SHiELDr1deg_pr_20200120-20200228.nc
+#cdo -cat $scr/r1deg_GT_pr_15min_ARP*.nc $gt/GT_ARPr1deg_pr_20200120-20200228.nc
+#cdo -cat $scr/r1deg_GT_pr_15min_UM*.nc $gt/GT_UMr1deg_pr_20200120-20200228.nc
 
-
-echo "done"
+echo "done" 
