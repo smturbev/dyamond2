@@ -115,18 +115,18 @@ def get_fldmean_file(model, region="twp", var="pr"):
     if var=="zg":
         return TWP+"mean/fldmean_"+region+"_3D_"+model+"_zg_20200130-20200228.nc"
     if region.lower()=="gt" or region.lower()=="tropics":
-        if (model.lower()=="geos") or (model.lower()=="nicam") or model.lower()=="scream" or model.lower()=="icon" or (model.lower()=="screamr"):
-            return GT+"fldmean/fldmean_GT_{m}_{v}_20200130-20200301.nc".format(m=model, v=var)
-        elif model.lower()=="um":
-            return GT+"fldmean/fldmean_GT_{m}_{v}_20200130-20200301.nc".format(m=model, v=var)
-        elif (model.lower()=="sam"):
-            return GT+"fldmean/fldmean_GT_{m}_{v}_20200130-20200301.nc".format(m=model, v=var)
+        if model=="CERES":
+            return GT+"fldmean/fldmean_GT_CERES_rad_toa_1hm_JFM.nc"
         else:
-            raise Exception("fldmean for "+model+" & "+var+" for GT not accepted.")
-        return
+            return GT+"fldmean/fldmean_GT_{m}_{v}_20200130-20200228.nc".format(m=model, v=var)
     elif region.lower()=="twp":
-        return TWP+"mean/fldmean_TWP_3D_"+model.upper()+"_"+var.lower()+"_20200130-20200228.nc"
+        return TWP+"mean/fldmean_TWP_3D_"+model+"_"+var.lower()+"_20200130-20200228.nc"
     return
+def get_mermean_file(model, region,="gt", var="rlt"):
+    if model=="CERES":
+            return GT+"fldmean/mermean_GT_CERES_rad_toa_1hm_JFM.nc"
+        else:
+            return GT+"fldmean/mermean_GT_{m}_{v}_20200130-20200228.nc".format(m=model, v=var)
 
 def get_xytmean_file(model, region="TWP", var="zg"):
     return TWP+"mean/xytmean_"+region+"_3D_"+model+"_zg_20200130-20200228.nc"
