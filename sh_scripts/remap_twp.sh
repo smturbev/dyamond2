@@ -96,7 +96,7 @@ done
 # get total frozen mixing ratio for GEOS
 # cdo -add -add $TWP/TWP_GEOS_qgvi_20200130-20200228.nc $TWP/TWP_GEOS_qsvi_20200130-20200228.nc $TWP/TWP_GEOS_clivi_20200130-20200228.nc $TWP/TWP_GEOS_qfvi_20200130-20200228.nc
 
-new_grid="REMAP_SHiELD.txt"
-cdo -remapcon,$new_grid -setgrid,$GRID_SH $TWP/TWP_SHiELD_rsdt_20200130-20200228.nc $TWP/TWP_SHiELDr0.1deg_rsdt_20200130-20200228.nc
+# new_grid="REMAP_SHiELD.txt"
+# cdo -remapcon,$new_grid -setgrid,$GRID_SH $TWP/TWP_SHiELD_rsdt_20200130-20200228.nc $TWP/TWP_SHiELDr0.1deg_rsdt_20200130-20200228.nc
 
 echo "done"

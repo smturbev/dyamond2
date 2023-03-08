@@ -14,12 +14,18 @@ set -evx # verbose messages and crash message
 twp="/work/bb1153/b380883/TWP"
 
 declare -a ModelArray=(
+ARP
+SHiELD
+ICON
+SCREAM
 UM
 )
 
 # cloud fraction is 1 where CLI is greater than or equal to 1e-5 kg/kg
 for m in "${ModelArray[@]}"; do
-    cdo -setunit,"frac" -setname,cl -fldmean -gec,1e-5 -add $twp/TWP_3D_${m}_cli_20200130-20200228.nc $twp/TWP_3D_${m}_clw_20200130-20200228.nc $twp/mean/fldmean_TWP_3D_${m}_cl_20200130-20200228.nc
+    # cdo -setunit,"frac" -setname,cl -fldmean -gec,1e-5 -add $twp/TWP_3D_${m}_cli_20200130-20200228.nc $twp/TWP_3D_${m}_clw_20200130-20200228.nc $twp/mean/fldmean_TWP_3D_${m}_cl_20200130-20200228.nc
+    # cdo -setunit,"frac" -setname,cl -fldmean -gec,5e-7 $twp/TWP_3D_${m}_cltotal_20200130-20200228.nc $twp/mean/fldmean_TWP_3D_${m}_cl_5e-7kgkg-1_20200130-20200228.nc
+    cdo -setunit,"frac" -setname,cl -gec,5e-7 $twp/TWP_3D_${m}_totalwater_20200130-20200228.nc $twp/TWP_3D_${m}_cl_5e-7kgm-3_20200130-20200228.nc
     # cdo -setname,cltotal -add $twp/TWP_3D_${m}_cli_20200130-20200228.nc $twp/TWP_3D_${m}_clw_20200130-20200228.nc $twp/TWP_3D_${m}_cltotal_20200130-20200228.nc
     # cdo -setname,cltotal -fldmean $twp/TWP_3D_${m}_cltotal_20200130-20200228.nc $twp/mean/fldmean_TWP_3D_${m}_cltotal_20200130-20200228.nc
 done

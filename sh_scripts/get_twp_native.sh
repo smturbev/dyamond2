@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=TWP_UM3D
+#SBATCH --job-name=GEps_TWP
 #SBATCH --partition=compute
 #SBATCH --time=08:00:00
 #SBATCH --mem=100GB
@@ -17,9 +17,9 @@ LON1=153
 LAT0=-5
 LAT1=5
 LOC="TWP"
-MODEL="UM"
-dim_2D=false
-dim_3D=true
+MODEL="GE"
+dim_2D=true
+dim_3D=false
 
 IN_PATH=/work/ka1081/DYAMOND_WINTER
 OUT_PATH=/scratch/b/b380883
@@ -46,8 +46,8 @@ GRID_GM=/work/ka1081/DYAMOND_WINTER/CMC/GEM/DW-ATM/atmos/fx/gn/grid.nc
 GRID_IF=/work/ka1081/DYAMOND_WINTER/ECMWF/IFS-4km/DW-CPL/atmos/fx/grid/r1i1p1f1/2d/gn/grid_fx_IFS-4km_DW-CPL_r1i1p1f1_2d_gn_fx.nc
 GRID_MP=/work/ka1081/DYAMOND_WINTER/NCAR/MPAS-3km/DW-ATM/atmos/fx/gn/grid.nc
 
-declare -a VarArray15min=(pracc)
-declare -a DateArray=(12 13 20 21 22)
+declare -a VarArray15min=(ps)
+declare -a DateArray=(13 20 21 22)
 if $dim_2D ; then
     # 2D vars
     echo "2D running..."
@@ -144,7 +144,7 @@ if $dim_2D ; then
     done
 fi
 
-declare -a VarArray3D=(cli)
+declare -a VarArray3D=(pthick)
 declare -a DateArray=(13 20 21 22)
 
 # 3D vars
@@ -209,9 +209,21 @@ if $dim_3D ; then
                     out_file=$OUT_PATH/${LOC}_$fname
                     cdo -f nc -sellonlatbox,$LON0,$LON1,$LAT0,$LAT1 -setgrid,$GRID_AR $f $out_file
                 done
+            elif [ $MODEL = 'SH' ]; then
+                echo "SHiELD"
+                for f in $IN_PATH/$IN_SH/DW-ATM/atmos/3hr/$v/r1i1p1f1/ml/gn/*_20200$d*; do
+                    fname=$(basename $f)
+                    out_file=$OUT_PATH/${LOC}_$fname
+                    cdo -f nc -sellonlatbox,$LON0,$LON1,$LAT0,$LAT1 -setgridtype,unstructured -setgrid,$GRID_SH $f $out_file
+                done
             else 
                 echo "check model "$MODEL
             fi
         done
     done
 fi
+
+# f=/work/ka1081/DYAMOND_WINTER/NOAA/SHiELD-3km/DW-ATM/atmos/3hr/cli/r1i1p1f1/ml/gn/cli_3hr_SHiELD-3km_DW-ATM_r1i1p1f1_ml_gn_20200225030000-20200226000000.nc
+# out_file=/scratch/b/b380883/cli_3hr_SHiELD-3km_DW-ATM_r1i1p1f1_ml_gn_20200225030000-20200226000000.nc
+# cdo -f nc -sellonlatbox,$LON0,$LON1,$LAT0,$LAT1 -setgridtype,unstructured -setgrid,$GRID_SH $f $out_file
+echo "done"
