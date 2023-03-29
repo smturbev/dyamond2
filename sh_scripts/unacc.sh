@@ -14,20 +14,18 @@ set -evx # verbose messages and crash message
 # module load nco
 
 LOC="TWP"
-FILE_PATH=/work/bb1153/b380883/
+FILE_PATH=/work/bb1153/b380883
 SCR=/scratch/b/b380883/
-MODEL="ICONr0.1deg" #"SAM"
-declare -a RadFileArray=(pr) # e.g., rlt, rst
+MODEL="ICON" #"SAM"
+v="rlt" # e.g., rlt, rst
 
 # olr (J/m2 --> W/m2)
-for v in "${RadFileArray[@]}"; do
-    f=${FILE_PATH}/${LOC}_${MODEL}_${v}acc_20200120-20200228.nc
-    fname=$(basename $f)
-    out_file=${FILE_PATH}/${LOC}/${LOC}_${MODEL}_${v}_20200130-20200228.nc
-    # out_file=${f/acc}
-    # cdo -setname,$v -setunit,"W/m2" -divc,900 -deltat $f $out_file
-    cdo -setname,$v -setunit,"kg m-2 s-1" -divc,900 -deltat $f $out_file
-done
+f=${FILE_PATH}/$LOC/${LOC}_${MODEL}_${v}acc_20200130-20200228.nc
+fname=$(basename $f)
+out_file=${FILE_PATH}/${LOC}/${LOC}_${MODEL}_${v}_20200130-20200228.nc
+# out_file=${f/acc}
+cdo -setname,$v -setunit,"W/m2" -divc,-900 -deltat $f $out_file
+# cdo -setname,$v -setunit,"kg m-2 s-1" -divc,900 -deltat $f $out_file
 
 # #DYAMOND1
 # cdo -setname,rlt -seldate,2016-08-10T00:00:00,2016-09-10T23:59:00 -divc,-900 /scratch/b/b380883/TWP/TWP_ARPNH-2.5km_ttr_deacc_0.10deg.nc /scratch/b/b380883/TWP/TWP_ARP_rlt_20160801-20160910.nc

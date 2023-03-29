@@ -48,41 +48,41 @@ CON_SH=/home/b/b380883/dyamond2/sh_scripts/REMAP_SHiELD.txt
 
 echo $GRID_ARP
 
-declare -a VarArray15min=(rsdt) # done scream: clivi rlt rst; done geos: rlut rst rsut clivi 
-declare -a DateArray=(13 20 21 22)
+# declare -a VarArray15min=(rsdt) # done scream: clivi rlt rst; done geos: rlut rst rsut clivi 
+# declare -a DateArray=(13 20 21 22)
 
 ## 15 min vars
-for v in "${VarArray15min[@]}"; do
-    for d in "${DateArray[@]}"; do
-        for f in $IN_PATH/$MODEL_PATH/DW-ATM/atmos/15min/$v/r1i1p1f1/2d/gn/*_20200$d*; do #for SHiELD 2d -> pl
-            fname=$(basename $f)
-            out_file=$OUT_PATH/$LOC"_"$fname
-            echo "15 min variable "$v":"
-            ## SCREAM: rst rlt (rsdt separately)
-            # cdo -f nc4 -P 8 -s -w -sellonlatbox,$LON0,$LON1,$LAT0,$LAT1 -remapcon,r3600x1800 -setgrid,$GRID_SC -selgrid,1 $f $out_file
-            ## GEOS, NICAM, SAM, UM
-            # cdo -f nc4 -P 8 -s -w -sellonlatbox,$LON0,$LON1,$LAT0,$LAT1 -remapcon,r3600x1800 $f $out_file
-            ## ARP
-            # cdo -f nc4 -P 8 -s -w -divc,900 -sellonlatbox,$LON0,$LON1,$LAT0,$LAT1 -remapcon,r3600x1800 -setgrid,$GRID_AR $f $out_file
-            ## ICON
-            # cdo -f nc4 -P 8 -s -w -sellonlatbox,$LON0,$LON1,$LAT0,$LAT1 -remapcon,r3600x1800 -setgrid,$GRID_IC $f $out_file
-        done
-    done
-done
+# for v in "${VarArray15min[@]}"; do
+#     for d in "${DateArray[@]}"; do
+#         for f in $IN_PATH/$MODEL_PATH/DW-ATM/atmos/15min/$v/r1i1p1f1/2d/gn/*_20200$d*; do #for SHiELD 2d -> pl
+#             fname=$(basename $f)
+#             out_file=$OUT_PATH/$LOC"_"$fname
+#             echo "15 min variable "$v":"
+#             ## SCREAM: rst rlt (rsdt separately)
+#             # cdo -f nc4 -P 8 -s -w -sellonlatbox,$LON0,$LON1,$LAT0,$LAT1 -remapcon,r3600x1800 -setgrid,$GRID_SC -selgrid,1 $f $out_file
+#             ## GEOS, NICAM, SAM, UM
+#             # cdo -f nc4 -P 8 -s -w -sellonlatbox,$LON0,$LON1,$LAT0,$LAT1 -remapcon,r3600x1800 $f $out_file
+#             ## ARP
+#             # cdo -f nc4 -P 8 -s -w -divc,900 -sellonlatbox,$LON0,$LON1,$LAT0,$LAT1 -remapcon,r3600x1800 -setgrid,$GRID_AR $f $out_file
+#             ## ICON
+#             # cdo -f nc4 -P 8 -s -w -sellonlatbox,$LON0,$LON1,$LAT0,$LAT1 -remapcon,r3600x1800 -setgrid,$GRID_IC $f $out_file
+#         done
+#     done
+# done
 
 ## SHiELD 2D
-for v in "${VarArray15min[@]}"; do
-    for d in "${DateArray[@]}"; do
-        for f in $IN_PATH/$MODEL_PATH/DW-ATM/atmos/15min/$v/r1i1p1f1/pl/gn/*_20200$d*; do #for SHiELD 2d -> pl
-            fname=$(basename $f)
-            out_file=$OUT_PATH/$LOC"_"$fname
-            echo "SHiELD 15 min variable "$v":"
-            ## SHiELD
-            # 0.1deg
-            # cdo -sellonlatbox,$LON0,$LON1,$LAT0,$LAT1 -remapcon,r3600x1800 -setgrid,$GRID_SH -selgrid,1 $f $out_file
-        done
-    done
-done
+# for v in "${VarArray15min[@]}"; do
+#     for d in "${DateArray[@]}"; do
+#         for f in $IN_PATH/$MODEL_PATH/DW-ATM/atmos/15min/$v/r1i1p1f1/pl/gn/*_20200$d*; do #for SHiELD 2d -> pl
+#             fname=$(basename $f)
+#             out_file=$OUT_PATH/$LOC"_"$fname
+#             echo "SHiELD 15 min variable "$v":"
+#             ## SHiELD
+#             # 0.1deg
+#             # cdo -sellonlatbox,$LON0,$LON1,$LAT0,$LAT1 -remapcon,r3600x1800 -setgrid,$GRID_SH -selgrid,1 $f $out_file
+#         done
+#     done
+# done
 
 ### SOLIN ### from ben hillman
 # cdo -remapdis,r3600x1800 -setgrid,$GRID_SCR -selgrid,1 /work/bb1153/b380883/gn_SCREAM_SOLIN_20200130-20200228.nc /work/bb1153/b380883/gn_SCREAMr0.1deg_rsdt_20200130-20200228.nc
@@ -98,5 +98,7 @@ done
 
 # new_grid="REMAP_SHiELD.txt"
 # cdo -remapcon,$new_grid -setgrid,$GRID_SH $TWP/TWP_SHiELD_rsdt_20200130-20200228.nc $TWP/TWP_SHiELDr0.1deg_rsdt_20200130-20200228.nc
+
+cdo -remapcon,REMAP_GEOS.txt $TWP/TWP_GEOS_ts_20200130-20200228.nc $TWP/TWP_GEOSr0.1deg_ts_20200130-20200228.nc
 
 echo "done"
