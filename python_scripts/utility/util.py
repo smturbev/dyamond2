@@ -23,6 +23,15 @@ np.warnings.filterwarnings("ignore")
 #             Calculations             #
 ########################################
 
+def calc_Tb(OLR):
+    """ Calculate brightness temp from OLR
+     *from J. Nugent to be consistent with decimals used etc. 
+    """
+    sigma = 5.670374419e-8
+    Tb = (OLR/sigma)**0.25
+    
+    return Tb
+
 def rh_ice(qv, t, p):
     """ Calculates the relative humidity with respect to ice.
         Uses equation 7 from Murphy and Koop (2005) to get the
