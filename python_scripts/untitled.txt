@@ -1,0 +1,58 @@
+import xarray as xr
+import matplotlib.pyplot as plt
+import numpy as np
+from scipy import stats
+
+# Stream function in moisture space
+# 1. Calculate CRH.
+# 1. Bin all profiles by CRH (column relative humidity).
+# 1. Stream function, 
+#     $$ \varphi_i(p) = \varphi_{i-1}(p) + \frac{\alpha}{g} \omega_i(p) $$
+#     where $i$ is the $i$th bin of CRH, $\alpha$ is the fraction of total grid boxes contained in the $i$th bin, $g$ is the gravitation # constant, $\omega_i(p)$ is the vertical velocity in pressure coordinates in the $i$th bin for each pressure level.
+# 1. Plot stream function (CRH x axis and pressure y axis).
+
+run="ab"
+ds = xr.open_dataset("/home/disk/eos15/smturbev/DPSCREAM_simulations/dpscream_small_3km/run_{}/scream_dp_RCE_SMALL_3km_{}.eam.h0.2000-01-01-00000.nc".format(run,run[-2:]))
+
+# functions for calculating CRH percentiles
+def crh_percentiles(rh, lev="lev", return_crh=False):
+    """
+    integreate column realitive humidity. 
+    RH = 100(e/e*) = 100(w/w*) 
+    CRH = RH.integrate('lev')
+    bins = 0-100 by ones
+    """
+    crh = rh.integrate(lev)
+    bins = np.arange(0,101)
+    crh_percs = np.zeros(crh.shape)
+    
+    for i in range(len(bins)-1):
+        perc_thres_lower = np.percentile(crh, bins[i])
+        perc_thres_upper = np.percentile(crh, bins[i+1])
+        crh_percs = np.where((crh>=perc_thres_lower)&(crh<perc_thres_upper), 
+                             (bins[i]+bins[i+1])/2, crh_percs)
+    if return_crh:
+        return crh, (bins, crh_percs)
+    else:
+        return bins, crh_percs
+    return bins, crh_percs
+
+bins, crh_percs = crh_percentiles(ds.RELHUM)
+
+# define function to bin variable (omega) by crh percentiles
+def stream_function(omega, crh_perc, bins):
+    """calculate the mean profiles for given variable for each ccrh percentile
+    """
+    crhp = crh_perc[:,np.newaxis,:]
+    w_rp = np.zeros((len(bins)-1, omega.shape[1])) # shape of crh mid_bins and pres levels
+    for i in range(len(bins)-1):
+        temp = np.where((crhp>=bins[i])&(crhp<bins[i+1]), 
+                                    omega, np.nan)
+        print(np.nanmean(temp))
+    return var_rp
+    
+def main():
+    w_binned = stream_function(ds.OMEGA, crh_percs, bins)
+    
+if __name__=="__main__":
+    main()

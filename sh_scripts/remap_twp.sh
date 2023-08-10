@@ -1,7 +1,7 @@
 #!/bin/bash
-#SBATCH --job-name=reTWP_GE
+#SBATCH --job-name=reTWP_SA
 #SBATCH --partition=compute
-#SBATCH --time=08:00:00
+#SBATCH --time=01:00:00
 #SBATCH --mem=100GB
 #SBATCH --mail-type=FAIL
 #SBATCH --mail-type=END
@@ -31,7 +31,7 @@ OUT_PATH=/scratch/b/b380883
 TWP=/work/bb1153/b380883/TWP
 
 # MODEL_PATH=LLNL/SCREAM-3km
-MODEL_PATH=NASA/GEOS-3km
+# MODEL_PATH=NASA/GEOS-3km
 # MODEL_PATH=METEOFR/ARPEGE-NH-2km
 # MODEL_PATH=MPIM-DWD-DKRZ/ICON-NWP-2km
 # MODEL_PATH=NOAA/SHiELD-3km
@@ -43,10 +43,11 @@ GRID_AR=/work/dicad/from_Mistral/dicad/cmip6-dev/data4freva/model/global/dyamond
 GRID_SC=/work/dicad/from_Mistral/dicad/cmip6-dev/data4freva/model/global/dyamond/DYAMOND_WINTER/LLNL/SCREAM-3km/grid.nc
 GRID_IC=/work/dicad/from_Mistral/dicad/cmip6-dev/data4freva/model/global/dyamond/DYAMOND_WINTER/MPIM-DWD-DKRZ/ICON-NWP-2km/DW-ATM/atmos/fx/gn/grid.nc
 GRID_SH=/work/ka1081/DYAMOND_WINTER/NOAA/SHiELD-3km/DW-ATM/atmos/fx/grid/r1i1p1f1/2d/gn/grid_fx_SHiELD-3km_DW-CPL_r1i1p1f1_2d_gn_fx.nc
-
 CON_SH=/home/b/b380883/dyamond2/sh_scripts/REMAP_SHiELD.txt
 
-echo $GRID_ARP
+m="SA"
+m1="SAM" # -setgrid,$GRID_SA
+cdo -remapcon,GRID_TWP_${m}_new.txt /work/bb1153/b380883/TWP/TWP_${m1}_ts_20200130-20200228.nc /work/bb1153/b380883/TWP/TWP_${m1}r0.1deg_ts_20200130-20200228.nc
 
 # declare -a VarArray15min=(rsdt) # done scream: clivi rlt rst; done geos: rlut rst rsut clivi 
 # declare -a DateArray=(13 20 21 22)
@@ -98,7 +99,5 @@ echo $GRID_ARP
 
 # new_grid="REMAP_SHiELD.txt"
 # cdo -remapcon,$new_grid -setgrid,$GRID_SH $TWP/TWP_SHiELD_rsdt_20200130-20200228.nc $TWP/TWP_SHiELDr0.1deg_rsdt_20200130-20200228.nc
-
-cdo -remapcon,REMAP_GEOS.txt $TWP/TWP_GEOS_ts_20200130-20200228.nc $TWP/TWP_GEOSr0.1deg_ts_20200130-20200228.nc
 
 echo "done"

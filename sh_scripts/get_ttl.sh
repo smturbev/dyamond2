@@ -1,7 +1,7 @@
 #!/bin/bash
-#SBATCH --job-name=ttl
+#SBATCH --job-name=ttl_cli
 #SBATCH --partition=compute
-#SBATCH --mem=20GB
+#SBATCH --mem=80GB
 #SBATCH --time=08:00:00
 #SBATCH --mail-type=FAIL
 #SBATCH --mail-type=END
@@ -12,7 +12,7 @@
 
 set -evx # verbose messages and crash message
 
-DY=/work/dicad/from_Mistral/dicad/cmip6-dev/data4freva/model/global/dyamond/DYAMOND_WINTER
+DY=/work/ka1081/DYAMOND_WINTER/
 IN2D=DW-ATM/atmos/15min
 IN3D=DW-ATM/atmos/3hr
 
@@ -29,28 +29,24 @@ IN_SH=NOAA/SHiELD-3km
 IN_IF=ECMWF/IFS-4km
 OUT_PATH=/scratch/b/b380883
 
-### Model Arrays ###
-
-declare -a NativeModelArray=(
-$IN_UM
-$IN_NICAM
-$IN_SAM
-$IN_SC
-$IN_GE
-)
-
-declare -a DateArray=(13 20 21 22)
-
 ### lat lon ###
-LON0=0
-LON1=360
-LAT0=-30
-LAT1=30
 LOC="GT"
+if [ $LOC = 'TWP' ] ; then
+    LON0=143
+    LON1=153
+    LAT0=-5
+    LAT1=5
+elif [ $LOC = 'GT' ] ; then
+    LON0=0
+    LON1=360
+    LAT0=-30
+    LAT1=30
+fi
 
 #### select 14-18km levels ######
 ##### variable 
 v="cli"
+declare -a DateArray=(13 20 21 22)
 
 ## bottom up
 # m=$IN_UM
@@ -83,14 +79,14 @@ v="cli"
 # done
 
 ## top down
-# m=$IN_SC
-# for d in "${DateArray[@]}"; do
-#     for f in $DY/$m/$IN3D/$v/r1i1p1f1/ml/gn/*_20200$d*; do
-#         fname=$(basename $f)
-#         out_file=$OUT_PATH/${LOC}_"14-18km"_$fname
-#         cdo -f nc4 -sellonlatbox,$LON0,$LON1,$LAT0,$LAT1 -select,levidx=29/47 -setgrid,$GRID_SC $f $out_file 
-#     done
-# done
+m=$IN_SC
+for d in "${DateArray[@]}"; do
+    for f in $DY/$m/$IN3D/$v/r1i1p1f1/ml/gn/*_20200$d*; do
+        fname=$(basename $f)
+        out_file=$OUT_PATH/${LOC}_"TTL"_$fname
+        cdo -f nc4 -sellonlatbox,$LON0,$LON1,$LAT0,$LAT1 -select,levidx=29/47 -setgrid,$GRID_SC $f $out_file 
+    done
+done
 
 ## top down
 # m=$IN_GE
@@ -131,9 +127,9 @@ v="cli"
 ## And, we do cli * rho to get iwc in kg/m3
 ##     iwc = cli * rho
 
-m=GEOS
-gt=/work/bb1153/b380883/GT
-cli_file=$gt/GT_14-18km_${m}_cltotal_20200130-20200228.nc
+# m=GEOS
+# gt=/work/bb1153/b380883/GT
+# cli_file=$gt/GT_14-18km_${m}_cltotal_20200130-20200228.nc
 # clg_file=$gt/GT_14-18km_${m}_grplmxrat_20200130-20200228.nc
 # cls_file=$gt/GT_14-18km_${m}_snowmxrat_20200130-20200228.nc
 # clf_file=$gt/GT_14-18km_${m}_clf_20200130-20200228.nc

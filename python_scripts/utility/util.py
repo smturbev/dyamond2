@@ -192,8 +192,11 @@ def dennisplot(stat, olr, alb, var=None, xbins=None, ybins=None,
         ax = plt.gca()
     if stat=="difference":
         csn = ax.contourf(xbins2, ybins2, binned_stat.T*100, levels, cmap=cmap, extend='both')
-    else:
+    elif stat=="density":
         csn = ax.contourf(xbins2, ybins2, np.log10(binned_stat.T), levels, cmap=cmap, extend='both')
+        co = ax.contour(csn, colors='k', linestyles='solid', linewidths=1)
+    else:
+        csn = ax.contourf(xbins2, ybins2, (binned_stat.T), levels, cmap=cmap, extend='both')
         co = ax.contour(csn, colors='k', linestyles='solid', linewidths=1)
     if region=="NAU":
         ax.plot([80,317],[0.57,0.],label="Neutral CRE", color='black') # calculated in line_neutral_cre.ipynb
@@ -228,7 +231,7 @@ def dennisplot(stat, olr, alb, var=None, xbins=None, ybins=None,
             cb.set_label('pdf % difference', fontsize=fs)
             cb.set_ticks((levels[1:]+levels[:-1])/2)
         else:
-            cb.set_label('log10(%s) (%s)'%(stat, units), fontsize=fs)
+            cb.set_label('{} ({})'.format(stat, units), fontsize=fs)
     if save:
         plt.savefig('../plots/olr_alb/native_%s_%s_%s_%s.png'%(var_name.lower().replace(" ","_"), 
                                                                stat, model, region[:3]), bbox_inches="tight")

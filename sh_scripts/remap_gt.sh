@@ -1,8 +1,8 @@
 #!/bin/bash
 #SBATCH --job-name=ARclt_gt
-#SBATCH --partition=compute
+#SBATCH --partition=shared
 #SBATCH --time=04:00:00
-#SBATCH --mem=100GB
+#SBATCH --mem=20GB
 #SBATCH --mail-type=FAIL
 #SBATCH --mail-type=END
 #SBATCH --mail-user=smturbev@uw.edu
@@ -32,7 +32,7 @@ TWP=/work/bb1153/b380883/TWP
 
 # MODEL_PATH=LLNL/SCREAM-3km
 # MODEL_PATH=NASA/GEOS-3km
-MODEL_PATH=METEOFR/ARPEGE-NH-2km
+# MODEL_PATH=METEOFR/ARPEGE-NH-2km
 # MODEL_PATH=MPIM-DWD-DKRZ/ICON-NWP-2km
 # MODEL_PATH=NOAA/SHiELD-3km
 # MODEL_PATH=SBU/gSAM-4km
@@ -52,8 +52,8 @@ echo $GRID_AR
 ## SCREAM (rltcs, rstcs); GEOS (rlutcs, rlutcsna, rsutcs, rstcs); IFS (rltcsacc, rstcsacc);
 ## NICAM (N/A); ARP (N/A); UM (N/A); ICON (N/A); MPAS (N/A); SHiELD (N/A); SAM (N/A); GEMS (N/A); GRIST (N/A)
 
-declare -a VarArray15min=(clt) # done scream: clivi rlt rst; done geos: rlut rst rsut clivi 
-declare -a DateArray=(21 22)
+declare -a VarArray15min=(pr) # done scream: clivi rlt rst; done geos: rlut rst rsut clivi 
+declare -a DateArray=(12 13 20 21 22)
 
 # cdo -sellonlatbox,143,153,-5,5 -remapcon,r360x180 -setgrid,$GRID_SHi -selgrid,1 /work/ka1081/DYAMOND_WINTER/NOAA/SHiELD-3km/DW-ATM/atmos/15min/rlut/r1i1p1f1/pl/gn/rlut_15min_SHiELD-3km_DW-ATM_r1i1p1f1_pl_gn_20200222001500-20200223000000.nc /work/bb1153/b380883/TWP/SHiELD_remapcon_testr1deg.nc
 
@@ -62,14 +62,14 @@ for v in "${VarArray15min[@]}"; do
     for d in "${DateArray[@]}"; do
         for f in $IN_PATH/$MODEL_PATH/DW-ATM/atmos/15min/$v/r1i1p1f1/2d/gn/*_20200$d*; do #for SHiELD 2d -> pl
             fname=$(basename $f)
-            out_file=$OUT_PATH/$LOC"_"$fname
+            out_file=$OUT_PATH/$LOC"_fldmean_"$fname
             echo "15 min variable "$v":"
             ## SCREAM: rst rlt (rsdt separately)
-            # cdo -f nc4 -P 8 -s -w -sellonlatbox,$LON0,$LON1,$LAT0,$LAT1 -remapcon,r360x180 -setgrid,$GRID_SC -selgrid,1 $f $out_file
+            cdo -f nc4 -P 8 -s -w -fldmean -sellonlatbox,$LON0,$LON1,$LAT0,$LAT1 -remapcon,r360x180 -setgrid,$GRID_SC -selgrid,1 $f $out_file
             ## GEOS, NICAM, SAM, UM
             # cdo -f nc4 -P 8 -s -w -sellonlatbox,$LON0,$LON1,$LAT0,$LAT1 -remapcon,r360x180 $f $out_file
             # # ARP -divc,-900 for rad variables
-            cdo -f nc4 -P 8 -s -w -sellonlatbox,$LON0,$LON1,$LAT0,$LAT1 -remapcon,r360x180 -setgrid,$GRID_AR $f $out_file
+            # cdo -f nc4 -P 8 -s -w -sellonlatbox,$LON0,$LON1,$LAT0,$LAT1 -remapcon,r360x180 -setgrid,$GRID_AR $f $out_file
             # # ICON
             # cdo -f nc4 -P 8 -s -w -sellonlatbox,$LON0,$LON1,$LAT0,$LAT1 -remapcon,r360x180 -setgrid,$GRID_IC $f $out_file
             # # IFS
@@ -79,18 +79,18 @@ for v in "${VarArray15min[@]}"; do
 done
 
 ## SHiELD 2D
-for v in "${VarArray15min[@]}"; do
-    for d in "${DateArray[@]}"; do
-        for f in $IN_PATH/$MODEL_PATH/DW-ATM/atmos/15min/$v/r1i1p1f1/pl/gn/*_20200$d*; do #for SHiELD 2d -> pl
-            fname=$(basename $f)
-            out_file=$OUT_PATH/$LOC"_"$fname
-            echo "SHiELD 15 min variable "$v": "$out_file
-            ## SHiELD
-            # 1deg
-            # cdo -f nc4 -P 8 -s -w -sellonlatbox,$LON0,$LON1,$LAT0,$LAT1 -remapcon,r360x180 -setgrid,$GRID_SH -selgrid,1 $f $out_file
-        done
-    done
-done
+# for v in "${VarArray15min[@]}"; do
+#     for d in "${DateArray[@]}"; do
+#         for f in $IN_PATH/$MODEL_PATH/DW-ATM/atmos/15min/$v/r1i1p1f1/pl/gn/*_20200$d*; do #for SHiELD 2d -> pl
+#             fname=$(basename $f)
+#             out_file=$OUT_PATH/$LOC"_"$fname
+#             echo "SHiELD 15 min variable "$v": "$out_file
+#             ## SHiELD
+#             # 1deg
+#             # cdo -f nc4 -P 8 -s -w -sellonlatbox,$LON0,$LON1,$LAT0,$LAT1 -remapcon,r360x180 -setgrid,$GRID_SH -selgrid,1 $f $out_file
+#         done
+#     done
+# done
 
 ## 3D vars - SCREAM
 # v="hus"

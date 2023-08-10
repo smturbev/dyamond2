@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH --job-name=seldate
-#SBATCH --partition=compute
+#SBATCH --partition=shared
 #SBATCH --account=bb1153
 #SBATCH --time=02:00:00
 #SBATCH --error=err_30days.eo
@@ -13,7 +13,10 @@ set -evx # verbose messages and crash message
 wrk=/work/bb1153/b380883/GT
 
 declare -a fileArray=(
-GT_GEOSr1deg_rlut_20200130-20200228.nc
+# GT_GEOSr1deg_rlut_20200130-20200228.nc
+# fldmean/fldmean_GT_SHiELD_pr_20200130-20200228.nc
+fldmean/fldmean_GT_GEOS_pr_20200130-20200228.nc
+fldmean/fldmean_GT_ICON_pracc_20200130-20200228.nc
 )
 
 
@@ -88,9 +91,9 @@ for file in "${fileArray[@]}"; do
     out_file=$wrk/${file%.*}"new.nc"
     echo $in_file" "$out_file
     # cdo -seldate,2016-08-10T00:00:00,2016-09-10T23:59:00 $in_file $out_file
-    # cdo -seldate,2020-01-30T00:00:00,2020-02-28T23:59:00 $in_file $out_file
+    cdo -seldate,2020-01-30T00:00:00,2020-02-28T23:59:00 $in_file $out_file
     # for ICON... 2020-02-28T16:30:00
-    cdo -seltimestep,1/2976 $in_file $out_file
+    # cdo -seltimestep,1/2976 $in_file $out_file
     rm $in_file
     mv $out_file $in_file
 done
