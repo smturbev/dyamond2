@@ -15,6 +15,7 @@ set -evx # verbose messages and crash message
 
 LOC="TWP"
 FILE_PATH=/work/bb1153/b380883
+GT=/work/bb1153/b380883/GT
 SCR=/scratch/b/b380883/
 MODEL="ICON" #"SAM"
 v="rlt" # e.g., rlt, rst
@@ -46,6 +47,9 @@ cdo -setname,$v -setunit,"W/m2" -divc,-900 -deltat $f $out_file
 # cdo -mulc,4 -deltat $pr_in $pr_out
 # ncatted -O -a standard_name,pracc,o,c,"precipitation_flux" -a long_name,pracc,o,c,"Surface Precip." -a units,pracc,o,c,"mm/hr" $pr_out
 # ncrename -O -v pracc,pr $pr_out
+
+# cdo -setname,pr -setunit,"kg m-2 s-1" -divc,900 -deltat $gt/GT_ICONr1deg_pracc_20200120-20200228.nc $gt/GT_ICONr1deg_pr_20200120-20200228.nc
+
 
 # undo running mean in ICON dyamond1
 

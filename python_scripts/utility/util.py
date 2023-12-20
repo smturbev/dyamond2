@@ -23,6 +23,171 @@ np.warnings.filterwarnings("ignore")
 #             Calculations             #
 ########################################
 
+# functions
+def get_esi(t):
+    return (611.21 * np.exp(22.587*t/(t+273.86)))
+
+def get_es(t):
+    return (610.94 * np.exp(17.625*t/(t+243.04)))
+
+def get_qs(es, p):
+    return 0.622*es/p
+
+def q2rhi(t, p, q, **kwargs):
+    """
+    Returns xarray of relative humidity wrt ice
+    rhi = q/qs*100
+    qsi = 0.622*es/P
+    esi = 611.21 exp(22.587*T/(T+273.86)) for T <  0C
+    """
+    t = t - 273.15 # convert to deg C
+    esi = get_esi(t)
+    qsi = get_qs(esi, p)
+    rh = q/qsi * 100
+    return rh
+
+def q2rh(t, p, q, **kwargs):
+    """
+    Returns xarray of relative humidity wrt liquid
+    rh = q/qs*100
+    qs = 0.622*es/P
+    es = 610.94 exp(17.625*T/(T+243.04)) for T >= 0C
+    """
+    t = t - 273.15 # convert to deg C
+    es = get_es(t)
+    qs = get_qs(es, p)
+    rh = q/qs * 100
+    return rh
+
+def q2wc(t, p, q, qi, **kwargs):
+    """
+    Returns xarray of ice or liquid water content
+    iwc = qi * rho
+    """
+    rho = calc_rho(t, p, q)
+    return (qi*rho)
+    
+def pot_temp(t, p):
+    """ Returns potential temperature (theta in K)
+        Input t (K) and p (Pa)
+    """
+    Rd = 287 # J/K/kg
+    cp = 1004 # J/K/kg
+    theta = t * np.power(100000/p, Rd/cp)
+    return theta
+
+def eq_pot_temp(t, p, q):
+    """ Returns equivalent potential temperature (thetae in K)
+        Input t (K), p (Pa) and q (kg/kg)
+    """
+    theta = pot_temp(t,p)
+    Lv = 2.25e6 # J/kg
+    cp = 1004 # J/K/kg
+    qsi = get_qsi(get_esi(t), p)
+    thetae = theta * np.exp(Lv * qsi / (cp * t) )
+    return thetae
+    
+def crh_percentiles(t, p, q, lev="lev", bins = np.arange(0,101,4), return_crh=False):
+    """
+    Integreate column realitive humidity then bin by percentiles.
+    Bins are 0-100 by 1s. Returns bin edges and crh_percentiles as
+    mid_bin values. 
+    
+    Returns: bins, crh_percs
+        if return_crh is True, returns (crh, (bins, crh_percs))
+        
+    TODO: crh = column integrated wv to saturatation wv
+    """
+    qs = get_qs(get_es(t), p)
+    q_int = q.integrate("lev")
+    qs_int = qs.integrate("lev")
+    crh = q_int/qs_int
+    print("shape of crh:", crh.shape)
+    crh_percs = np.zeros(crh.shape)
+    
+    for i in range(len(bins)-1):
+        perc_thres_lower = np.nanpercentile(crh, bins[i])
+        perc_thres_upper = np.nanpercentile(crh, bins[i+1])
+        crh_percs = np.where((crh>=perc_thres_lower)&(crh<perc_thres_upper), 
+                             (bins[i]+bins[i+1])/2, crh_percs)
+    crh_percs = xr.DataArray(crh_percs, dims=crh.dims, coords=crh.coords, 
+                             attrs={"long_name":"column relative humidity binned percentiles","units":"%"})
+    if return_crh:
+        return crh, (bins, crh_percs)
+    else:
+        return bins, crh_percs
+    return bins, crh_percs
+
+def stream_function(omega, crh_perc, bins, return_omega=False):
+    """
+    Calculate the mean profiles for given omega (Pa/s)
+    for each CRH percentile bin.
+    
+    Input:  vertical velocity (omega, unit: Pa/s),  
+            column relative humidity percentiles (crh_perc, unit: %),
+            bin edges (bins, unit: %) same as from crh_percentiles.
+            
+    Output: stream function (phi_rp) in coordinates of CRH and pressure.
+                should be of shape (100, nlevs)
+            if return_omega is True, returns (w_rp, phi_rp) as tuple
+            
+    """
+    w_rp   = np.zeros((len(bins)-1, omega.shape[1])) # shape of crh mid_bins and pres levels
+    phi_rp = np.zeros((len(bins)-1, omega.shape[1])) # shape of crh mid_bins and pres levels
+    for i in range(20, len(bins)-1):
+        w_rp[i,:] = omega.where((crh_perc>= bins[i])&(crh_perc<bins[i+1])).mean(skipna=True, dim=["time","ncol"])
+        alpha = 1 # 0.01
+        if (i==20):
+            phi_rp[i,:] = alpha/9.8*w_rp[i,:]
+        else:
+            phi_rp[i,:] = phi_rp[i-1]+ alpha/9.8*w_rp[i,:] 
+    if return_omega:
+        return phi_rp, w_rp
+    return phi_rp
+
+def binned_by_crh(var, crh_perc, bins):
+    """
+    Calculate the mean profiles for given variable
+    for each CRH percentile bin.
+    
+    Input:  variable (e.g., qi, unit: kg/kg),  
+            column relative humidity percentiles (crh_perc, unit: %),
+            bin edges (bins, unit: %) same as from crh_percentiles.
+            
+    Output: binned_var (var_r) in coordinates of CRH and pressure.
+                should be of shape (100, nlevs)
+            
+    """
+    var_r = np.zeros((len(bins)-1, var.shape[1])) # shape of crh mid_bins and pres levels
+    for i in range(len(bins)-1):
+        var_r[i,:] = var.where((crh_perc>= bins[i])&(crh_perc<bins[i+1])).mean(skipna=True, dim=["time","ncol"])
+    return var_r
+
+def calc_rho(t, p, q):
+    Tv = (1 + 0.61*q)*t
+    rho = p / (287*Tv)
+    return rho
+
+def w2omega(t, p, q, w):
+    rho = calc_rho(t, p, q)
+    g=9.8 #m/s2
+    omega = -rho*g*w # (kg/m/s2)/s = Pa/s
+    return omega
+
+def omega2w(t, p, q, omega):
+    rho = calc_rho(t, p, q)
+    g=9.8
+    w = -omega/(rho*g) # m/s
+    return w
+
+def get_lwcre(olr, olrcs):
+    lwcre = olrcs.values - olr
+    return lwcre
+
+def get_swcre(alb, albcs):
+    swcre = -(alb-albcs)*413.2335274324269 #twp
+    return swcre
+
 def calc_Tb(OLR):
     """ Calculate brightness temp from OLR
      *from J. Nugent to be consistent with decimals used etc. 
@@ -32,7 +197,7 @@ def calc_Tb(OLR):
     
     return Tb
 
-def rh_ice(qv, t, p):
+def calc_rh_ice(qv, t, p):
     """ Calculates the relative humidity with respect to ice.
         Uses equation 7 from Murphy and Koop (2005) to get the
         saturation pressure wrt ice:
@@ -59,27 +224,6 @@ def rh_ice(qv, t, p):
     w_i  = qv / (1 - qv)
     rh_ice = w_i/w_si * 100
     return rh_ice
-
-def q_to_wc(q,t,p,qv):
-    """Returns an xarray of shape and dims q with units of kg/m3.
-    
-       Parameters:
-       - q  [xarray or ndarray]  
-                      : (kg/kg) cloud hydrometeor mixing ratio
-       - t  [ndarray] : (K)     temperature
-       - p  [ndarray] : (Pa)    pressure
-       - qv [ndarray] : (kg/kg) water vapor mixing ratio
-       
-       Returns:
-       - wc  : (kg/m3) cloud hydrometeor water content
-    """
-    rho = p / 287*((1 + 0.61*qv)*t)
-    del p, qv, t
-    iwc = q * rho
-    if type(iwc) is type(xr.DataArray()):
-        print("returned iwc with units kg/m3")
-        iwc.attrs["units"] = "kg/m3"
-    return iwc
 
 def wc_to_wp(wc, p):
     """ Returns the (ice) water path in kg/m2 for given water content (kg/m3).

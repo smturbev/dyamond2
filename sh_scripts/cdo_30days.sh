@@ -10,95 +10,28 @@
 #SBATCH --mail-user=smturbev@uw.edu
 
 set -evx # verbose messages and crash message
-wrk=/work/bb1153/b380883/GT
+wrk=/work/bb1153/b380883/TWP
 
 declare -a fileArray=(
-# GT_GEOSr1deg_rlut_20200130-20200228.nc
-# fldmean/fldmean_GT_SHiELD_pr_20200130-20200228.nc
-fldmean/fldmean_GT_GEOS_pr_20200130-20200228.nc
-fldmean/fldmean_GT_ICON_pracc_20200130-20200228.nc
+# TWP_3D_GEOS_pthick_20200130-20200228.nc
+TWP_3D_GEOS_grplmxrat_20200130-20200228.nc
 )
 
-
-
-# (TWP_SCREAMr0.25deg_clivi_20200130-20200303.nc
-# TWP_SCREAMr0.25deg_clt_20200130-20200301.nc
-# TWP_SCREAMr0.25deg_clwvi_20200130-20200303.nc
-# TWP_SCREAMr0.25deg_rlt_20200130-20200301.nc
-# TWP_SCREAMr0.25deg_rst_20200130-20200301.nc
-# TWP_GEOSr0.25deg_clivi_20200130-20200303.nc
-# TWP_GEOSr0.25deg_clt_20200130-20200303.nc
-# TWP_GEOSr0.25deg_clwvi_20200130-20200303.nc
-# TWP_GEOSr0.25deg_rlut_20200130-20200301.nc
-# TWP_GEOSr0.25deg_rst_20200130-20200301.nc
-# TWP_GEOSr0.25deg_rsut_20200130-20200301.nc
-# )
-
-
-
-# TWP_SCREAM_rst_20200130-20200301.nc
-# TWP_ICON_clivi_20200130-20200301.nc
-# TWP_ICON_rltacc_20200130-20200301.nc
-# TWP_ICON_rstacc_20200130-20200301.nc
-# TWP_ICON_clt_20200130-20200301.nc
-# TWP_GEOS_clivi_20200130-20200303.nc
-# TWP_GEOS_clt_20200130-20200303.nc
-# TWP_GEOS_rlut_20200130-20200303.nc
-# TWP_GEOS_rsdt_20200130-20200303.nc
-# TWP_GEOS_rsut_20200130-20200303.nc
-# )
-
-# 
-# TWP_SCREAM_rlt_20200130-20200228.nc
-# TWP_SCREAM_rlt_20200130-20200301.nc
-# TWP_SAM_clivi_20200130-20200301.nc
-# TWP_SAM_rlt_20200130-20200301.nc
-# TWP_SAM_rst_20200130-20200301.nc
-# TWP_3D_UM_hus_20200130-20200228.nc
-# TWP_3D_UM_ta_20200130-20200228.nc
-# TWP_3D_UM_Tv_20200130-20200228.nc
-# TWP_3D_NICAM_ta_20200130-20200228.nc
-# TWP_3D_NICAM_hus_20200130-20200228.nc
-# TWP_3D_SCREAM_hus_20200130-20200228.nc
-# TWP_3D_SCREAM_ta_20200130-20200228.nc
-# TWP_3D_UM_hus_20200130-20200228.nc
-
-
-# (SAM/TWP/TWP_clivi_SAM_20200120-20200229.nc
-# SAM/TWP/TWP_rltacc_SAM_20200120-20200229.nc
-# SAM/TWP/TWP_rstacc_SAM_20200120-20200229.nc
-# SAM/TWP/TWP_SAM_rlt_20200120-20200229.nc
-# SAM/TWP/TWP_SAM_rst_20200120-20200229.nc)
-
-# (NICAM/GT/clivi_GT_NICAM-3km_20200120-20200228.nc
-# NICAM/GT/rlut_GT_NICAM-3km_20200120-20200228.nc
-# NICAM/GT/rsdt_GT_NICAM-3km_20200120-20200228.nc
-# NICAM/GT/rsut_GT_NICAM-3km_20200120-20200228.nc
-# SAM/GT/GT_SAM_clivi_20200120-20200229.nc
-# SAM/GT/GT_SAM_rlt_20200120-20200229.nc
-# SAM/GT/GT_SAM_rltacc_20200120-20200229.nc
-# SCREAM/GT/GT_regridded_clivi_20200120-20200301.nc
-# SCREAM/GT/GT_regridded_rlt_20200120-20200301.nc
-# SCREAM/GT/GT_regridded_rltcs_20200120-20200301.nc
-# SCREAM/GT/GT_regridded_rst_20200120-20200301.nc
-# SCREAM/GT/GT_SCREAM_clivi_20200120-20200229.nc
-# SCREAM/GT/GT_SCREAM_rlt_20200120-20200229.nc
-# GEOS/GT/GT_GEOS_rlut_20200120-20200229.nc
-# GEOS/GT/GT_GEOS_clivi_20200120-20200229.nc)
 
 for file in "${fileArray[@]}"; do
     in_file=$wrk/$file
     out_file=$wrk/${file%.*}"new.nc"
     echo $in_file" "$out_file
     # cdo -seldate,2016-08-10T00:00:00,2016-09-10T23:59:00 $in_file $out_file
-    cdo -seldate,2020-01-30T00:00:00,2020-02-28T23:59:00 $in_file $out_file
+    # cdo -seldate,2020-01-30T00:00:00,2020-02-28T23:59:00 $in_file $out_file
     # for ICON... 2020-02-28T16:30:00
-    # cdo -seltimestep,1/2976 $in_file $out_file
+    cdo -seltimestep,1/720 $in_file $out_file
+    # cdo -seltimestep,1,2880 $in_file $out_file
     rm $in_file
     mv $out_file $in_file
 done
 
-
+# cdo -setname,"pa" $wrk/TWP_3D_GEOS_pa_20200130-20200228.nc $wrk/TWP_3D_GEOS_pa_20200130-20200228new.nc 
 # cdo -setname,"rst" -seldate,2016-08-10T00:00:00,2016-09-10T23:59:00 $wrk/TWP_GEOS-3.25km_SWTNET_0.10deg.nc $wrk/TWP_GEOS_rst_20160810-20160910.nc
 # cdo -setname,"rlt" -seldate,2016-08-10T00:00:00,2016-09-10T23:59:00 $wrk/TWP_GEOS-3.25km_OLR_0.10deg.nc $wrk/TWP_GEOS_rlt_20160810-20160910.nc
 

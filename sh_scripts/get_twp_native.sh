@@ -1,6 +1,6 @@
 #!/bin/bash
-#SBATCH --job-name=SClwp_TWP
-#SBATCH --partition=compute
+#SBATCH --job-name=qsvi_ic
+#SBATCH --partition=shared
 #SBATCH --time=08:00:00
 #SBATCH --mem=100GB
 #SBATCH --mail-type=FAIL
@@ -17,7 +17,7 @@ LON1=153
 LAT0=-5
 LAT1=5
 LOC="TWP"
-MODEL="SC"
+MODEL="IC"
 dim_2D=true
 dim_3D=false
 
@@ -46,7 +46,7 @@ GRID_GM=/work/ka1081/DYAMOND_WINTER/CMC/GEM/DW-ATM/atmos/fx/gn/grid.nc
 GRID_IF=/work/ka1081/DYAMOND_WINTER/ECMWF/IFS-4km/DW-CPL/atmos/fx/grid/r1i1p1f1/2d/gn/grid_fx_IFS-4km_DW-CPL_r1i1p1f1_2d_gn_fx.nc
 GRID_MP=/work/ka1081/DYAMOND_WINTER/NCAR/MPAS-3km/DW-ATM/atmos/fx/gn/grid.nc
 
-declare -a VarArray15min=(clwvi) #rlt rst
+declare -a VarArray15min=(qsvi) #qsvi qrvi clwvi #rlt rst
 declare -a DateArray=(13 20 21 22)
 if $dim_2D ; then
     # 2D vars
@@ -104,7 +104,7 @@ if $dim_2D ; then
                 done
             elif [ $MODEL = 'SH' ]; then
                 echo "SHiELD"
-                for f in $IN_PATH/$IN_SH/DW-ATM/atmos/15min/$v/r1i1p1f1/pl/gn/*_20200$d*; do # ml/2d
+                for f in $IN_PATH/$IN_SH/DW-ATM/atmos/15min/$v/r1i1p1f1/2d/gn/*_20200$d*; do # ml/2d
                     fname=$(basename $f)
                     out_file=$OUT_PATH/${LOC}_$fname
                     cdo -f nc -sellonlatbox,$LON0,$LON1,$LAT0,$LAT1 -setgridtype,unstructured -setgrid,$GRID_SH $f $out_file
@@ -144,8 +144,8 @@ if $dim_2D ; then
     done
 fi
 
-declare -a VarArray3D=(wa)
-declare -a DateArray=(13 20 21 22)
+declare -a VarArray3D=(pthick)
+declare -a DateArray=(219)
 
 # 3D vars
 if $dim_3D ; then

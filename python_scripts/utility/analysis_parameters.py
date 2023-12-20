@@ -129,6 +129,20 @@ def get_mermean_file(model, region="gt", var="rlt"):
     else:
         return GT+"fldmean/mermean_GT_{m}_{v}_20200130-20200228.nc".format(m=model, v=var)
 
+def get_timcumsum_file(model, region="gt", var="pracc"):
+    """Returns cumulative precip endvalue on 2020-02-28T23:45:00 from the start on 2020-01-30T00:00:00"""
+    if region.lower()=="gt":
+        return GT+"timmean/timcumsum_GT_{}r1deg_{}_20200228T234500.nc".format(model, var)
+    else:
+        raise Exception("only works for tropical band (GT)")
+
+def get_daymean_file(model, region="gt", var="pracc"):
+    """Returns precip rate over last 30 days as daily means"""
+    if region.lower()=="gt":
+        return GT+"timmean/daymean_GT_{}r1deg_{}_20200130-20200228.nc".format(model, var)
+    else:
+        raise Exception("only works for tropical band (GT)")
+
 def get_xytmean_file(model, region="TWP", var="zg"):
     return TWP+"mean/xytmean_"+region+"_3D_"+model+"_zg_20200130-20200228.nc"
     
@@ -152,6 +166,31 @@ def open_dyamond1(model, region="TWP", var="rlut"):
 ##############################################################################
 ### Load modules
 ##############################################################################
+def load_iwp(model, region, total=True, chunks=None):
+    """Returns the total or ice only integrated water path for the given region"""
+    if model[:6]=="SCREAM" or model[:2]=="UM":
+        iwp = xr.open_dataset(WRK+region+\
+                              "/{}_{}_clivi_20200130-20200228.nc".format(region, model), 
+                              chunks=chunks).clivi
+    elif total:
+        try:
+            iwp = xr.open_dataset(WRK+region+\
+                          "/{}_{}_iwp_20200130-20200228.nc".format(region, model), 
+                          chunks=chunks).iwp
+            print("returned ice + snow + graupel", model, region)
+        except:
+            print("iwp = clivi + qsvi + qgvi not defined as a file", model, region)
+    else:
+        try:
+            iwp = xr.open_dataset(WRK+region+\
+                          "/{}_{}_clivi_20200130-20200228.nc".format(region, model), 
+                          chunks=chunks).clivi
+            print("returned ice only", model, region)
+        except:
+            print("download clivi for {} in the {} region".format(model, region))
+    return iwp
+                
+
 
 def load_olr(model, region="TWP",r=0):
     """ get the OLR radiation variable in W/m2 for given model and region for specified regridded resolution
@@ -205,11 +244,13 @@ def load_olr(model, region="TWP",r=0):
                 raise Exception("model or region not defined properly. Try 'TWP' or 'SCREAM', 'UM', 'GEOS', etc.")
     return olr
 
-def load_swu_swd(model, region="TWP",r=0):
+def load_swu_swd(model, region="TWP",r=0, clearsky=False):
     """ returns a tuple of xarrays of (SW upward, SW downward) radiation variable in W/m2 for given model and region for specified regridded resolution
         r=0 for native grid, r=0.1 for 0.1 deg remapcon, r=1 for 1 deg remapcon
+        
+        clearsky only matters for SCREAM
     """
-    
+    print(clearsky)
     chunk_dict = {"time":500, "lat":400, "lon":1440} # "grid_size":500000}
     if (model=="CERES"):
         ds = xr.open_dataset(get_file("DATA", "TWP", "rad"), chunks=chunk_dict)
@@ -226,10 +267,15 @@ def load_swu_swd(model, region="TWP",r=0):
                 raise Exception("r={} not defined for {} region.".format(r,region))
             # models
             if (model=="SCREAM"):
-                swn = xr.open_dataset(get_file("{}r{}deg".format(model, r), region, "rst"), 
+                if clearsky:
+                    swn = xr.open_dataset(get_file("{}r{}deg".format(model, r), region, "rstcs"), 
+                                      chunks={"time":500, "ncol":1000, "grid_size":1000}).rstcs
+                    print("returning clear sky swu\n\n")
+                else:
+                    swn = xr.open_dataset(get_file("{}r{}deg".format(model, r), region, "rst"), 
                                       chunks={"time":500, "ncol":1000, "grid_size":1000}).rst
                 swd = xr.open_dataset(get_file("{}r{}deg".format(model, r), region, "rsdt"), 
-                                      chunks={"time":500, "ncol":1000, "grid_size":1000}).SOLIN
+                                      chunks={"time":500, "ncol":1000, "grid_size":1000}).rsdt
                 swu = swd-swn
             
             elif (model=="ARP") or (model=="SAM"):
@@ -244,7 +290,10 @@ def load_swu_swd(model, region="TWP",r=0):
                 swu = (swd[:swn.shape[0]] - swn[:swd.shape[0]])
             elif (model=="GEOS") or (model=="SHiELD"):
                 # rlst r0.1 deg
-                swu = xr.open_dataset(get_file("{}r{}deg".format(model, r), region, "rsut"), chunks=chunk_dict).rsut
+                if clearsky:
+                    swu = xr.open_dataset(get_file("{}r{}deg".format(model, r), region, "rsutcs"), chunks=chunk_dict).rsutcs
+                else:
+                    swu = xr.open_dataset(get_file("{}r{}deg".format(model, r), region, "rsut"), chunks=chunk_dict).rsut
                 swd = xr.open_dataset(get_file("{}r{}deg".format(model, r), region, "rsdt"), chunks=chunk_dict).rsdt
             elif (model=="ICON"):
                 # ICON needs extra care due to first hour messed up from accumulation
@@ -261,8 +310,13 @@ def load_swu_swd(model, region="TWP",r=0):
                 raise Exception("model or region not defined properly. Try 'TWP' or 'SCREAM', 'UM', 'GEOS', etc.")
         else: #native grid
             if (model=="SCREAM"):
-                swn = xr.open_dataset(get_file(model, region, "rst"), chunks={"time":500, "ncol":1000, "grid_size":1000}).rst.rename({"grid_size":"ncol"})
-                swd = xr.open_dataset(get_file("SCREAM", "TWP", "rsdt"), chunks=chunk_dict).SOLIN
+                if clearsky:
+                    print('returning cs swu')
+                    swn = xr.open_dataset(get_file(model, region, "rstcs"), chunks={"time":500, "ncol":1000, "grid_size":1000}).rstcs
+                else:
+                    print('returning swn all sky')
+                    swn = xr.open_dataset(get_file(model, region, "rst"), chunks={"time":500, "ncol":1000, "grid_size":1000}).rst.rename({"grid_size":"ncol"})
+                swd = xr.open_dataset(get_file("SCREAM", "TWP", "rsdt"), chunks=chunk_dict).rsdt
                 swu = swd-swn
             elif (model=="ARP") or (model=="IFS"): # 
                 swn = xr.open_dataset(get_file(model, region, "rst"), 
@@ -285,7 +339,10 @@ def load_swu_swd(model, region="TWP",r=0):
                            kwargs={"fill_value": np.nan})
                 swu = (swd - swn)
             elif (model=="GEOS") or (model=="SHiELD"): #rlut native grid
-                swu = xr.open_dataset(get_file(model, region, "rsut"), chunks={"time":500,"Xdim":1000}).rsut
+                if clearsky:
+                    swu = xr.open_dataset(get_file(model, region, "rsutcs"), chunks={"time":500,"Xdim":1000}).rsutcs
+                else:
+                    swu = xr.open_dataset(get_file(model, region, "rsut"), chunks={"time":500,"Xdim":1000}).rsut
                 swd = xr.open_dataset(get_file(model, region, "rsdt"), chunks={"time":500,"Xdim":1000}).rsdt
             elif (model=="UM"):
                 swu = xr.open_dataset(get_file(model,region,"rsut"), chunks=chunk_dict).rsut
@@ -306,9 +363,10 @@ def load_swu_swd(model, region="TWP",r=0):
                 raise Exception("model or region not defined properly. Try 'TWP' or 'SCREAM', 'UM', 'GEOS', etc.")
     return (swu, swd)
 
-def load_alb(model, region="TWP", r=0):
-    """ returns albedo of a given model and region for specified resolution (r=0 is native grid) """
-    swu, swd = load_swu_swd(model, region, r)
+def load_alb(model, region="TWP", r=0, clearsky=False, near_noon=True):
+    """ returns albedo of a given model and region for specified resolution (r=0 is native grid) 
+        near_noon : returns values only between 8am-4pm (gets rid of dusk/dawn problem) """
+    swu, swd = load_swu_swd(model, region, r, clearsky)
     if swu.shape == swd.shape:
         alb = swu/swd.where(swd>100).values
     elif swu.shape[0]>swd.shape[0]:
@@ -317,6 +375,11 @@ def load_alb(model, region="TWP", r=0):
         alb = swu/swd[:swu.shape[0]].where(swd>100).values
     else:
         raise Exception("shape of swu and swd don't match:",swu.shape, swd.shape)
+    if near_noon:
+        if region.lower()=="twp":
+            alb = alb.where((alb.time.dt.hour>=22)|(alb.time.dt.hour<=6))
+        else:
+            raise Exception("define hours near noon for this region",region)
     return alb
 
 def load_height_full(model, region="TWP", r=0, chunks=None):
