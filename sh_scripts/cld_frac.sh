@@ -12,20 +12,28 @@
 
 set -evx # verbose messages and crash message
 twp="/work/bb1153/b380883/TWP"
+gt="/work/bb1153/b380883/GT"
+scr="/scratch/b/b380883"
 
 declare -a ModelArray=(
-ARP
 SHiELD
-ICON
-SCREAM
-UM
 )
+
+# cdo -vertsum $gt/GT_TTL_SAM_cli_20200130-20200228.nc $gt/GT_TTL_SAM_ttliwp_20200130-20200228.nc
 
 # cloud fraction is 1 where CLI is greater than or equal to 1e-5 kg/kg
 for m in "${ModelArray[@]}"; do
+    cdo -gec,1e-4 $gt/GT_${m}r1deg_iwp_20200130-20200228.nc $scr/temp/${m}_iwp_gt_1e-4.nc
+    # cdo -lec,2e-4 $gt/GT_${m}r1deg_pr_20200130-20200228.nc $scr/temp/${m}_nonprecip_lt_2e-4.nc
+    cdo -lec,1e-1 $gt/GT_${m}r1deg_iwp_20200130-20200228.nc $scr/temp/${m}_iwp_lt_1e-1.nc
+    # cdo -gtc,2 -add -add $scr/temp/${m}_iwp_lt_1e-1.nc $scr/temp/${m}_iwp_gt_1e-4.nc $scr/temp/${m}_nonprecip_lt_2e-4.nc $scr/temp/${m}_iwp_thin_ci_nonprecip.nc
+    cdo -gtc,1 -add $scr/temp/${m}_iwp_lt_1e-1.nc $scr/temp/${m}_iwp_gt_1e-4.nc $scr/temp/${m}_iwp_thin_ci_lt_thick.nc    
+    cdo -setname,'thin_ci' -setunit,'frac' -timmean $scr/temp/${m}_iwp_thin_ci_lt_thick.nc $gt/timmean/timmean_GT_${m}r1deg_thin_ci_frac_thick_20200130-20200228.nc
+    # cdo -gec,0.75 $gt/GT_${m}r1deg_iwp_20200130-20200228.nc $scr/temp/${m}_iwp_gt_5e-5.nc
+    # cdo -setname,'deep_conv' -setunit,'frac' -timmean $scr/temp/${m}_iwp_gt_5e-5.nc $gt/timmean/timmean_GT_${m}r1deg_deep_conv_frac_20200130-20200228.nc
     # cdo -setunit,"frac" -setname,cl -fldmean -gec,1e-5 -add $twp/TWP_3D_${m}_cli_20200130-20200228.nc $twp/TWP_3D_${m}_clw_20200130-20200228.nc $twp/mean/fldmean_TWP_3D_${m}_cl_20200130-20200228.nc
     # cdo -setunit,"frac" -setname,cl -fldmean -gec,5e-7 $twp/TWP_3D_${m}_cltotal_20200130-20200228.nc $twp/mean/fldmean_TWP_3D_${m}_cl_5e-7kgkg-1_20200130-20200228.nc
-    cdo -setunit,"frac" -setname,cl -gec,5e-7 $twp/TWP_3D_${m}_totalwater_20200130-20200228.nc $twp/TWP_3D_${m}_cl_5e-7kgm-3_20200130-20200228.nc
+    # cdo -setunit,"frac" -setname,cl -gec,5e-7 $twp/TWP_3D_${m}_totalwater_20200130-20200228.nc $twp/TWP_3D_${m}_cl_5e-7kgm-3_20200130-20200228.nc
     # cdo -setname,cltotal -add $twp/TWP_3D_${m}_cli_20200130-20200228.nc $twp/TWP_3D_${m}_clw_20200130-20200228.nc $twp/TWP_3D_${m}_cltotal_20200130-20200228.nc
     # cdo -setname,cltotal -fldmean $twp/TWP_3D_${m}_cltotal_20200130-20200228.nc $twp/mean/fldmean_TWP_3D_${m}_cltotal_20200130-20200228.nc
 done

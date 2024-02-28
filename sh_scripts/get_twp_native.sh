@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=qsvi_ic
+#SBATCH --job-name=rst_ifs
 #SBATCH --partition=shared
 #SBATCH --time=08:00:00
 #SBATCH --mem=100GB
@@ -17,7 +17,7 @@ LON1=153
 LAT0=-5
 LAT1=5
 LOC="TWP"
-MODEL="IC"
+MODEL="IF"
 dim_2D=true
 dim_3D=false
 
@@ -46,7 +46,7 @@ GRID_GM=/work/ka1081/DYAMOND_WINTER/CMC/GEM/DW-ATM/atmos/fx/gn/grid.nc
 GRID_IF=/work/ka1081/DYAMOND_WINTER/ECMWF/IFS-4km/DW-CPL/atmos/fx/grid/r1i1p1f1/2d/gn/grid_fx_IFS-4km_DW-CPL_r1i1p1f1_2d_gn_fx.nc
 GRID_MP=/work/ka1081/DYAMOND_WINTER/NCAR/MPAS-3km/DW-ATM/atmos/fx/gn/grid.nc
 
-declare -a VarArray15min=(qsvi) #qsvi qrvi clwvi #rlt rst
+declare -a VarArray15min=(rstacc) #qsvi qrvi clwvi #rlt rst
 declare -a DateArray=(13 20 21 22)
 if $dim_2D ; then
     # 2D vars
@@ -132,7 +132,7 @@ if $dim_2D ; then
                 done
             elif [ $MODEL = 'MP' ]; then
                 echo "MPAS"
-                for f in $IN_PATH/$IN_MP/DW-ATM/atmos/15mn/$v/r1i1p1f1/2d/gn/*_20200$d*; do
+                for f in $IN_PATH/$IN_MP/DW-ATM/atmos/15min/$v/r1i1p1f1/2d/gn/*_20200$d*; do
                     fname=$(basename $f)
                     out_file=$OUT_PATH/${LOC}_$fname
                     cdo -f nc -sellonlatbox,$LON0,$LON1,$LAT0,$LAT1 -setgrid,$GRID_MP $f $out_file

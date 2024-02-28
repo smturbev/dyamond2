@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=cdo_mulIC
+#SBATCH --job-name=cdo_mul
 #SBATCH --partition=compute
 #SBATCH --mem=20GB
 #SBATCH --time=08:00:00
@@ -13,8 +13,41 @@
 set -evx # verbose messages and crash message
 scr="/scratch/b/b380883/temp"
 twp="/work/bb1153/b380883/TWP"
-var="tv"
+gt="/work/bb1153/b380883/GT"
+wrk="/work/bb1153/b380883"
+var="pres"
 
+###############################
+###  SAM pressure field     ###
+###############################
+if [ $var = 'pres' ]; then
+    model="SAM"
+    
+    pres=$gt/TTL_SAM_pres.nc
+    ta=$gt/GT_TTL_SAM_ta_20200130-20200228.nc
+    tmp1=$scr/SAM_pa_empty.nc
+    tmp2=$scr/SAM_pa_same.nc
+    tmp3=$scr/SAM_pa_coslat
+    out=$scr/GT_${model}_pres_test.nc
+    
+    cdo -gec,0 $ta $tmp1 
+    cdo -ifthen $tmp1 $pres $tmp2
+    cdo -cos -clat $tmp2 $tmp3
+    cdo -mul $tmp3 $tmp2 $out
+fi
+
+#################
+###  hist     ###
+#################
+if [ $var = 'hist' ]; then
+    model="SCREAM"
+    
+    clivi=$gt/GT_${model}_clivi_20200130-20200228.nc
+    out=$scr/GT_${model}_clivi_histcount_test.nc
+    bins=1e-7,5.4e-7,2.8e-6,1.5e-5,8.1e-5,4.3e-4,2.3e-3,1.2e-2,6.6e-2,3.5e-1,1.8,10
+    
+    cdo -histcount,$bins $clivi $out
+fi
 
 #################
 ###    Tv     ###
@@ -37,13 +70,23 @@ fi
 # iwc = qi.values * rho
 if [ $var = 'iwc' ]; then
 
-    m="UM"
-    p=$twp/TWP_3D_${m}_pfull_20200130-20200228.nc
-    t=$twp/TWP_3D_${m}_ta_20200130-20200228.nc
-    hus=$twp/TWP_3D_${m}_hus_20200130-20200228.nc
-    rho_d=$scr/rhod_${m}.nc
-    rho=$scr/rho_${m}.nc
-    qf=$twp/TWP_3D_${m}_cli_20200130-20200228.nc
+    m="SAM"
+    if [ $region = 'twp' ]; then
+        p=$twp/TWP_3D_${m}_pfull_20200130-20200228.nc
+        t=$twp/TWP_3D_${m}_ta_20200130-20200228.nc
+        hus=$twp/TWP_3D_${m}_hus_20200130-20200228.nc
+        rho_d=$scr/rhod_${m}.nc
+        rho=$scr/rho_${m}.nc
+        qf=$twp/TWP_3D_${m}_cli_20200130-20200228.nc
+    else
+        p=$twp/GT_TTL_${m}_pfull_20200130-20200228.nc
+        t=$twp/TWP_3D_${m}_ta_20200130-20200228.nc
+        hus=$twp/TWP_3D_${m}_hus_20200130-20200228.nc
+        rho_d=$scr/rhod_${m}.nc
+        rho=$scr/rho_${m}.nc
+        qf=$twp/TWP_3D_${m}_cli_20200130-20200228.nc
+    
+    fi
     # qf=$scr/qf_${m}.nc
     # qi=$twp/TWP_3D_${m}_cli_20200130-20200228.nc
     # qs=$twp/TWP_3D_${m}_snowmxrat_20200130-20200228.nc

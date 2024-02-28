@@ -14,7 +14,7 @@ set -evx # verbose messages and crash message
 
 IN_PATH=/work/bb1153/b380883/GT
 OUT_PATH=/work/bb1153/b380883/GT/timmean
-declare -a MODELS=("SCREAMr1deg" "ICONr1deg" "SAMr1deg") # rlut: ("SHiELDr1deg" "GEOSr1deg") rlt: ("ARPr1deg" "SCREAMr1deg" "ICONr1deg" "SAMr1deg")
+declare -a MODELS=("MPASr1deg") # rlut: ("SHiELDr1deg" "GEOSr1deg") rlt: ("ARPr1deg" "SCREAMr1deg" "ICONr1deg" "SAMr1deg")
 
 for v in "${MODELS[@]}"; do
     for f in $IN_PATH/GT_${v}_rlt_20200130-20200228.nc; do
@@ -22,6 +22,7 @@ for v in "${MODELS[@]}"; do
         out_file=$OUT_PATH/timmean_$fname
         echo $fname
         cdo -timmean $f $out_file # computes the mean over each timestep output=[0,nlat,nlon]
+        # cdo -mermean $f $out_file # for hovmoller
         # cdo -hourmean $f $out_file # computes the mean of each hour for all timesteps [24,nlat,nlon]
     done
 done

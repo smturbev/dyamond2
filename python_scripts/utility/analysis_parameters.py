@@ -221,6 +221,14 @@ def load_olr(model, region="TWP",r=0):
                 # native grid coarsened to 0.1 deg to match other models
                 olr = xr.open_dataset(get_file("UM",region,"rlut"), 
                                       chunks=chunk_dict).rlut.coarsen(latitude=int(214/100), longitude=int(142/100), boundary='trim').mean()
+            elif (model=="MPAS"):
+                # native grid coarsened to 0.1 deg to match other models
+                olr = xr.open_dataset(get_file("{}r{}deg".format(model, r),region,"rlt"), 
+                                      chunks=chunk_dict).rlt.rename({"xtime":"time"})
+                olr['time'] = olr.time.astype('datetime64[ns]')
+            elif (model=="IFS"):
+                olr = xr.open_dataset(get_file("{}r{}deg".format(model, r),region,"rlt"), 
+                                      chunks=chunk_dict).rlt
             else:
                 raise Exception("model or region not defined properly. Try 'TWP' or 'SCREAM', 'UM', 'GEOS', etc.")
         else: #native grid
@@ -239,12 +247,13 @@ def load_olr(model, region="TWP",r=0):
                 olr = xr.open_dataset(get_file("ICON", region, "rlt"), chunks={"time":500, "ncell":1000}).rlt
                 olr = olr.where(olr.time.dt.hour!=0) # first hour is messed up b/c of accumulation
             elif (model=="MPAS"):
-                olr = xr.open_dataset(get_file("MPAS", region, "rlt"), chunks={"xtime":500, "nCells":1000}).rlt
+                olr = xr.open_dataset(get_file("MPAS", region, "rlt"), chunks={"xtime":500, "ncols":1000}).rlt.rename({"xtime":"time"})
+                olr['time'] = olr.time.astype('datetime64[ns]')
             else:
                 raise Exception("model or region not defined properly. Try 'TWP' or 'SCREAM', 'UM', 'GEOS', etc.")
     return olr
 
-def load_swu_swd(model, region="TWP",r=0, clearsky=False):
+def load_swu_swd(model, region="TWP", r=0, clearsky=False):
     """ returns a tuple of xarrays of (SW upward, SW downward) radiation variable in W/m2 for given model and region for specified regridded resolution
         r=0 for native grid, r=0.1 for 0.1 deg remapcon, r=1 for 1 deg remapcon
         
@@ -304,8 +313,15 @@ def load_swu_swd(model, region="TWP",r=0, clearsky=False):
                 swd = swn + swu.values
             elif (model=="UM"):
                 # native grid coarsened to 0.1 deg to match other models
-                swu = xr.open_dataset(get_file(model, region, "rsut"), chunks=chunk_dict).rsut.coarsen(latitude=int(214/100), longitude=int(142/100), boundary='trim').mean()
-                swd = xr.open_dataset(get_file(model, region, "rsdt"), chunks=chunk_dict).rsdt.coarsen(latitude=int(214/100), longitude=int(142/100), boundary='trim').mean()
+                swu = xr.open_dataset(get_file(model, region, "rsut"), chunks=chunk_dict).rsut.coarsen(latitude=int(214/100*(r*10)), longitude=int(142/100*(r*10)), boundary='trim').mean()
+                swd = xr.open_dataset(get_file(model, region, "rsdt"), chunks=chunk_dict).rsdt.coarsen(latitude=int(214/100*(r*10)), longitude=int(142/100*(r*10)), boundary='trim').mean()
+            elif (model=="MPAS"):
+                swn = xr.open_dataset(get_file("MPASr0.1deg", region, "rst"), chunks={"xtime":500, "lat":100, "lon":500}).rst.rename({"xtime":"time"})
+                swd_ex = xr.open_dataset(get_file("GEOSr0.1deg", region, "rsdt"), 
+                                         chunks={"time":500,"lat":200, "lon":500}).rsdt
+                swn['time'] = swn.time.astype('datetime64[ns]')
+                swd = swd_ex.sel(time=swn.time)
+                swu = (swd.values - swn)
             else:
                 raise Exception("model or region not defined properly. Try 'TWP' or 'SCREAM', 'UM', 'GEOS', etc.")
         else: #native grid
@@ -315,8 +331,11 @@ def load_swu_swd(model, region="TWP",r=0, clearsky=False):
                     swn = xr.open_dataset(get_file(model, region, "rstcs"), chunks={"time":500, "ncol":1000, "grid_size":1000}).rstcs
                 else:
                     print('returning swn all sky')
-                    swn = xr.open_dataset(get_file(model, region, "rst"), chunks={"time":500, "ncol":1000, "grid_size":1000}).rst.rename({"grid_size":"ncol"})
-                swd = xr.open_dataset(get_file("SCREAM", "TWP", "rsdt"), chunks=chunk_dict).rsdt
+                    if region=="TWP":
+                        swn = xr.open_dataset(get_file(model, region, "rst"), chunks={"time":500, "ncol":1000, "grid_size":1000}).rst.rename({"grid_size":"ncol"})
+                    else:
+                        swn = xr.open_dataset(get_file(model, region, "rst"), chunks={"time":500, "ncol":1000, "grid_size":1000}).rst.rename({"grid_size":"ncol"})
+                swd = xr.open_dataset(get_file("SCREAM", region, "rsdt"), chunks=chunk_dict).rsdt
                 swu = swd-swn
             elif (model=="ARP") or (model=="IFS"): # 
                 swn = xr.open_dataset(get_file(model, region, "rst"), 
@@ -355,10 +374,15 @@ def load_swu_swd(model, region="TWP",r=0, clearsky=False):
                 swn = swn.where(swn.time.dt.hour!=0)
                 swd = swn + swu.values
             elif (model=="MPAS"):
-                raise Exception("MPAS model not yet ready to use...")
-                # swn = xr.open_dataset(get_file("MPAS", region, "rst"), chunks={"xtime":500, "nCells":1000}).rst
-                # to do
-                # calculate swd interpolated to xtime and nCells (maybe convert first to datetime)
+                swn = xr.open_dataset(get_file("MPAS", region, "rst"), chunks={"xtime":500, "nCells":1000}).rst.rename({"xtime":"time", "nCells":"ncol"})
+                swn['time'] = swn.time.astype('datetime64[ns]')
+                swd_ex = xr.open_dataset(get_file("GEOS", region, "rsdt"), 
+                                         chunks={"time":500,"Xdim":1000}).rsdt.rename({"Xdim":"ncol"})
+                swd = swd_ex.interp(time=swn.time,
+                           ncol=swn.ncol, 
+                           method="nearest",
+                           kwargs={"fill_value": np.nan})
+                swu = (swd - swn)
             else:
                 raise Exception("model or region not defined properly. Try 'TWP' or 'SCREAM', 'UM', 'GEOS', etc.")
     return (swu, swd)

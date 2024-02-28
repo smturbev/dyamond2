@@ -12,8 +12,12 @@
 set -evx # verbose messages and crash message
 twp=/work/bb1153/b380883/TWP
 gt=/work/bb1153/b380883/GT
+scr=/scratch/b/b380883
 
 ### cumulative accumulated precipitation over 40 days
+# cdo -fldmean -selvar,precipitation $scr/GPM_3IMERG_precip_20200120-20200228.nc $gt/fldmean/fldmean_GT_GPM-IMERG_pr_20200120-20200228.nc
+cdo -timmean -seldate,2020-01-30T00:00:00,2020-02-28T23:59:00 $scr/GPM_3IMERG_precip_20200120-20200228.nc $gt/timmean/timmean_GT_GPM-IMERG_precipitation_20200130-20200228.nc
+
 # cdo -setname,pracc -seldate,2020-02-28T23:45:00 -timcumsum $gt/GT_ARPr1deg_pr_20200120-20200228.nc $gt/timmean/timcumsum_GT_ARPr1deg_pracc_20200228T234500.nc
 # cdo -setname,pracc -mulc,900 -seldate,2020-02-28T23:45:00 -timcumsum $gt/GT_GEOSr1deg_pr_20200120-20200228.nc $gt/timmean/timcumsum_GT_GEOSr1deg_pracc_20200228T234500.nc
 # cdo -setname,pracc -mulc,900000 -seldate,2020-02-28T23:45:00 -timcumsum $gt/GT_SCREAMr1deg_pr_20200120-20200228.nc $gt/timmean/timcumsum_GT_SCREAMr1deg_pracc_20200228T234500.nc
@@ -26,13 +30,13 @@ gt=/work/bb1153/b380883/GT
 # cdo -setname,pr -setunit,"mm s-1" -divc,900 -deltat $gt/GT_SAMr1deg_pracc_20200120-20200228.nc $gt/GT_SAMr1deg_pr_20200120-20200228.nc
 
 ### timmean or daymean of precip rate over last 30 days 
-cdo -daymean -seldate,2020-01-30T00:00:00,2020-02-28T23:59:00 $gt/GT_ARPr1deg_pr_20200120-20200228.nc $gt/timmean/daymean_GT_ARPr1deg_pr_20200130-20200228.nc
-cdo -daymean -seldate,2020-01-30T00:00:00,2020-02-28T23:59:00 $gt/GT_GEOSr1deg_pr_20200120-20200228.nc $gt/timmean/daymean_GT_GEOSr1deg_pr_20200130-20200228.nc
-cdo -daymean -seldate,2020-01-30T00:00:00,2020-02-28T23:59:00 $gt/GT_ICONr1deg_pr_20200120-20200228.nc $gt/timmean/daymean_GT_ICONr1deg_pr_20200130-20200228.nc
-cdo -daymean -seldate,2020-01-30T00:00:00,2020-02-28T23:59:00 $gt/GT_SAMr1deg_pr_20200120-20200228.nc $gt/timmean/daymean_GT_SAMr1deg_pr_20200130-20200228.nc
-cdo -daymean -seldate,2020-01-30T00:00:00,2020-02-28T23:59:00 $gt/GT_SCREAMr1deg_pr_20200120-20200228.nc $gt/timmean/daymean_GT_SCREAMr1deg_pr_20200130-20200228.nc
-cdo -daymean -seldate,2020-01-30T00:00:00,2020-02-28T23:59:00 $gt/GT_SHiELDr1deg_pr_20200120-20200228.nc $gt/timmean/daymean_GT_SHiELDr1deg_pr_20200130-20200228.nc
-cdo -daymean -seldate,2020-01-30T00:00:00,2020-02-28T23:59:00 $gt/GT_UMr1deg_pr_20200120-20200228.nc $gt/timmean/daymean_GT_UMr1deg_pr_20200130-20200228.nc
+# cdo -daymean -seldate,2020-01-30T00:00:00,2020-02-28T23:59:00 $gt/GT_ARPr1deg_pr_20200120-20200228.nc $gt/timmean/daymean_GT_ARPr1deg_pr_20200130-20200228.nc
+# cdo -daymean -seldate,2020-01-30T00:00:00,2020-02-28T23:59:00 $gt/GT_GEOSr1deg_pr_20200120-20200228.nc $gt/timmean/daymean_GT_GEOSr1deg_pr_20200130-20200228.nc
+# cdo -daymean -seldate,2020-01-30T00:00:00,2020-02-28T23:59:00 $gt/GT_ICONr1deg_pr_20200120-20200228.nc $gt/timmean/daymean_GT_ICONr1deg_pr_20200130-20200228.nc
+# cdo -daymean -seldate,2020-01-30T00:00:00,2020-02-28T23:59:00 $gt/GT_SAMr1deg_pr_20200120-20200228.nc $gt/timmean/daymean_GT_SAMr1deg_pr_20200130-20200228.nc
+# cdo -daymean -seldate,2020-01-30T00:00:00,2020-02-28T23:59:00 $gt/GT_SCREAMr1deg_pr_20200120-20200228.nc $gt/timmean/daymean_GT_SCREAMr1deg_pr_20200130-20200228.nc
+# cdo -daymean -seldate,2020-01-30T00:00:00,2020-02-28T23:59:00 $gt/GT_SHiELDr1deg_pr_20200120-20200228.nc $gt/timmean/daymean_GT_SHiELDr1deg_pr_20200130-20200228.nc
+# cdo -daymean -seldate,2020-01-30T00:00:00,2020-02-28T23:59:00 $gt/GT_UMr1deg_pr_20200120-20200228.nc $gt/timmean/daymean_GT_UMr1deg_pr_20200130-20200228.nc
 
 # cdo -mermean $gt/GT_ARPr1deg_rlt_20200130-20200228.nc $gt/fldmean/mermean_GT_ARPr1deg_rlt_20200130-20200228.nc
 # cdo -mermean $gt/GT_GEOSr1deg_rlut_20200130-20200228.nc $gt/fldmean/mermean_GT_GEOSr1deg_rlut_20200130-20200228.nc
