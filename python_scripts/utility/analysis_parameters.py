@@ -37,6 +37,7 @@ ERA5_TWP_zg = ERA5_TWP + "ERA5_geopotential_50-200mb_winter_TWP.nc"
 ERA5_TWP_ta = ERA5_TWP + "ERA5_temp_50-200mb_winter_TWP.nc"
 CERES_SYN1_DY1 = "/work/bb1153/b380883/dyamond1/TWP/TWP_CERES_20000801-20190910.nc"
 CERES_YM_DY1 = "/work/bb1153/b380883/dyamond1/TWP/TWP_CERES_yearmean_20000801-20190910.nc"
+DARDAR_GT_IWPHIST = "/work/bb1153/b380883/GT/stats/IWPonly_iwphist_2007-2017_DARDARv3.nc"
 
 ## time mean ##
 TIMMEAN_GT = GT+"timmean/"
@@ -95,8 +96,6 @@ def get_dyamond1(model, region="TWP", var="rlt"):
          - filename(str): returns a string of the file name for given input
     """
     return TWP1+region+"_"+model+"_"+var+"_20160810-20160910.nc"
-
-    
 
 def get_timmean_file(model, region="twp", var="clt"):
     if model=="CERES":
@@ -179,6 +178,7 @@ def load_iwp(model, region, total=True, chunks=None):
                           chunks=chunks).iwp
             print("returned ice + snow + graupel", model, region)
         except:
+            print(WRK+region+"/{}_{}_iwp_20200130-20200228.nc".format(region, model))
             print("iwp = clivi + qsvi + qgvi not defined as a file", model, region)
     else:
         try:
@@ -311,6 +311,10 @@ def load_swu_swd(model, region="TWP", r=0, clearsky=False):
                 swu = swu.where(swu.time.dt.hour!=0) # first hour is messed up b/c of accumulation
                 swn = swn.where(swn.time.dt.hour!=0)
                 swd = swn + swu.values
+            elif (model=="IFS"):
+                swn = xr.open_dataset(get_file("{}r{}deg".format(model, r),region,"rst"), chunks=chunk_dict).rst
+                swd = xr.open_dataset(get_file("{}r{}deg".format(model, r),region,"rsdt"), chunks=chunk_dict).rsdt
+                swu = (swd - swn)
             elif (model=="UM"):
                 # native grid coarsened to 0.1 deg to match other models
                 swu = xr.open_dataset(get_file(model, region, "rsut"), chunks=chunk_dict).rsut.coarsen(latitude=int(214/100*(r*10)), longitude=int(142/100*(r*10)), boundary='trim').mean()
@@ -373,6 +377,10 @@ def load_swu_swd(model, region="TWP", r=0, clearsky=False):
                 swu = swu.where(swu.time.dt.hour!=0) # first hour is messed up b/c of accumulation
                 swn = swn.where(swn.time.dt.hour!=0)
                 swd = swn + swu.values
+            elif (model=="IFS"):
+                swn = xr.open_dataset(get_file(model,region,"rst"), chunks=chunk_dict).rst
+                swd = xr.open_dataset(get_file(model,region,"rsdt"), chunks=chunk_dict).rsdt
+                swu = (swd - swn)
             elif (model=="MPAS"):
                 swn = xr.open_dataset(get_file("MPAS", region, "rst"), chunks={"xtime":500, "nCells":1000}).rst.rename({"xtime":"time", "nCells":"ncol"})
                 swn['time'] = swn.time.astype('datetime64[ns]')
@@ -405,6 +413,48 @@ def load_alb(model, region="TWP", r=0, clearsky=False, near_noon=True):
         else:
             raise Exception("define hours near noon for this region",region)
     return alb
+
+def load_olr_alb_dy1(model, region="TWP", near_noon=True):
+    if model[:2]=="CC":
+        ds = xr.open_dataset(CCCM_JAS)
+        olr = ds.CERES_LW_TOA_flux___upwards
+        swu = ds.CERES_SW_TOA_flux___upwards
+        swd = ds.TOA_Incoming_Solar_Radiation
+        alb = swu/swd.values
+    else:
+        if model[:2]=="MP":
+            print("... dy1 getting sw mpas for",model)
+            swn = xr.open_dataset(get_dyamond1(model, region, "rst"), chunks={"time":100}).rst
+            swd = xr.open_dataset(get_dyamond1("NICAM",region,"rsdt"), chunks={"time":100}).rsdt.isel(lev=0).isel(time=slice(0,len(swn.xtime))).values
+            swu = (swd - swn)
+        elif model[:2]=="IC":
+            swn = xr.open_dataset(get_dyamond1(model, region, "rst"), chunks={"time":100}).rst
+            swu = xr.open_dataset(get_dyamond1(model, region, "rsut"), chunks={"time":100}).rsut
+            swd = swu + swn.values
+        elif (model[:2] == "AR") or (model[:2] == "GE") or (model[:2] == "IF") or (model[:2] == "SA"):
+            print("... dy1 getting sw for",model)
+            swn = xr.open_dataset(get_dyamond1(model, region, "rst"), chunks={"time":100}).rst
+            swd = xr.open_dataset(get_dyamond1("NICAM",region,"rsdt"), chunks={"time":100}).rsdt.isel(lev=0).sel(time=swn.time, method="nearest").values
+            swu = (swd - swn)
+        elif (model[:2] == "FV") or (model[:2] == "NI") or (model[:2] == "UM"):
+            swu = xr.open_dataset(get_dyamond1(model, region, "rsut"), chunks={"time":100}).rsut
+            swd = xr.open_dataset(get_dyamond1(model, region, "rsdt"), chunks={"time":100}).rsdt
+        else:
+            return (None, None)
+        print("... got sw")
+        alb = swu/swd
+        if near_noon:
+            if region.lower()=="twp":
+                if model=="SAM":
+                    alb = alb.where((alb.time.dt.hour>=2)&(alb.time.dt.hour<=6))
+                elif model=="MPAS":
+                    print("MPAS not near noon only, plotting all time for dy1")
+                else:
+                    alb = alb.where((alb.time.dt.hour<=4))
+        print("... got alb")
+        olr = xr.open_dataset(get_dyamond1(model, region, "rlt"), chunks={"time":100}).rlt
+        print("... got olr")
+    return olr, alb
 
 def load_height_full(model, region="TWP", r=0, chunks=None):
     """ get full height in meters varies in time and space """

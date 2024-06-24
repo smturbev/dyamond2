@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=rst_ifs
+#SBATCH --job-name=mp_rlt
 #SBATCH --partition=shared
 #SBATCH --time=08:00:00
 #SBATCH --mem=100GB
@@ -17,7 +17,7 @@ LON1=153
 LAT0=-5
 LAT1=5
 LOC="TWP"
-MODEL="IF"
+MODEL="MP"
 dim_2D=true
 dim_3D=false
 
@@ -46,7 +46,7 @@ GRID_GM=/work/ka1081/DYAMOND_WINTER/CMC/GEM/DW-ATM/atmos/fx/gn/grid.nc
 GRID_IF=/work/ka1081/DYAMOND_WINTER/ECMWF/IFS-4km/DW-CPL/atmos/fx/grid/r1i1p1f1/2d/gn/grid_fx_IFS-4km_DW-CPL_r1i1p1f1_2d_gn_fx.nc
 GRID_MP=/work/ka1081/DYAMOND_WINTER/NCAR/MPAS-3km/DW-ATM/atmos/fx/gn/grid.nc
 
-declare -a VarArray15min=(rstacc) #qsvi qrvi clwvi #rlt rst
+declare -a VarArray15min=(rltacc) #qsvi qrvi clwvi #rlt rst
 declare -a DateArray=(13 20 21 22)
 if $dim_2D ; then
     # 2D vars

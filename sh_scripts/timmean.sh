@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=timmeanrlt
+#SBATCH --job-name=stats_pr
 #SBATCH --partition=compute
 #SBATCH --account=bb1153
 #SBATCH --time=04:30:00
@@ -13,15 +13,16 @@ module load cdo
 set -evx # verbose messages and crash message
 
 IN_PATH=/work/bb1153/b380883/GT
-OUT_PATH=/work/bb1153/b380883/GT/timmean
-declare -a MODELS=("MPASr1deg") # rlut: ("SHiELDr1deg" "GEOSr1deg") rlt: ("ARPr1deg" "SCREAMr1deg" "ICONr1deg" "SAMr1deg")
+OUT_PATH=/work/bb1153/b380883/GT/stats
+declare -a MODELS=("MPAS" "GEOS" "ICON" "ARP" "IFS" "SAM" "SCREAM" "SHiELD" "UM") # rlut: ("SHiELDr1deg" "GEOSr1deg") rlt: ("ARPr1deg" "SCREAMr1deg" "ICONr1deg" "SAMr1deg")
 
 for v in "${MODELS[@]}"; do
-    for f in $IN_PATH/GT_${v}_rlt_20200130-20200228.nc; do
+    for f in $IN_PATH/GT_${v}r1deg_pr_20200130-20200228.nc; do
         fname=$(basename $f)
-        out_file=$OUT_PATH/timmean_$fname
+        out_file=$OUT_PATH/histcount_$fname
         echo $fname
-        cdo -timmean $f $out_file # computes the mean over each timestep output=[0,nlat,nlon]
+        cdo -histcount,0.05,1,2,4,8,16,32,64,128,256 -mulc,3600 $f $out_file
+        # cdo -timmean $f $out_file # computes the mean over each timestep output=[0,nlat,nlon]
         # cdo -mermean $f $out_file # for hovmoller
         # cdo -hourmean $f $out_file # computes the mean of each hour for all timesteps [24,nlat,nlon]
     done

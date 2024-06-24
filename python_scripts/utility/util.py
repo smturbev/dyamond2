@@ -251,7 +251,8 @@ def wc_to_wp(wc, p):
 
 def dennisplot(stat, olr, alb, var=None, xbins=None, ybins=None, 
                levels=None, model="model", region="TWP", var_name="var_name",units="units", 
-               cmap=cm.ocean_r, ax=None, save=False, colorbar_on=True, fs=20):
+               cmap=cm.ocean_r, ax=None, save=False, colorbar_on=True, fs=20, contour_one=False,
+               draw_line=True):
     ''' Returns axis with contourf of olr and albedo.
     
     Parameters:
@@ -336,18 +337,23 @@ def dennisplot(stat, olr, alb, var=None, xbins=None, ybins=None,
         ax = plt.gca()
     if stat=="difference":
         csn = ax.contourf(xbins2, ybins2, binned_stat.T*100, levels, cmap=cmap, extend='both')
+        if contour_one:
+            con_levs = np.arange(-3,-1.2,0.1)
+            con = ax.contour(xbins2, ybins2, np.log10(hist0.T), con_levs, 
+                             colors='k', linestyles='solid', linewidths=1)
     elif stat=="density":
         csn = ax.contourf(xbins2, ybins2, np.log10(binned_stat.T), levels, cmap=cmap, extend='both')
         co = ax.contour(csn, colors='k', linestyles='solid', linewidths=1)
     else:
         csn = ax.contourf(xbins2, ybins2, (binned_stat.T), levels, cmap=cmap, extend='both')
         co = ax.contour(csn, colors='k', linestyles='solid', linewidths=1)
-    if region=="NAU":
-        ax.plot([80,317],[0.57,0.],label="Neutral CRE", color='black') # calculated in line_neutral_cre.ipynb
-    elif region=="TWP":
-        ax.plot([80,309],[0.55,0.],label="Neutral CRE", color='black') # calculated in line_neutral_cre.ipynb
-    else:
-        ax.plot([80,320],[0.75,0.2],label="Neutral CRE", color='black') # calculated in line_neutral_cre.ipynb
+    if draw_line:
+        if region=="NAU":
+            ax.plot([80,317],[0.57,0.],label="Neutral CRE", color='black') # calculated in line_neutral_cre.ipynb
+        elif region=="TWP":
+            ax.plot([80,309],[0.55,0.],label="Neutral CRE", color='black') # calculated in line_neutral_cre.ipynb
+        else:
+            ax.plot([80,320],[0.75,0.2],label="Neutral CRE", color='black') # calculated in line_neutral_cre.ipynb
     ax.grid()
     ax.set_xticks([100,150,200,250,300])
     ax.set_ylim([0.05,0.8])
@@ -359,7 +365,7 @@ def dennisplot(stat, olr, alb, var=None, xbins=None, ybins=None,
     else:
         ax.set_title('{m} {n}\n'.format(m=model, n=region), size=fs)
     ax.tick_params(axis='both',labelsize=fs)
-    if len(olr)>10:
+    if len(olr)>10 and draw_line:
         ax.text(300,0.75,"{l} Profiles".format(l=len(olr)), fontsize=fs, color="0.3", ha="right")
 
     # plot the colorbar
@@ -383,6 +389,8 @@ def dennisplot(stat, olr, alb, var=None, xbins=None, ybins=None,
                                                                    stat, model, region[:3]))
     if colorbar_on:
         ret = ax
+    elif contour_one:
+        ret = ax, csn, con
     else:
         ret = ax, csn
     return ret

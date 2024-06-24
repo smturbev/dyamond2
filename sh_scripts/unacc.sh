@@ -27,7 +27,7 @@ out_file=${FILE_PATH}/${LOC}/${LOC}_${MODEL}_${v}_20200130-20200228.nc
 # out_file=${f/acc}
 # cdo -setname,$v -setunit,"W/m2" -divc,3600 -deltat $f $out_file
 # cdo -setname,$v -setunit,"kg m-2 s-1" -divc,900 -deltat $f $out_file
-cdo -setname,"pr" -setunit,"mm/hr" -divc,3600 -deltat $SCR/GPM_3IMERG_precip_20200120-20200228.nc $SCR/GPM_3IMERG_pr_20200120-20200228.nc
+# cdo -setname,"pr" -setunit,"mm/hr" -divc,3600 -deltat $SCR/GPM_3IMERG_precip_20200120-20200228.nc $SCR/GPM_3IMERG_pr_20200120-20200228.nc
 
 
 # #DYAMOND1
@@ -35,6 +35,9 @@ cdo -setname,"pr" -setunit,"mm/hr" -divc,3600 -deltat $SCR/GPM_3IMERG_precip_202
 # cdo -setname,rlt -setunit,"W/m2" -seldate,2016-08-10T00:00:00,2016-09-10T23:59:00 -divc,-3600 /scratch/b/b380883/TWP/TWP_ECMWF-4km_ttr_deacc_0.10deg.nc /scratch/b/b380883/TWP/TWP_IFS_rlt_20160801-20160910.nc
 # cdo -setname,rst -setunit,"W/m2" -seldate,2016-08-10T00:00:00,2016-09-10T23:59:00 -divc,3600 /work/bb1153/b380883/dyamond1/TWP/TWP_ECMWF-4km_tsr_deacc_0.10deg.nc /scratch/b/b380883/TWP/TWP_IFS_rst_20160810-20160910.nc
 # cdo -setname,rst -setunit,"W/m2" -seldate,2016-08-10T00:00:00,2016-09-10T00:00:00 -divc,900 -deltat /scratch/b/b380883/TWP_MPAS-3.75kmNew_acswnett_0.10deg.nc /work/bb1153/b380883/TWP/TWP_MPAS_rst_20160810-20160910.nc
+# cdo -setname,rlt /work/bb1153/b380883/dyamond1/TWP/TWP_ICON_rltacc_20160810-20160910.nc /work/bb1153/b380883/dyamond1/TWP/TWP_ICON_rlt_20160810-20160910.nc
+# cdo -setname,rst -deltat /work/bb1153/b380883/dyamond1/TWP/TWP_ICON_rstacc_20160810-20160910.nc /work/bb1153/b380883/dyamond1/TWP/TWP_ICON_rst_20160810-20160910.nc
+# cdo -setname,rsut -deltat /work/bb1153/b380883/dyamond1/TWP/TWP_ICON_rsutacc_20160810-20160910.nc /work/bb1153/b380883/dyamond1/TWP/TWP_ICON_rsut_20160810-20160910.nc
 
 
 ## ARP 

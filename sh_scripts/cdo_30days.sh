@@ -10,19 +10,21 @@
 #SBATCH --mail-user=smturbev@uw.edu
 
 set -evx # verbose messages and crash message
-wrk=/work/bb1153/b380883/GT/fldmean
+wrk=/work/bb1153/b380883/dyamond1/TWP
 
 declare -a fileArray=(
-GPM-IMERG
+rlt
+rst
+rsut
 )
 
 
-for file in "${fileArray[@]}"; do
-    in_file=$wrk/fldmean_GT_${file}_pr_20200120-20200228.nc
+for f in "${fileArray[@]}"; do
+    in_file=$wrk/TWP_ICON_${f}_20160801-20160910.nc
     # out_file=$wrk/${file%.*}"new.nc"
-    out_file=$wrk/fldmean_GT_${file}_pr_20200130-20200228.nc
+    out_file=$wrk/TWP_ICON_${f}_20160810-20160910.nc
     echo $in_file" "$out_file
-    # cdo -seldate,2016-08-10T00:00:00,2016-09-10T23:59:00 $in_file $out_file
+    cdo -seldate,2016-08-10T00:00:00,2016-09-10T23:59:00 $in_file $out_file
     # cdo -seldate,2020-01-30T00:00:00,2020-02-28T23:59:00 $in_file $out_file
     # for ICON... 2020-02-28T16:30:00
     # cdo -seltimestep,1/720 $in_file $out_file

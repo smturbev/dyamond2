@@ -15,7 +15,27 @@ scr="/scratch/b/b380883/temp"
 twp="/work/bb1153/b380883/TWP"
 gt="/work/bb1153/b380883/GT"
 wrk="/work/bb1153/b380883"
-var="pres"
+var="iwc"
+
+declare -a ModelArray=(GEOS)
+
+
+##################
+####    IWP   ####
+##################
+# Calculate IWP (kg/m2) from ice snow and graupel (kg/m2)
+if [ $var = 'iwp' ]; then
+    for m in "${ModelArray[@]}"; do
+        echo $m
+        grpl=$twp/TWP_${m}_qgvi_20200130-20200228.nc
+        snow=$twp/TWP_${m}_qsvi_20200130-20200228.nc
+        cldi=$twp/TWP_${m}_clivi_20200130-20200228.nc
+        iwp=$twp/TWP_${m}_iwp_20200130-20200228.nc
+        cdo -setname,iwp -setattribute,"long_name"="total ice water path (ice + snow + graupel)" -add -add $grpl $snow $cldi $iwp
+    done
+fi
+
+
 
 ###############################
 ###  SAM pressure field     ###
@@ -70,13 +90,13 @@ fi
 # iwc = qi.values * rho
 if [ $var = 'iwc' ]; then
 
-    m="SAM"
+    m="GEOS"
     if [ $region = 'twp' ]; then
-        p=$twp/TWP_3D_${m}_pfull_20200130-20200228.nc
+        p=$twp/TWP_3D_${m}_pa_20200130-20200228.nc
         t=$twp/TWP_3D_${m}_ta_20200130-20200228.nc
         hus=$twp/TWP_3D_${m}_hus_20200130-20200228.nc
-        rho_d=$scr/rhod_${m}.nc
-        rho=$scr/rho_${m}.nc
+        rho_d=$scr/temp/rhod_${m}.nc
+        rho=$scr/temp/rho_${m}.nc
         qf=$twp/TWP_3D_${m}_cli_20200130-20200228.nc
     else
         p=$twp/GT_TTL_${m}_pfull_20200130-20200228.nc

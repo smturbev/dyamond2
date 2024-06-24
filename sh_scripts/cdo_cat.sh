@@ -15,12 +15,22 @@ twp="/work/bb1153/b380883/TWP"
 gt="/work/bb1153/b380883/GT"
 scr="/scratch/b/b380883"
 
+
+cdo -cat $scr/GT_SA_iwp_hist_2020*.nc $gt/GT_SAM_native_iwp_hist_20200130-20200228.nc
+
+# cdo -cat $scr/TWP_rltacc_15min_MPAS*.nc $twp/TWP_MPAS_rltacc_20200130-20200228.nc
 # cdo -cat $scr/r1deg_GT_pr_15min_MPAS*.nc $gt/GT_MPAS_pr_20200130-20200228.nc
 # cdo -cat $scr/r1deg_GT_pracc_1hr_IFS*.nc $gt/GT_IFS_pracc_20200130-20200228.nc
 # cdo -cat $scr/r1deg_GT_rltacc_1hr_IFS*.nc $gt/GT_IFS_rltacc_20200130-20200228.nc
 
 # cdo -fldmean $gt/GT_MPAS_pr_20200130-20200228.nc $gt/fldmean/fldmean_GT_MPAS_pr_20200130-20200228.nc
-cdo -fldmean $gt/GT_IFS_pracc_20200130-20200228.nc $gt/fldmean/fldmean_GT_IFS_pracc_20200130-20200228.nc
+# cdo -fldmean $gt/GT_IFS_pracc_20200130-20200228.nc $gt/fldmean/fldmean_GT_IFS_pracc_20200130-20200228.nc
+# cdo -cat $scr/fldmean_GT_ta_3hr_gSAM*.nc $gt/fldmean/fldmean_GT_SAM_ta_20200130-20200228.nc
+# cdo -cat $scr/TWP_qsvi_15min_ICON*.nc $twp/TWP_SAM_qsvi_20200130-20200228.nc
+# cdo -cat $scr/TWP_qgvi_15min_ICON*.nc $twp/TWP_SAM_qgvi_20200130-20200228.nc
+# cdo -cat $scr/TWP_qsvi_15min_ICON*.nc $twp/TWP_ICON_qsvi_20200130-20200228.nc
+# cdo -cat $scr/TWP_qgvi_15min_ICON*.nc $twp/TWP_ICON_qgvi_20200130-20200228.nc
+# cdo -cat $scr/r1deg_GT_clivi_1hr_IFS*.nc $gt/GT_IFSr1deg_clivi_20200130-20200228.nc
 
 # cdo cat $scr/TWP_rstacc_15min_MPAS*.nc $twp/TWP_MPAS_rstacc_20200120-20200228.nc
 # cdo -setname,rst -setunit,W/m2 -divc,900 -deltat $twp/TWP_MPAS_rstacc_20200120-20200228.nc $twp/TWP_MPAS_rst_20200120-20200228.nc

@@ -14,9 +14,11 @@ twp=/work/bb1153/b380883/TWP
 gt=/work/bb1153/b380883/GT
 scr=/scratch/b/b380883
 
+cdo -fldmean $twp/TWP_3D_GEOS_totalwater_20200130-20200228.nc $twp/mean/fldmean_TWP_3D_GEOS_totalwater_20200130-20200228.nc
+cdo -setname,cl -setattribute,long_name="cld frac >= 5e-7kgm-3" -fldmean -gec,5e-7 $twp/TWP_3D_GEOS_totalwater_20200130-20200228.nc $twp/mean/fldmean_TWP_3D_GEOS_cl_5e-7kgm-3_20200130-20200228.nc
 ### cumulative accumulated precipitation over 40 days
 # cdo -fldmean -selvar,precipitation $scr/GPM_3IMERG_precip_20200120-20200228.nc $gt/fldmean/fldmean_GT_GPM-IMERG_pr_20200120-20200228.nc
-cdo -timmean -seldate,2020-01-30T00:00:00,2020-02-28T23:59:00 $scr/GPM_3IMERG_precip_20200120-20200228.nc $gt/timmean/timmean_GT_GPM-IMERG_precipitation_20200130-20200228.nc
+# cdo -timmean -seldate,2020-01-30T00:00:00,2020-02-28T23:59:00 $scr/GPM_3IMERG_precip_20200120-20200228.nc $gt/timmean/timmean_GT_GPM-IMERG_precipitation_20200130-20200228.nc
 
 # cdo -setname,pracc -seldate,2020-02-28T23:45:00 -timcumsum $gt/GT_ARPr1deg_pr_20200120-20200228.nc $gt/timmean/timcumsum_GT_ARPr1deg_pracc_20200228T234500.nc
 # cdo -setname,pracc -mulc,900 -seldate,2020-02-28T23:45:00 -timcumsum $gt/GT_GEOSr1deg_pr_20200120-20200228.nc $gt/timmean/timcumsum_GT_GEOSr1deg_pracc_20200228T234500.nc
