@@ -15,8 +15,8 @@ twp="/work/bb1153/b380883/TWP"
 gt="/work/bb1153/b380883/GT"
 scr="/scratch/b/b380883"
 
-
-cdo -cat $scr/GT_SA_iwp_hist_2020*.nc $gt/GT_SAM_native_iwp_hist_20200130-20200228.nc
+cdo -
+# cdo -cat $scr/GT_SA_iwp_hist_2020*.nc $gt/GT_SAM_native_iwp_hist_20200130-20200228.nc
 
 # cdo -cat $scr/TWP_rltacc_15min_MPAS*.nc $twp/TWP_MPAS_rltacc_20200130-20200228.nc
 # cdo -cat $scr/r1deg_GT_pr_15min_MPAS*.nc $gt/GT_MPAS_pr_20200130-20200228.nc

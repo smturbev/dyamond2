@@ -22,6 +22,13 @@ conda activate dyamond
 2. SCREAM performs adequately well in all aspects - we identify its biases compared to other models and to climatology
 3. The complexity of the model microphysics does (not) correlate with accuracy of cirrus representation in the models
 
+## How to use this repository
+
+Start with the ```python_scripts/plot_figures.ipynb``` to see how the figures for the paper were generated (Turbeville et al., 2024).
+This files lists the necessary preprocessing of the data and references the python notebooks used. 
+
+You'll need access to DKRZ's server, levante, and the dyamond data to truly make the most of these files. Otherwise you'll have to update the code a lot to adapt it to your own model output.
+
 ## Collaborators
 
 All code is written by me, Sami Turbeville, with an assist from Jacqueline Nugent for some analysis. 

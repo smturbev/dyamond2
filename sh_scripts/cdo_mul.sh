@@ -11,14 +11,24 @@
 #SBATCH --error=err_mul%j.eo
 
 set -evx # verbose messages and crash message
-scr="/scratch/b/b380883/temp"
+scr="/scratch/b/b380883"
 twp="/work/bb1153/b380883/TWP"
 gt="/work/bb1153/b380883/GT"
 wrk="/work/bb1153/b380883"
 var="iwc"
+# set model in below code for each var
 
-declare -a ModelArray=(GEOS)
-
+##################
+####   mean   ####
+##################
+# Calculate IWP (kg/m2) from ice snow and graupel (kg/m2)
+if [ $var = 'mean' ]; then
+    for m in "${ModelArray[@]}"; do
+        echo $m
+        in_file=$twp/TWP_3D_${m}_iwc_20200130-20200228.nc
+        cdo -fldmean -timmean $in_file $twp/mean/mean_xyt_${m}_iwc_20200130-20200228.nc
+    done
+fi
 
 ##################
 ####    IWP   ####
@@ -90,16 +100,18 @@ fi
 # iwc = qi.values * rho
 if [ $var = 'iwc' ]; then
 
-    m="GEOS"
-    if [ $region = 'twp' ]; then
-        p=$twp/TWP_3D_${m}_pa_20200130-20200228.nc
-        t=$twp/TWP_3D_${m}_ta_20200130-20200228.nc
-        hus=$twp/TWP_3D_${m}_hus_20200130-20200228.nc
+    m='SAM'
+    region='twp'
+    type='tot' # type: 'tot'=total or 'ice'=ice only
+    if [ $type = 'tot' ]; then
+        p=$twp/TWP_3D_${m}_pa_20200130-20200228.nc # Pa
+        t=$twp/TWP_3D_${m}_ta_20200130-20200228.nc # K
+        hus=$twp/TWP_3D_${m}_hus_20200130-20200228.nc # kg/kg
         rho_d=$scr/temp/rhod_${m}.nc
         rho=$scr/temp/rho_${m}.nc
-        qf=$twp/TWP_3D_${m}_cli_20200130-20200228.nc
+        qf=$twp/TWP_3D_${m}_cltotal_20200130-20200228.nc # kg/kg
     else
-        p=$twp/GT_TTL_${m}_pfull_20200130-20200228.nc
+        p=$twp/TWP_3D_${m}_pa_20200130-20200228.nc
         t=$twp/TWP_3D_${m}_ta_20200130-20200228.nc
         hus=$twp/TWP_3D_${m}_hus_20200130-20200228.nc
         rho_d=$scr/rhod_${m}.nc
@@ -113,13 +125,12 @@ if [ $var = 'iwc' ]; then
     # qg=$twp/TWP_3D_${m}_grplmxrat_20200130-20200228.nc
     iwc=$twp/TWP_3D_${m}_iwc_20200130-20200228.nc
     
-    cdo -mul -mulc,287 -addc,1 -mulc,0.61 $hus $t $rho_d
+    cdo -mul -mulc,287 -addc,1 -mulc,0.61 $hus $t $rho_d 
     cdo -div $p $rho_d $rho
     # cdo -add -add $qi $qs $qg $qf
     cdo -setname,iwc -setunit,"kg/m3" -mul $rho $qf $iwc
 fi
 
-# rm $rho $qf $rho_d
 
 ##################
 ####  RHice   ####

@@ -38,7 +38,7 @@ ERA5_TWP_ta = ERA5_TWP + "ERA5_temp_50-200mb_winter_TWP.nc"
 CERES_SYN1_DY1 = "/work/bb1153/b380883/dyamond1/TWP/TWP_CERES_20000801-20190910.nc"
 CERES_YM_DY1 = "/work/bb1153/b380883/dyamond1/TWP/TWP_CERES_yearmean_20000801-20190910.nc"
 DARDAR_GT_IWPHIST = "/work/bb1153/b380883/GT/stats/IWPonly_iwphist_2007-2017_DARDARv3.nc"
-
+DARDAR_GT_IWPHISTe3 = "/work/bb1153/b380883/GT/stats/IWP1e-3only_iwphist_2007-2017_DARDARv3.nc"
 ## time mean ##
 TIMMEAN_GT = GT+"timmean/"
 UM_PFULL_MEAN = TWP+"mean/fldmean_TWP_3D_UM_pfull_20200130-20200228.nc"
@@ -171,6 +171,8 @@ def load_iwp(model, region, total=True, chunks=None):
         iwp = xr.open_dataset(WRK+region+\
                               "/{}_{}_clivi_20200130-20200228.nc".format(region, model), 
                               chunks=chunks).clivi
+        print("returning", WRK+region+\
+                              "/{}_{}_clivi_20200130-20200228.nc".format(region, model))
     elif total:
         try:
             iwp = xr.open_dataset(WRK+region+\
