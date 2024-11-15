@@ -180,8 +180,18 @@ def load_iwp(model, region, total=True, chunks=None):
                           chunks=chunks).iwp
             print("returned ice + snow + graupel", model, region)
         except:
-            print(WRK+region+"/{}_{}_iwp_20200130-20200228.nc".format(region, model))
-            print("iwp = clivi + qsvi + qgvi not defined as a file", model, region)
+            # print(WRK+region+"/{}_{}_iwp_20200130-20200228.nc".format(region, model))
+            iwp = xr.open_dataset(WRK+region+\
+                          "/{}_{}_clivi_20200130-20200228.nc".format(region, model), 
+                          chunks=chunks).clivi
+            qg = xr.open_dataset(WRK+region+\
+                          "/{}_{}_qgvi_20200130-20200228.nc".format(region, model), 
+                          chunks=chunks).qgvi
+            qs = xr.open_dataset(WRK+region+\
+                          "/{}_{}_qsvi_20200130-20200228.nc".format(region, model), 
+                          chunks=chunks).qsvi
+            iwp = iwp + qg + qs
+            print("iwp = clivi + qsvi + qgvi calculated here", model, region)
     else:
         try:
             iwp = xr.open_dataset(WRK+region+\
