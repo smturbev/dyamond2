@@ -28,8 +28,10 @@ def plot_utlsprofiles(models=MODELS):
         print("getting temp", end="...")
         t = xr.open_dataset(ap.get_file(m, region+"_3D", "ta"), 
                         chunks=chunks).isel(time=slice(-8*ndays,-1)).ta[:,1:]
+        # tinit = xr.open_dataset(ap.get_file(m, region+"_3D", "ta"), 
+        #                 chunks=chunks).isel(time=slice(0,8*ndays)).ta[:,1:]
         tinit = xr.open_dataset(ap.get_file(m, region+"_3D", "ta"), 
-                        chunks=chunks).isel(time=slice(0,8*ndays)).ta[:,1:]
+                        chunks=chunks).isel(time=slice(80,80+(8*ndays))).ta[:,1:]
         if m=="SCREAM":
             p = t.lev*100 # convert to Pa
         elif m=="UM" or m=="SHiELD" or m=="ICON" or m=="ARP" or m=="SAM":
@@ -56,7 +58,7 @@ def plot_utlsprofiles(models=MODELS):
             z = z.mean(axis=axes)/1000
         if m=="SHiELD" or m=="GEOS":
             z = z[1:]
-        print("shape of t, rhi, and z", t.shape, rhi.shape, z.shape)
+        print("shape of t, rhi, and z", t.shape, rhi.shape, z.shape, end="...")
         tmean = t.mean(axis=axes).values
         tinitmean = tinit.mean(axis=axes).values
         print("... plotting tmean", end=", ")
