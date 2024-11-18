@@ -251,8 +251,7 @@ def plot_olr_means_gt(mod, mod_means, obs_file, var="rlt", diff=False):
         var=var.split("_")[0]
     return fig
 
-def plot_olrgt(diff=True):
-    ceres_file="CERES"
+def plot_olrgt(diff=True,ceres_file="CERES"):
     mod, mod_means = get_gt_means(var="rlt", diff=diff, obs_file=ceres_file)
     print("plotting...")
     plot_olr_means_gt(mod, mod_means, ceres_file, var="rlt", diff=diff)
