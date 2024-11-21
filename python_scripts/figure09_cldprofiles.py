@@ -1,8 +1,10 @@
+#!/usr/bin/env python3.6m
+
+import numpy as np
 import xarray as xr
 from matplotlib import pyplot as plt
 import matplotlib.colors as mcolors
 from utility import analysis_parameters as ap
-import numpy as np
 import dask
 
 region='TWP'
@@ -96,7 +98,7 @@ def get_dardar_dy1():
     return iwc, cl, z
 
 
-def get_dardar_dy2():
+def get_dardar_dy2_span():
     # DARDAR 9 years of Febs
     ds = xr.open_dataset(ap.TWP+"DARDAR-CLOUD_v2.1.1_ALL_FEB_DATA.nc")
     z = ds.z
@@ -109,6 +111,15 @@ def get_dardar_dy2():
     print("DARDAR_DY2 - Feb 2007-2017... shapes of iwc_low, iwc_hgh, cldfrac, and z:", 
           iwc_low.shape, iwc_hgh.shape, cl.shape, z.shape)
     return iwc_low, iwc_hgh, cl_min, cl_max, z
+
+def get_dardar_dy2():
+    ds = xr.open_dataset(ap.TWP+"DARDAR-CLOUD_v2.1.1_ALL_FEB_DATA.nc")
+    z = ds.z
+    cl = ds.iwc.where(ds.iwc==0,other=1).groupby(ds.time.dt.year).mean()
+    cl_mean = cl.mean(axis=0)
+    iwc = ds.iwc.mean(axis=0)
+    print("DARDAR_DY2 - Feb mean 2007-2017... shapes of iwc, cl, and z", iwc.shape, cl.shape, z.shape)
+    return iwc, cl_mean, z
 
 def plot_cldprofiles():
     """ plot all the models profiles of iwc + lwc and cld frac (5e-7 kg/m3)"""
@@ -155,7 +166,7 @@ def plot_cldprofiles():
     ax.plot(cl[n:-101], (z/1000)[n:-101], color=colors["OBS2"], linestyle="dashed", lw=2)
     axt.plot(iwc[n:-101], (z/1000)[n:-101], color=colors["OBS2"], linestyle="dashed", lw=2, label="DARDAR (JAS)")
     # plot DARDAR DY2 shading
-    iwclow, iwchgh, cllow, clhgh, z = get_dardar_dy2()
+    iwclow, iwchgh, cllow, clhgh, z = get_dardar_dy2_span()
     axt.fill_betweenx((z/1000)[n:], iwclow[n:]/1000,iwchgh[n:]/1000, 
                       color=colors["OBS"], alpha=0.2, label="DARDAR span (Feb)")
     axbt.fill_betweenx((z/1000)[n:], iwclow[n:]/1000,iwchgh[n:]/1000,
@@ -164,6 +175,11 @@ def plot_cldprofiles():
                       color=colors["OBS"], alpha=0.2)
     axb.fill_betweenx((z/1000)[n:], cllow[n:],clhgh[n:],
                        color=colors["OBS"], alpha=0.2)
+    iwc, cl, z = get_dardar_dy2()
+    axt.plot(iwc[n:]/1000, z[n:]/1000, color=colors["OBS"], alpha=0.4, label="DARDAR Feb mean")
+    axbt.plot(iwc[n:]/1000, z[n:]/1000, color=colors["OBS"], alpha=0.4, label="DARDAR Feb mean")
+    ax.plot(cl[n:], z[n:]/1000, color=colors["OBS"], alpha=0.4)
+    axb.plot(cl[n:], z[n:]/1000, color=colors["OBS"], alpha=0.4)
 
     units = "g/kg" if var2=="cltotal" else "kg m$^{-3}$"
 
@@ -183,11 +199,13 @@ def plot_cldprofiles():
     axbt.legend(loc="center left", bbox_to_anchor=(1.,0.5))
 
     # save figure
-    print("../plots/figure09_cldprofiles_{}_dy1v2.png".format(var2))
-    plt.savefig("../plots/figure09_cldprofiles_{}_dy1v2.png".format(var2), dpi=120,
-               bbox_inches="tight", pad_inches=1)
-    plt.show()
+    print("../plots/figure09_cldprofiles_{}_dy1v2.pdf".format(var2))
+    plt.savefig("../plots/figure09_cldprofiles_{}_dy1v2.pdf".format(var2),
+               )# rasterized=True)
+    # plt.show()
 
-    
+
+if __name__=="__main__":
+    plot_cldprofiles()
     
 
