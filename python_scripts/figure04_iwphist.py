@@ -61,8 +61,8 @@ def plot_iwphist():
     plt.xscale("log")
     # plt.ylim([0,0.5e7])
     plt.ylim([0,0.07])
-    plt.savefig("../plots/figure04_iwphist_gt_norm.png",dpi=140, bbox_inches="tight", pad_inches=0.2)
-    print("saved as ../plots/figure04_iwphist_gt_norm.png")
+    plt.savefig("../plots/figure04_iwphist_gt_norm.pdf",dpi=140, bbox_inches="tight", pad_inches=0.2)
+    print("saved as ../plots/figure04_iwphist_gt_norm.pdf")
     plt.show()
 
 

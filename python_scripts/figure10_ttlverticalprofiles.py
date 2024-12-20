@@ -107,10 +107,9 @@ def plot_utlsprofiles(models=MODELS):
     ax[1].axvline(0,10,20, c='k', lw=2)
     ax[1].set_xticks(np.arange(-4,8.1,2))
     ax[-1].legend(bbox_to_anchor=(1, 0.5), loc='center left', ncol=1)
-    fig.suptitle("Last "+str(ndays)+" days of simulation period")
-    print("-----\nsaving as ../plots/figure10_last{}days_UTLS.png".format(ndays))
-    plt.savefig("../plots/figure10_last{}days_UTLS.png".format(ndays), 
-                bbox_inches='tight', pad_inches=1)
+    # fig.suptitle("Last "+str(ndays)+" days of simulation period")
+    print("-----\nsaving as ../plots/figure10_last{}days_UTLS.pdf".format(ndays))
+    plt.savefig("../plots/figure10_last{}days_UTLS.pdf".format(ndays), bbox_inches='tight')
     plt.show()
 
 

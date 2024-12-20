@@ -207,10 +207,11 @@ def plot_jhist_all(plot_type):
     fig.subplots_adjust(right=0.9)
     cbar_ax = fig.add_axes([0.95, 0.15, 0.02, 0.7])
     cb = fig.colorbar(im, cax=cbar_ax)
-    cb.ax.tick_params(labelsize=16)
+    cb.set_label(label="log10(pdf)", size=20)
+    cb.ax.tick_params(axis='both', labelsize=20)
     
-    save_name = "../plots/figure08_jhist_{}_all.png".format(plot_type)
+    save_name = "../plots/figure08_jhist_{}_all.pdf".format(plot_type)
     print("... saved as "+save_name)
-    plt.savefig(save_name)
+    plt.savefig(save_name, bbox_inches="tight", pad_inches=0.5)
     plt.show()
 

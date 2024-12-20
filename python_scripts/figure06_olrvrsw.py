@@ -58,8 +58,8 @@ def plot_olrvsswu():
     plt.xlabel("OLR (W m$^{-2}$)", fontsize=16)
     plt.ylabel("Reflected SW (W m$^{-2}$)", fontsize=16)
     plt.legend(bbox_to_anchor=(1.4,0.9))
-    print("saving as ../plots/figure06_olrvsrsw.png")
-    plt.savefig("../plots/figure06_olrvsrsw.png", dpi=150, bbox_inches="tight", pad_inches=0.5)
+    print("saving as ../plots/figure06_olrvsrsw.pdf")
+    plt.savefig("../plots/figure06_olrvsrsw.pdf", bbox_inches="tight", pad_inches=0.25)
     plt.show()
 
 if __name__=="__main__":

@@ -85,8 +85,8 @@ def plot_thincifrac():
             cb = fig.colorbar(cf_dc, orientation="horizontal", cax=axins1,  label="precipitation rate (mm/hr)", extend="both")
         ax0.annotate(m.split('r')[0], xy=(0.01,0.8), xycoords="axes fraction", fontsize=12, color='w', backgroundcolor=(0,0,0,0.5))
         ax1.annotate(m.split('r')[0], xy=(0.01,0.8), xycoords="axes fraction", fontsize=12, color='k', backgroundcolor=(1,1,1,0.7))
-    print("saving as ../plots/figure05_thincifrac_pr.png")
-    plt.savefig("../plots/figure05_thincifrac_pr.png", dpi=150, bbox_inches="tight", pad_inches=0.25)
+    print("saving as ../plots/figure05_thincifrac_pr.pdf")
+    plt.savefig("../plots/figure05_thincifrac_pr.pdf", bbox_inches="tight", pad_inches=0.25)
     plt.show()
 
 if __name__=="__main__":

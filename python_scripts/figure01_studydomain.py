@@ -51,8 +51,8 @@ def plot_map(twp=True):
     ax.set_title("")
     
     # save figure
-    plt.savefig('../plots/figure01_map.png',dpi=200, bbox_inches="tight")
-    print("saved as ../plots/figure01_map.png")
+    plt.savefig('../plots/figure01_map.pdf', bbox_inches="tight")
+    print("saved as ../plots/figure01_map.pdf")
     plt.show()
 
 if __name__=="__main__":

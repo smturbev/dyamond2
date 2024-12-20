@@ -17,7 +17,7 @@ def plot_cldtophist():
     zbins = np.arange(5,20.1)
     fs=20
 
-    fig = plt.figure(figsize=(5*len(models)+6,15), layout="constrained")
+    fig = plt.figure(figsize=(26,15), layout="constrained")
     gs = GridSpec(3, 6, figure=fig)
     # add a subplot like this: ax1 = fig.add_subplot(gs[0, :])
     # subplots for cth histograms
@@ -135,13 +135,14 @@ def plot_cldtophist():
     ax_cth2.set(ylabel="", xlabel="CTH distribution", title="CTH (iwc$>1$e$-7$ kg/m$^3$)")
     # ax[j,3].spines[['right', 'top']].set_visible(False)
 
-    cbar_ax = fig.add_subplot(gs[:2,0])
-    cbar_ax.axis('off')
-    cb = fig.colorbar(im, ax=cbar_ax, shrink=0.7,
-                      label="log10(pdf)", location="left")
-    
-    print("saved as ../plots/figure11_ccldtopiwc_vs_olr_{}.png".format(mod_lab))
-    plt.savefig("../plots/figure11_ccldtopiwc_vs_olr_{}.png".format(mod_lab),dpi=120,
-                bbox_inches="tight", pad_inches=1)
+    # cbar_ax = fig.add_subplot(gs[:2,0])
+    cbar_ax = fig.add_axes([0.08,0.45,0.025,0.42])
+    # cbar_ax.axis('off')
+    cb = plt.colorbar(im, cax=cbar_ax, 
+                      label="log10(pdf)", orientation="vertical")
+
+    print("saved as ../plots/figure11_ccldtopiwc_vs_olr_{}.pdf".format(mod_lab))
+    plt.savefig("../plots/figure11_ccldtopiwc_vs_olr_{}.pdf".format(mod_lab),
+                bbox_inches="tight", pad_inches=0.55)
     plt.show()
 

@@ -95,8 +95,8 @@ def plot_both():
     ax1.tick_params(axis='x', labelrotation=0)
     ax1.set_ylabel("Strat-to-conv precip (%)")
     
-    print("saving as ../plots/figure03_precip.png")
-    plt.savefig("../plots/figure03_precip.png", dpi=140)
+    print("saving as ../plots/figure03_precip.pdf")
+    plt.savefig("../plots/figure03_precip.pdf")
     plt.show()
 
 if __name__=="__main__":

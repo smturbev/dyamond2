@@ -243,8 +243,8 @@ def plot_olr_means_gt(mod, mod_means, obs_file, var="rlt", diff=False):
     
     if diff:
         var=var+"_diff"
-    print("figure saved as ../plots/figure02_olrgt.png")
-    plt.savefig("../plots/figure02_olrgt.png", dpi=250)
+    print("figure saved as ../plots/figure02_olrgt.pdf")
+    plt.savefig("../plots/figure02_olrgt.pdf")
     plt.show()
 
     if diff:
